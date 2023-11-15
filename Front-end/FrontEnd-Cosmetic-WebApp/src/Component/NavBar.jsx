@@ -1,10 +1,10 @@
-import './NavBar.css'
+import '../css/NavBar.css'
 function NavBar() {
     return(
 <>
     <div id="header">
                 {/*begin nav*/}
-                <a id='imgA' href="#"><img src="../Full_Logo.png" alt="" /></a>
+                <a id='imgA' href="#"><img src="../Full_Logo.png" alt="Logo" /></a>
                 <a className='navBarItem' href="#">Danh mục
                         <i className="fa-solid fa-arrow-down arrow-down-icon"></i>
                         <div className='container'>

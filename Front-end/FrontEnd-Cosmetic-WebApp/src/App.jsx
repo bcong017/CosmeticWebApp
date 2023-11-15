@@ -2,6 +2,7 @@
 import './App.css'
 import NavBar from './Component/NavBar'
 import Carousel from './Component/Carousel'
+import Footer from './Component/Footer'
 function App() {
 
 
@@ -11,6 +12,7 @@ function App() {
       <Carousel title="Bán chạy"></Carousel>
       <Carousel title="Bạn đã xem gì"></Carousel>
       <Carousel title="Giành riêng cho bạn"></Carousel>
+      <Footer></Footer>
     </div>
   )
 }

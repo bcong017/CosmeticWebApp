@@ -1,12 +1,10 @@
-import './Carousel.css'
+import '../css/Carousel.css'
 import { useEffect } from 'react'
 
 
 
-function Carousel({title='hello',itemName='hello',imgURL}) { 
+function Carousel({title='hello',itemName='Sữa rửa mặt',imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',price='100.000 VND'}) { 
     
-
-    //useEffect(() => {initSlider()},[]);
 
     return (
         <div className="body-of-carousel">
@@ -17,36 +15,44 @@ function Carousel({title='hello',itemName='hello',imgURL}) {
                     <i id='prev-slide' className="slide-button fa-solid fa-arrow-left"></i>
                         <div className="image-list">
                             <div className='image-with-title-block'>
-                                <span>{itemName}</span>
-                                <img className="image-item" src="../img-1.jpg" alt="img-1" />
+                                <div className='item-name'><span >{itemName}</span></div>
+                                <img className="image-item" src={imgURL} alt="img-1" />
+                                <div className='item-name'><span >Giá: {price}</span></div>
                             </div>
                             <div className='image-with-title-block'>
-                                <span>{itemName}</span>
-                                <img className="image-item" src="../img-2.jpg" alt="img-2" />
+                                <div className='item-name'><span >{itemName}</span></div>
+                                <img className="image-item" src={imgURL} alt="img-2" />
+                                <div className='item-name'><span >Giá: {price}</span></div>
                             </div>
                             <div className='image-with-title-block'>
-                                <span>{itemName}</span>
-                                <img className="image-item" src="../img-3.jpg" alt="img-3" />
+                            <div className='item-name'><span >{itemName}</span></div>
+                                <img className="image-item" src={imgURL} alt="img-3" />
+                                <div className='item-name'><span >Giá: {price}</span></div>
                             </div>
                             <div className='image-with-title-block'>
-                                <span>{itemName}</span>
-                                <img className="image-item" src="../img-4.jpg" alt="img-4" />
+                            <div className='item-name'><span >{itemName}</span></div>
+                                <img className="image-item" src={imgURL} alt="img-4" />
+                                <div className='item-name'><span >Giá: {price}</span></div>
                             </div>
                             <div className='image-with-title-block'>
-                                <span>{itemName}</span>
-                                <img className="image-item" src="../img-5.jpg" alt="img-5" />
+                                <div className='item-name'><span >{itemName}</span></div>
+                                <img className="image-item" src={imgURL} alt="img-5" />
+                                <div className='item-name'><span >Giá: {price}</span></div>
                             </div>
                             <div className='image-with-title-block'>
-                                <span>{itemName}</span>
-                                <img className="image-item" src="../img-6.jpg" alt="img-6" />
+                                <div className='item-name'><span >{itemName}</span></div>
+                                <img className="image-item" src={imgURL} alt="img-6" />
+                                <div className='item-name'><span >Giá: {price}</span></div>
                             </div>
                             <div className='image-with-title-block'>
-                                <span>{itemName}</span>
-                                <img className="image-item" src="../img-7.jpg" alt="img-7" />
+                                <div className='item-name'><span >{itemName}</span></div>
+                                <img className="image-item" src={imgURL} alt="img-7" />
+                                <div className='item-name'><span >Giá: {price}</span></div>
                             </div>
                             <div className='image-with-title-block'>
-                                <span>{itemName}</span>
-                                <img className="image-item" src="../img-8.jpg" alt="img-8" />
+                                <div className='item-name'><span >{itemName}</span></div>
+                                <img className="image-item" src={imgURL} alt="img-8" />
+                                <div className='item-name'><span >Giá: {price}</span></div>
                             </div>
                         </div>
                         <i id='next-slide' className="slide-button fa-solid fa-arrow-right"></i>

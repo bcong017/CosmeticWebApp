@@ -5,14 +5,14 @@
   }
 .body-of-carousel{
   display: block;
-  align-items: center;
-  justify-content: center;
   min-height: 400px;
-  max-width: 95vw;
+  max-width: 100vw;
   background: #AEDEFC;  
   margin-top: 80px;
   margin-left: 15px;
+  margin-right: 15px;
   scroll-behavior: smooth;
+  color:#339E66FF ;
 }
 .carousel-title-block{
     display: block;
@@ -81,7 +81,11 @@
     height: 400px;
     object-fit: cover;
 }
-
+.item-name{
+  display: flex;
+  justify-content: center;
+align-items: center;
+}
 
 .carousel-container .slider-scrollbar {
     height: 24px;
