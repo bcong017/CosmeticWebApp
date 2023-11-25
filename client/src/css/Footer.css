@@ -12,12 +12,14 @@
     right: 0;
     flex-direction: row;
     height: 140px;
-    margin: 30px 40px 0px 40px;
+    margin: 40px 40px 0px 40px;
     justify-content: space-evenly;
+
 }
 .footer-logo, .footer-about-us {
     display: flex;
     align-items: center;
+    padding-top: 50px;
 }
 .footer-about-us > a{
     text-decoration: none;
