@@ -1,17 +1,10 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-
-  }
-
 .item-carousel-container{
   display: block;
-  top: 80px;
-  background-color: #AEDEFC;
-  margin-bottom: 20px;
-  position: relative;
   
+  background-color: #AEDEFC;
+  
+  
+  margin: 0 20px 10px 20px;
 }
 
 h1 {

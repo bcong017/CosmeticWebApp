@@ -1,20 +1,23 @@
-// import { useState } from 'react'
-import './App.css'
-import NavBar from './Component/NavBar'
-import Carousel from './Component/Carousel'
-import Footer from './Component/Footer'
+import { Routes, Route } from "react-router-dom";
+import HomePage from "./Pages/HomePage";
+import ItemPage from "./Pages/ItemPage";
+import NavBar from "./Component/NavBar/NavBar.jsx";
+import Footer from "./Component/Footer/Footer.jsx";
+import "./App.css";
 function App() {
-
-
   return (
-    <div id='app-body'>
+    <div id="app-body">
       <NavBar></NavBar>
-      <Carousel title="Bán chạy"></Carousel>
-      <Carousel title="Bạn đã xem gì"></Carousel>
-      <Carousel title="Giành riêng cho bạn"></Carousel>
+      
+      <Routes>
+        <Route path="/" element={<HomePage/>}/>
+        <Route path="/item" element={<ItemPage/>}/>
+      </Routes>  
+
+      
       <Footer></Footer>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

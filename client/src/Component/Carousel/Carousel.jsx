@@ -1,19 +1,19 @@
 import Carousel from "react-multi-carousel";
-import Card from "./Card";
-import "../css/Carousel.css";
+import Card from "../Card/Card.jsx";
+import "./Carousel.css";
 import "react-multi-carousel/lib/styles.css";
 
 const responsive = {
   superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3000 },
+    breakpoint: { max: 4000, min: 1024 },
     items: 5,
   },
   desktop: {
-    breakpoint: { max: 3000, min: 1024 },
+    breakpoint: { max: 1024, min: 800 },
     items: 3,
   },
   tablet: {
-    breakpoint: { max: 1024, min: 464 },
+    breakpoint: { max: 800, min: 464 },
     items: 2,
   },
   mobile: {

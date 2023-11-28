@@ -1,0 +1,14 @@
+.footer {
+  display: flex;
+  background-color: #ffdfdf;
+  margin-top: auto;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.footer-about-us > a {
+  text-decoration: none;
+  color: #f875aa;
+  font-size: 40px;
+}

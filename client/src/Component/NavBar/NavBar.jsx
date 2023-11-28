@@ -1,14 +1,16 @@
-import "../css/NavBar.css";
-import SearchBar from "./SearchBar";
+import "./NavBar.css";
+import { Link } from "react-router-dom";
+import SearchBar from "../SearchBar/SearchBar.jsx";
+
 function NavBar() {
   return (
     <>
       <div id="header">
         {/*begin nav*/}
-        <a id="imgA" href="#">
+        <Link id="Logo" to="/">
           <img src="../Full_Logo.png" alt="Logo" />
-        </a>
-        <a className="navBarItem" href="#">
+        </Link>
+        <a className="category" href="#">
           Danh mục
           <i className="fa-solid fa-arrow-down arrow-down-icon"></i>
           <div className="container">
@@ -69,12 +71,18 @@ function NavBar() {
           </div>
         </a>
         <SearchBar></SearchBar>
-        <a className="navBarItem" href="#">
-          Đăng nhập/Đăng ký
-        </a>
-        <a href="">
+        <div className="tooltip">
+          <Link  to="/">
+            <i className="fa-solid fa-circle-user user-icon"></i>
+          </Link>
+          <span className="tooltiptext">Đăng nhập / Đăng ký</span>
+        </div>
+        <div className="tooltip">
+        <Link to="/">
           <i className="fa-solid fa-cart-shopping cart-icon"></i>
-        </a>
+        </Link>
+        <span className="tooltiptext">Giỏ hàng</span>
+        </div>
         {/*end nav*/}
       </div>
     </>

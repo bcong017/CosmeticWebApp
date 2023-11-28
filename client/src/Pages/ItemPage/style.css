@@ -1,0 +1,79 @@
+.item-media-side-detail-block {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin: 60px 15% 0px 15%;
+  padding: 10px 10px 10px 10px;
+  background-color:#f3cdcdc2
+}
+img {
+  max-width: 100%;
+}
+.media {
+  max-width: 30%;
+  display: flex;
+  flex-direction: column;
+}
+.media > img{
+  margin-bottom: 10px;
+}
+.media > ul {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+  font-size: 0;
+  list-style: none;
+  
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.item-info {
+  max-width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  
+}
+#item-amount{
+  margin-left: 10px;
+}
+.amount-block{
+  display: flex;
+
+}
+.amount-remaining{
+  margin-left: 10px;
+  color: red;
+}
+.item-info > button{
+  width: fit-content;
+}
+
+.add-item-btn{
+  background-color: transparent;
+  border-color: #f875aa;
+  border-radius: 5px;
+  color: #f875aa;
+  height: 30px;
+  width: 80px;
+}
+.add-item-btn:hover{
+  background-color: #f875aa;
+  border-color: #f875aa;
+  color: aliceblue;
+  cursor: pointer;
+}
+.add-item-btn:active {
+  background-color: #f875aa;
+  box-shadow: 0 2px #666;
+  transform: translateY(2px);
+}
+.variant-item-thumbnail:hover{
+  cursor: pointer;
+  background-color: none;
+}
+
+.item-page-body{
+  display: flex;
+  flex-direction: column;
+}
