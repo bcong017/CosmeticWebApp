@@ -1,7 +1,7 @@
 // models/profitStatistics.js
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize) => {
   const ProfitStatistics = sequelize.define('ProfitStatistics', {
     id: {
       type: DataTypes.INTEGER,

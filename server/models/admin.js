@@ -1,7 +1,7 @@
 // models/admin.js
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize) => {
   const Admin = sequelize.define('Admin', {
     id: {
       type: DataTypes.INTEGER,

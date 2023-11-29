@@ -1,7 +1,7 @@
 // models/receipt.js
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize) => {
   const Receipt = sequelize.define('Receipt', {
     id: {
       type: DataTypes.INTEGER,

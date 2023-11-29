@@ -1,7 +1,7 @@
 // models/saleEvent.js
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize) => {
   const SaleEvent = sequelize.define('SaleEvent', {
     id: {
       type: DataTypes.INTEGER,
