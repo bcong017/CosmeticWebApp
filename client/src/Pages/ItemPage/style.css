@@ -56,6 +56,8 @@ img {
   color: #f875aa;
   height: 30px;
   width: 80px;
+  padding: 0px 10px;
+  font-weight: bold;
 }
 .add-item-btn:hover{
   background-color: #f875aa;
@@ -76,4 +78,32 @@ img {
 .item-page-body{
   display: flex;
   flex-direction: column;
+}
+
+.item-detail{
+  background-color: #FFDFDF;
+  display: flex;
+  flex-direction: column;
+  margin: 20px 60px 0 60px;
+  
+}
+.item-detail-tabs{
+  background-color: #f3cdcdc2;
+  display: flex;
+  justify-content: space-around;
+  font-size: 20px;
+  padding: 20px 0;
+}
+.item-detail-tab:hover{
+  color: #eb3fb3;
+  cursor: pointer;
+}
+.active-color{
+  color: #eb3fb3;
+}
+
+.selected-tab-detail-container{
+  display: block;
+  margin-top: 20px;
+  background-color: #f3cdcdc2;
 }
