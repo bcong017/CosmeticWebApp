@@ -4,8 +4,5 @@
 
 
 html{
-  background-color: #FFDFDF;
-}
-#root {
-  font-size: 100%;
+  background-color: #FFDFDF !important;
 }

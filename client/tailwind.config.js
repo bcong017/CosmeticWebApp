@@ -5,12 +5,16 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "heavy-pink": "#f875aa",
+        "section-pink": "#f3cdcdc2",
+      },
+    },
   },
   darkMode: "class",
-  plugins: [nextui()]
-}
-
+  plugins: [nextui()],
+};

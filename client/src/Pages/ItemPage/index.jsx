@@ -1,24 +1,27 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
+import { Button } from '@nextui-org/react';
+import { Tabs, Tab, Card, CardBody } from '@nextui-org/react';
 import './style.css';
 
 function ItemPage({ amount = 4 }) {
-  const itemDetailTabsRef = useRef();
   const imgRef = useRef();
-  const [activeIndex, setActiveIndex] = useState(0);
+  // const itemDetailTabsRef = useRef();
 
-  useEffect(() => {
-    for (let i = 0; i < 5; i++) {
-      if (i != activeIndex) {
-        itemDetailTabsRef.current.childNodes[i].className = 'item-detail-tab';
-      } else {
-        itemDetailTabsRef.current.childNodes[i].className =
-          'item-detail-tab active-color';
-      }
-    }
-  }, [activeIndex]);
+  // const [activeIndex, setActiveIndex] = useState(0);
+
+  // useEffect(() => {
+  //   for (let i = 0; i < 5; i++) {
+  //     if (i != activeIndex) {
+  //       itemDetailTabsRef.current.childNodes[i].className = 'item-detail-tab';
+  //     } else {
+  //       itemDetailTabsRef.current.childNodes[i].className =
+  //         'item-detail-tab active-color';
+  //     }
+  //   }
+  // }, [activeIndex]);
 
   return (
-    <div className='item-page-body'>
+    <div className='block'>
       <div className='item-media-side-detail-block'>
         <div className='media'>
           <img
@@ -85,10 +88,10 @@ function ItemPage({ amount = 4 }) {
           </ul>
         </div>
         <div className='item-info'>
-          <h1 className='item-name-VN'>
+          <h1 className='font-bold font text-2xl'>
             Dầu Tẩy Trang Shu Uemura Làm Sạch & Se Lỗ Chân Lông 150ml
           </h1>
-          <h2 className='item-name-EN'>
+          <h2 className='font-bold font text-1xl '>
             Porefinist Anti-Shine Fresh Cleansing Oil
           </h2>
           <h3 className='price'>Giá: 1000 VND</h3>
@@ -104,64 +107,71 @@ function ItemPage({ amount = 4 }) {
               <p className='amount-remaining'>Chỉ còn {amount} sản phẩm!</p>
             )}
           </div>
-          <button className='add-item-btn'>
-            Thêm vào giỏ hàng &nbsp;
-            <i className='fa-solid fa-cart-shopping cart-icon-in-button'></i>
-          </button>
+          <Button
+            color='success'
+            endContent={
+              <i className='fa-solid fa-cart-shopping cart-icon-in-button'></i>
+            }
+            className='bg-heavy-pink'
+            disableRipple='true'
+          >
+            Thêm vào giỏ hàng
+          </Button>
         </div>
       </div>
-      <div className='item-detail'>
-        <div className='item-detail-tabs' ref={itemDetailTabsRef}>
-          <div
-            className='item-detail-tab'
-            data-key='0'
-            onClick={(e) => setActiveIndex(e.target.getAttribute('data-key'))}
+      <div className='px-10 mt-5 '>
+        <div className='flex w-full flex-col '>
+          <Tabs
+            aria-label='Options'
+            className='inline bg-section-pink'
+            variant='light'
+            size='lg'
           >
-            Thông tin sản phẩm
-          </div>
-          <div
-            className='item-detail-tab'
-            data-key='1'
-            onClick={(e) => setActiveIndex(e.target.getAttribute('data-key'))}
-          >
-            Thông số sản phẩm
-          </div>
-          <div
-            className='item-detail-tab'
-            data-key='2'
-            onClick={(e) => setActiveIndex(e.target.getAttribute('data-key'))}
-          >
-            Thành phần sản phẩm
-          </div>
-          <div
-            className='item-detail-tab'
-            data-key='3'
-            onClick={(e) => setActiveIndex(e.target.getAttribute('data-key'))}
-          >
-            Hướng dẫn sử dụng
-          </div>
-          <div
-            className='item-detail-tab'
-            data-key='4'
-            onClick={(e) => setActiveIndex(e.target.getAttribute('data-key'))}
-          >
-            Đánh giá
-          </div>
-        </div>
-        <div className='selected-tab-detail-container'>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
-          ab illo inventore veritatis et quasi architecto beatae vitae dicta
-          sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
-          aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos
-          qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui
-          dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed
-          quia non numquam eius modi tempora incidunt ut labore et dolore magnam
-          aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
-          exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
-          ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in
-          ea voluptate velit esse quam nihil molestiae consequatur, vel illum
-          qui dolorem eum fugiat quo voluptas nulla pariatur?
+            <Tab key='item-info' title='Thông tin sản phẩm'>
+              <Card>
+                <CardBody className='bg-heavy-pink text-yellow-50'>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut aliquip ex ea commodo consequat.
+                </CardBody>
+              </Card>
+            </Tab>
+            <Tab key='item-specs' title='Thông số sản phẩm'>
+              <Card>
+                <CardBody className='bg-heavy-pink text-yellow-50'>
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                  irure dolor in reprehenderit in voluptate velit esse cillum
+                  dolore eu fugiat nulla pariatur.
+                </CardBody>
+              </Card>
+            </Tab>
+            <Tab key='item-component' title='Thành phần sản phẩm'>
+              <Card>
+                <CardBody className='bg-heavy-pink text-yellow-50'>
+                  Excepteur sint occaecat cupidatat non proident, sunt in culpa
+                  qui officia deserunt mollit anim id est laborum.
+                </CardBody>
+              </Card>
+            </Tab>
+            <Tab key='item-usage' title='Hướng dẫn sử dụng'>
+              <Card>
+                <CardBody className='bg-heavy-pink text-yellow-50'>
+                  Excepteur sint occaecat cupidatat non proident, sunt in culpa
+                  qui officia deserunt mollit anim id est laborum.
+                </CardBody>
+              </Card>
+            </Tab>
+            <Tab key='item-rating' title='Đánh giá'>
+              <Card>
+                <CardBody className='bg-heavy-pink text-yellow-50'>
+                  Excepteur sint occaecat cupidatat non proident, sunt in culpa
+                  qui officia deserunt mollit anim id est laborum.
+                </CardBody>
+              </Card>
+            </Tab>
+          </Tabs>
         </div>
       </div>
     </div>

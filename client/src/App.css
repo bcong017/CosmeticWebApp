@@ -8,3 +8,8 @@
   /* new small viewport height for modern browsers */
   min-height: 100svh;
 }
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}

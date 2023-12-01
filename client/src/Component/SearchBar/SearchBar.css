@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
 }
-.input-wrapper>button {
+.input-wrapper > button {
   background-color: transparent;
   border-color: #f875aa;
   border-radius: 5px;
@@ -16,7 +16,7 @@
   height: 30px;
   width: 80px;
 }
-.input-wrapper>button:hover {
+.input-wrapper > button:hover {
   cursor: pointer;
   background-color: #f875aa;
   border-color: #f875aa;
@@ -25,7 +25,7 @@
 .icon {
   color: #f875aa;
 }
-.input-wrapper>button:active {
+.input-wrapper > button:active {
   background-color: #f875aa;
   box-shadow: 0 2px #666;
   transform: translateY(2px);

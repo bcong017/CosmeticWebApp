@@ -6,7 +6,7 @@ import 'react-multi-carousel/lib/styles.css';
 const responsive = {
   superLargeDesktop: {
     breakpoint: { max: 4000, min: 1024 },
-    items: 5,
+    items: 4,
   },
   desktop: {
     breakpoint: { max: 1024, min: 800 },
@@ -21,12 +21,43 @@ const responsive = {
     items: 1,
   },
 };
-
-function ItemCarousel({ title }) {
+const list = [
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+];
+function CarouselComponent({ title }) {
   return (
     <>
-      <div className='item-carousel-container'>
-        <h1>{title}</h1>
+      <div className='item-carousel-container pl-14'>
+        <h1 className='font-bold text-3xl'>{title}</h1>
         <Carousel
           responsive={responsive}
           swipeable={false}
@@ -34,40 +65,19 @@ function ItemCarousel({ title }) {
           infinite={true}
           autoPlay={true}
         >
-          <Card
-            itemName='Sữa rửa mặt'
-            imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg'
-            price='100.000 VND'
-          ></Card>
-          <Card
-            itemName='Sữa rửa mặt'
-            imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg'
-            price='100.000 VND'
-          ></Card>
-          <Card
-            itemName='Sữa rửa mặt'
-            imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg'
-            price='100.000 VND'
-          ></Card>
-          <Card
-            itemName='Sữa rửa mặt'
-            imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg'
-            price='100.000 VND'
-          ></Card>
-          <Card
-            itemName='Sữa rửa mặt'
-            imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg'
-            price='100.000 VND'
-          ></Card>
-          <Card
-            itemName='Sữa rửa mặt'
-            imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg'
-            price='100.000 VND'
-          ></Card>
+          {list.map((item, index) => (
+            <Card
+              itemName={item.itemName}
+              imgURL={item.imgURL}
+              price={item.price}
+              key={index}
+              className='self-center'
+            ></Card>
+          ))}
         </Carousel>
       </div>
     </>
   );
 }
 
-export default ItemCarousel;
+export default CarouselComponent;
