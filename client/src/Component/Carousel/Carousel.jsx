@@ -1,7 +1,7 @@
-import Carousel from "react-multi-carousel";
-import Card from "../Card/Card.jsx";
-import "./Carousel.css";
-import "react-multi-carousel/lib/styles.css";
+import Carousel from 'react-multi-carousel';
+import Card from '../Card/Card.jsx';
+import './Carousel.css';
+import 'react-multi-carousel/lib/styles.css';
 
 const responsive = {
   superLargeDesktop: {
@@ -22,10 +22,10 @@ const responsive = {
   },
 };
 
-function ItemCarousel({title}) {
+function ItemCarousel({ title }) {
   return (
     <>
-      <div className="item-carousel-container">
+      <div className='item-carousel-container'>
         <h1>{title}</h1>
         <Carousel
           responsive={responsive}
@@ -35,34 +35,34 @@ function ItemCarousel({title}) {
           autoPlay={true}
         >
           <Card
-            itemName="Sữa rửa mặt"
-            imgURL="https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg"
-            price="100.000 VND"
+            itemName='Sữa rửa mặt'
+            imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg'
+            price='100.000 VND'
           ></Card>
           <Card
-            itemName="Sữa rửa mặt"
-            imgURL="https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg"
-            price="100.000 VND"
+            itemName='Sữa rửa mặt'
+            imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg'
+            price='100.000 VND'
           ></Card>
           <Card
-            itemName="Sữa rửa mặt"
-            imgURL="https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg"
-            price="100.000 VND"
+            itemName='Sữa rửa mặt'
+            imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg'
+            price='100.000 VND'
           ></Card>
           <Card
-            itemName="Sữa rửa mặt"
-            imgURL="https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg"
-            price="100.000 VND"
+            itemName='Sữa rửa mặt'
+            imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg'
+            price='100.000 VND'
           ></Card>
           <Card
-            itemName="Sữa rửa mặt"
-            imgURL="https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg"
-            price="100.000 VND"
+            itemName='Sữa rửa mặt'
+            imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg'
+            price='100.000 VND'
           ></Card>
           <Card
-            itemName="Sữa rửa mặt"
-            imgURL="https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg"
-            price="100.000 VND"
+            itemName='Sữa rửa mặt'
+            imgURL='https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg'
+            price='100.000 VND'
           ></Card>
         </Carousel>
       </div>

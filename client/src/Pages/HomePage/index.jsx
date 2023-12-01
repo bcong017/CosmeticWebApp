@@ -1,11 +1,12 @@
-import Carousel from "../../Component/Carousel/Carousel";
-import './style.css'
+import Carousel from '../../Component/Carousel/Carousel';
+import './style.css';
+
 function HomePage() {
   return (
-    <div className="home-page-body">
-      <Carousel title="Bán chạy"></Carousel>
-      <Carousel title="Bạn đã xem gì"></Carousel>
-      <Carousel title="Giành riêng cho bạn"></Carousel>
+    <div className='home-page-body'>
+      <Carousel title='Bán chạy'></Carousel>
+      <Carousel title='Bạn đã xem gì'></Carousel>
+      <Carousel title='Giành riêng cho bạn'></Carousel>
     </div>
   );
 }
