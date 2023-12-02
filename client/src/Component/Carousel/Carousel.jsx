@@ -57,7 +57,7 @@ function CarouselComponent({ title }) {
   return (
     <>
       <div className='item-carousel-container pl-14'>
-        <h1 className='font-bold text-3xl'>{title}</h1>
+        <h1 className='font-bold text-3xl text-center pt-3'>{title}</h1>
         <Carousel
           responsive={responsive}
           swipeable={false}
