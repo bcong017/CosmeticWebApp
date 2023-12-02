@@ -61,7 +61,12 @@ function NavBar() {
 
   return (
     <>
-      <Navbar isBlurred={false} isBordered maxWidth='full'>
+      <Navbar
+        className='bg-[#ffdfdf]'
+        isBlurred={false}
+        isBordered
+        maxWidth='full'
+      >
         <NavbarBrand className='hidden sm:flex'>
           <Link id='Logo' to='/'>
             <img src='../Full_Logo.png' alt='Logo' />
@@ -71,13 +76,17 @@ function NavBar() {
         <NavbarContent className='flex gap-8 md:flex gap-4' justify='end'>
           <NavbarItem>
             <Dropdown
+              offset={-2}
               closeOnSelect={false}
-              showArrow
               isOpen={isOpenCategory}
               onOpenChange={setIsOpenCategory}
+              onMouseEnter={() => toggleCategory(true)}
               onMouseLeave={() => toggleCategory(false)}
             >
-              <DropdownTrigger onMouseEnter={() => toggleCategory(true)}>
+              <DropdownTrigger
+                onMouseEnter={() => toggleCategory(true)}
+                onMouseLeave={() => toggleCategory(false)}
+              >
                 <Button variant='light' radius='none'>
                   Danh mục
                 </Button>
