@@ -40,13 +40,12 @@
   color: #aedefc;
 }
 .user-icon {
-  font-size: 36px;
+  font-size: 24px;
   color: #f875aa;
-
 }
 .user-icon:hover {
-    color: #aedefc;
-  }
+  color: #aedefc;
+}
 .subnav {
   list-style-type: none;
   background-color: #fff;
@@ -72,7 +71,6 @@
   width: 100%;
   opacity: 0;
   visibility: hidden;
-  
 }
 span {
   font-size: 20px;
@@ -86,19 +84,18 @@ span {
   visibility: visible;
   display: flex;
 }
-ul > li {
+/* ul > li {
   font-size: 18px;
 }
 ul > li:hover {
   background-color: #aedefc;
-}
+} */
 .category:hover {
   background-color: #aedefc;
 }
 
 .tooltip {
   position: relative;
-  
 }
 .tooltip .tooltiptext {
   visibility: hidden;
@@ -110,7 +107,7 @@ ul > li:hover {
   width: 120px;
   top: 100%;
   left: 50%;
-  margin-left: -60px; 
+  margin-left: -60px;
   position: absolute;
   z-index: 1;
   font-size: 20px;
@@ -118,6 +115,6 @@ ul > li:hover {
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
-.tooltiptext:hover{
-    visibility: hidden;
+.tooltiptext:hover {
+  visibility: hidden;
 }
