@@ -108,7 +108,6 @@ function ItemPage({ amount = 4 }) {
             )}
           </div>
           <Button
-            color='success'
             endContent={
               <i className='fa-solid fa-cart-shopping cart-icon-in-button'></i>
             }

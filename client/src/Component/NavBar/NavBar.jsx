@@ -131,7 +131,7 @@ function NavBar() {
 
           <NavbarItem>
             <Tooltip content='Giỏ hàng'>
-              <Link to='/'>
+              <Link to='/cart'>
                 <div className='fa-solid fa-cart-shopping cart-icon' />
               </Link>
             </Tooltip>
