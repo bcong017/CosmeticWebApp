@@ -66,12 +66,12 @@
   box-shadow: 0 2px #666;
   transform: translateY(2px);
 } */
-span {
+/* span {
   font-size: 0px !important;
   margin-top: 0px !important;
   line-height: 0px !important;
   text-transform: none !important;
-}
+} */
 .variant-item-thumbnail:hover {
   cursor: pointer;
   background-color: none;
