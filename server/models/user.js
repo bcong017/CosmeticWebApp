@@ -1,4 +1,4 @@
-// models/user.js
+// models/user/user.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
@@ -7,6 +7,15 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    username: {
+      type: DataTypes.STRING(50),
+      unique: true,
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING(40),
@@ -25,6 +34,18 @@ module.exports = (sequelize) => {
       defaultValue: true,
     },
   });
+
+  User.associate = (models) => {
+    User.hasMany(models.Cart, {
+      foreignKey: 'user_id',
+    });
+    User.hasMany(models.Comment, {
+      foreignKey: 'user_id',
+    });
+    User.hasMany(models.Order, {
+      foreignKey: 'user_id',
+    });
+  };
 
   return User;
 };

@@ -1,4 +1,4 @@
-// models/item.js
+// models/item/item.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
@@ -44,6 +44,9 @@ module.exports = (sequelize) => {
   Item.associate = (models) => {
     Item.belongsTo(models.SaleEvent, {
       foreignKey: 'sale_event_id',
+    });
+    Item.hasMany(models.Comment, {
+      foreignKey: 'item_id',
     });
   };
 
