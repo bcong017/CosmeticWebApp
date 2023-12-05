@@ -1,4 +1,4 @@
-// models/profitStatistics.js
+// models/profitStatistics/profitStatistics.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
@@ -25,6 +25,12 @@ module.exports = (sequelize) => {
       type: DataTypes.DECIMAL(10, 2),
     },
   });
+
+  ProfitStatistics.associate = (models) => {
+    ProfitStatistics.belongsTo(models.Item, {
+      foreignKey: 'item_id',
+    });
+  };
 
   return ProfitStatistics;
 };

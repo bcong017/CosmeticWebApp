@@ -1,4 +1,4 @@
-// models/admin.js
+// models/admin/admin.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {

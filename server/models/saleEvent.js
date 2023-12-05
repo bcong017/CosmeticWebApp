@@ -1,4 +1,4 @@
-// models/saleEvent.js
+// models/saleEvent/saleEvent.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
@@ -25,6 +25,12 @@ module.exports = (sequelize) => {
       defaultValue: false,
     },
   });
+
+  SaleEvent.associate = (models) => {
+    SaleEvent.hasMany(models.Item, {
+      foreignKey: 'sale_event_id',
+    });
+  };
 
   return SaleEvent;
 };

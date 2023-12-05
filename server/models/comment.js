@@ -1,8 +1,8 @@
-// models/cart/cart.js
+// models/comment/comment.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  const Cart = sequelize.define('Cart', {
+  const Comment = sequelize.define('Comment', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -16,19 +16,25 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    quantity: {
-      type: DataTypes.INTEGER,
+    comment_text: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    comment_date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
   });
 
-  Cart.associate = (models) => {
-    Cart.belongsTo(models.User, {
+  Comment.associate = (models) => {
+    Comment.belongsTo(models.User, {
       foreignKey: 'user_id',
     });
-    Cart.belongsTo(models.Item, {
+    Comment.belongsTo(models.Item, {
       foreignKey: 'item_id',
     });
   };
 
-  return Cart;
+  return Comment;
 };

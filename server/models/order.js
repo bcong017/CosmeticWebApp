@@ -1,4 +1,4 @@
-// models/order.js
+// models/order/order.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
@@ -19,6 +19,12 @@ module.exports = (sequelize) => {
       type: DataTypes.DECIMAL(10, 2),
     },
   });
+
+  Order.associate = (models) => {
+    Order.belongsTo(models.User, {
+      foreignKey: 'user_id',
+    });
+  };
 
   return Order;
 };
