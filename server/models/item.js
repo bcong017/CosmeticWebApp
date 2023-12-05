@@ -8,6 +8,9 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true,
     },
+    image_urls: {
+      type: DataTypes.TEXT,
+    },
     name: {
       type: DataTypes.STRING(500),
     },
@@ -38,6 +41,15 @@ module.exports = (sequelize) => {
     is_on_sale: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+    },
+    user_rating: {
+      type: DataTypes.DECIMAL(3, 2),
+    },
+    rate_count: {
+      type: DataTypes.INTEGER,
+    },
+    sold_count: {
+      type: DataTypes.INTEGER,
     },
   });
 
