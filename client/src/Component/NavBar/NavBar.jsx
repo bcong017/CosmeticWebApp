@@ -13,6 +13,7 @@ import {
   NavbarItem,
   Tooltip,
 } from '@nextui-org/react';
+import { Logo } from '@/Global reference/assets/Logo.jsx';
 import './NavBar.css';
 
 const category = [
@@ -67,9 +68,14 @@ function NavBar() {
         isBordered
         maxWidth='full'
       >
-        <NavbarBrand className='hidden sm:flex'>
-          <Link id='Logo' to='/'>
-            <img src='../Full_Logo.png' alt='Logo' />
+        <NavbarBrand className='flex'>
+          <Link className='logo' to='/'>
+            <Logo />
+          </Link>
+          <Link to='/'>
+            <div className='hidden sm:block font-bold text-heavy-pink uppercase'>
+              Glamour heaven
+            </div>
           </Link>
         </NavbarBrand>
 
