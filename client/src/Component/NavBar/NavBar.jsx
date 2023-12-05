@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import SearchBar from '../SearchBar/SearchBar.jsx';
 import {
   Button,
   Dropdown,
@@ -12,6 +11,7 @@ import {
   NavbarContent,
   NavbarItem,
   Tooltip,
+  Input,
 } from '@nextui-org/react';
 import { Logo } from '@/Global reference/assets/Logo.jsx';
 import './NavBar.css';
@@ -63,24 +63,26 @@ function NavBar() {
   return (
     <>
       <Navbar
-        className='bg-[#ffdfdf]'
+        className='bg-primary-pink'
         isBlurred={false}
         isBordered
         maxWidth='full'
       >
-        <NavbarBrand className='flex'>
-          <Link className='logo' to='/'>
-            <Logo />
-          </Link>
-          <Link to='/'>
-            <div className='hidden sm:block font-bold text-heavy-pink uppercase'>
-              Glamour heaven
-            </div>
-          </Link>
-        </NavbarBrand>
+        <NavbarContent justify='center'>
+          <NavbarBrand>
+            <Link to='/'>
+              <Logo />
+            </Link>
+            <Link to='/'>
+              <div className='hidden sm:block font-bold text-heavy-pink uppercase'>
+                Glamour heaven
+              </div>
+            </Link>
+          </NavbarBrand>
+        </NavbarContent>
 
-        <NavbarContent className='flex gap-8 md:flex gap-4' justify='end'>
-          <NavbarItem>
+        <NavbarContent className='flex gap-2 sm:gap-4' justify='end'>
+          <NavbarItem className='hidden sm:block flex-none'>
             <Dropdown
               offset={-2}
               closeOnSelect={false}
@@ -93,7 +95,10 @@ function NavBar() {
                 onMouseEnter={() => toggleCategory(true)}
                 onMouseLeave={() => toggleCategory(false)}
               >
-                <Button variant='light' radius='none'>
+                <Button
+                  variant='light'
+                  endContent={<div className='fa-solid fa-chevron-down' />}
+                >
                   Danh mục
                 </Button>
               </DropdownTrigger>
@@ -123,11 +128,23 @@ function NavBar() {
             </Dropdown>
           </NavbarItem>
 
-          <NavbarItem>
-            <SearchBar />
+          <NavbarItem className='flex-auto sm:flex-initial'>
+            <Input
+              size='sm'
+              labelPlacement='inside'
+              placeholder='Tìm kiếm'
+              startContent={
+                <div className='fa-solid fa-magnifying-glass text-heavy-pink' />
+              }
+              endContent={
+                <Button className='bg-heavy-pink' radius='sm' size='sm'>
+                  Tìm kiếm
+                </Button>
+              }
+            />
           </NavbarItem>
 
-          <NavbarItem>
+          <NavbarItem className='flex-none'>
             <Tooltip content='Đăng nhập / Đăng ký'>
               <Link to='/userInfo'>
                 <div className='fa-solid fa-circle-user user-icon' />
@@ -135,7 +152,7 @@ function NavBar() {
             </Tooltip>
           </NavbarItem>
 
-          <NavbarItem>
+          <NavbarItem className='flex-none'>
             <Tooltip content='Giỏ hàng'>
               <Link to='/cart'>
                 <div className='fa-solid fa-cart-shopping cart-icon' />
