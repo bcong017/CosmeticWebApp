@@ -1,4 +1,4 @@
-// models/receipt.js
+// models/receipt/receipt.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
@@ -16,6 +16,12 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(50),
     },
   });
+
+  Receipt.associate = (models) => {
+    Receipt.belongsTo(models.Order, {
+      foreignKey: 'order_id',
+    });
+  };
 
   return Receipt;
 };

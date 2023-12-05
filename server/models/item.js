@@ -1,4 +1,4 @@
-// models/item.js
+// models/item/item.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
@@ -7,6 +7,9 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    image_urls: {
+      type: DataTypes.TEXT,
     },
     name: {
       type: DataTypes.STRING(500),
@@ -39,11 +42,23 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    user_rating: {
+      type: DataTypes.DECIMAL(3, 2),
+    },
+    rate_count: {
+      type: DataTypes.INTEGER,
+    },
+    sold_count: {
+      type: DataTypes.INTEGER,
+    },
   });
 
   Item.associate = (models) => {
     Item.belongsTo(models.SaleEvent, {
       foreignKey: 'sale_event_id',
+    });
+    Item.hasMany(models.Comment, {
+      foreignKey: 'item_id',
     });
   };
 

@@ -1,35 +1,29 @@
-const Item = require("../models/item");
 const db = require("../models");
-const { item } = require("../models/item");
-
-// exports.getItemsByCategory = (req, res) => {
-//   const requestCategory = req.params.categoryName;
-//   console.log(requestCategory);
-//   item
-//     .findAll({ where: { category: requestCategory } })
-//     .then((item) => {
-//       res.status(202).json(item);
-//     })
-//     .catch((err) => {
-//       res.status(404).json({
-//         message: "Loi",
-//       });
-//     });
-// };
 
 const getItemsByCategory = async (req, res) => {
   try {
+    const selectedAttributes = ['name', 'price', 'brand'];
     const items = await db.Item.findAll({
+      attributes: selectedAttributes,
       where : {
         category: req.params.categoryName
       }
     });
+
+    const resultedItems = items.map(item => ({
+      name: item.name,
+      price: item.price,
+      brand: item.brand.replace('Thương Hiệu', '').trim()
+    }));
+
     return res.status(202).json({
-      items
+      resultedItems
     })
   } catch (error) {
     return res.status(500).json({error})
   }
 }
+
+
 
 module.exports = {getItemsByCategory}

@@ -123,7 +123,7 @@ function NavBar() {
 
           <NavbarItem>
             <Tooltip content='Đăng nhập / Đăng ký'>
-              <Link to='/'>
+              <Link to='/userInfo'>
                 <div className='fa-solid fa-circle-user user-icon' />
               </Link>
             </Tooltip>

@@ -1,8 +1,8 @@
 const fs = require('fs');
 
 const scraperObject = {
-    url: 'https://hasaki.vn/danh-muc/sua-rua-mat-c19.html',
-    categoryName: 'SuaRuaMat', // Set your default category name here
+    url: 'https://hasaki.vn/danh-muc/phan-nuoc-cushion-c252.html',
+    categoryName: 'PhanNuoc', // Set your default category name here
 
     async scraper(browser, categoryName = this.categoryName) {
         let page = await browser.newPage();
@@ -26,7 +26,19 @@ const scraperObject = {
             await page.goto(link);
 
             // Extract data for each product
+            let imageUrls = await page.$$eval('.thumb_small_detail.elevatezoom-gallery', images => {
+                return images.slice(0, 5).map(img => img.getAttribute('src'));
+            });
+
+            // Handle case where less than 5 images are available
+            while (imageUrls.length < 5) {
+                imageUrls.push(null);
+            }
+
             let dataObj = {
+                // Extracting image URLs
+                imageUrls: await page.$$eval('.content_scoller .thumb_small_detail.elevatezoom-gallery', (imageElements) => {
+                    return imageElements.slice(0, 5).map(imgElement => imgElement.getAttribute('data-zoom-image'));}),
                 productName: (await page.$eval('#head_detail > div.product-info-main > div.product-info-price > div.page-title-wrapper.product > div.page-title.name_detail > h1', h1 => h1.textContent)).trim(),
                 UPC: (await page.$eval('#head_detail > div.product-info-main > div.product-info-price > div.product-brand > span.item-sku.txt_color_1', span => {
                     const rawUPC = span.textContent.trim();
@@ -60,6 +72,11 @@ const scraperObject = {
                 })).join(','),
 
                 quantity: Math.floor(Math.random() * (50 - 20 + 1)) + 20,
+                 // Generate random values for additional information
+                userRating: (Math.random() * (5 - 1) + 1).toFixed(2), // Generates a random decimal between 1 and 5
+                rateCount: Math.floor(Math.random() * (100 - 1 + 1)) + 1, // Generates a random integer between 1 and 100
+                soldCount: Math.floor(Math.random() * (1000 - 100 + 1)) + 100, // Generates a random integer between 100 and 1000
+
                 category: categoryName,
             };
 

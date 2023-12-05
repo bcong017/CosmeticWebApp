@@ -10,7 +10,7 @@ function Footer() {
         </Link>
       </div>
       <div className='footer-about-us'>
-        <Link to='/'>Về chúng tôi</Link>
+        <Link to='/category'>Về chúng tôi</Link>
       </div>
     </div>
   );
