@@ -12,6 +12,8 @@ import {
   NavbarItem,
   Tooltip,
   Input,
+  NavbarMenuToggle,
+  NavbarMenu,
 } from '@nextui-org/react';
 import { Logo } from '@/Global reference/assets/Logo.jsx';
 import './NavBar.css';
@@ -69,6 +71,7 @@ function NavBar() {
         maxWidth='full'
       >
         <NavbarContent justify='center'>
+          <NavbarMenuToggle className='sm:hidden text-heavy-pink' />
           <NavbarBrand>
             <Link to='/'>
               <Logo />
@@ -160,6 +163,9 @@ function NavBar() {
             </Tooltip>
           </NavbarItem>
         </NavbarContent>
+
+        {/* TODO: */}
+        <NavbarMenu>Navbar menu here</NavbarMenu>
       </Navbar>
     </>
   );
