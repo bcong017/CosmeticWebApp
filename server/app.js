@@ -13,9 +13,10 @@ app.use(bodyParser.json());
 const db = require("./models");
 
 /* Import data
-app.use('/data', importDataRoute);
+
 */
 
+app.use('/data', importDataRoute);
 app.use('/categories', categoryRoute);
 app.use('/item', itemRoute);
 app.use('/', userRoute);
@@ -31,3 +32,4 @@ const start = async () => {
 
 start();
 //http://localhost:3000/categories/TayTrang to check category item
+//http://localhost:3000/data/import to import data
