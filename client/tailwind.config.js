@@ -12,6 +12,7 @@ export default {
       colors: {
         "heavy-pink": "#f875aa",
         "section-pink": "#f3cdcdc2",
+        "section-blue": "#aedefc",
       },
     },
   },
