@@ -1,4 +1,4 @@
-// models/orderItem.js
+// models/orderItem/orderItem.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
@@ -20,6 +20,15 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
     },
   });
+
+  OrderItem.associate = (models) => {
+    OrderItem.belongsTo(models.Order, {
+      foreignKey: 'order_id',
+    });
+    OrderItem.belongsTo(models.Item, {
+      foreignKey: 'item_id',
+    });
+  };
 
   return OrderItem;
 };
