@@ -1,10 +1,11 @@
+// controllers/itemController.js
 const db = require("../models");
 
 const getItemById = async (req, res) => {
   try {
     const itemId = req.params.itemId;
 
-    console.log('Item ID:', itemId); // Add this line
+    console.log('Item ID:', itemId);
 
     // Retrieve the item along with its associated comments
     const item = await db.Item.findByPk(itemId, {
@@ -27,9 +28,18 @@ const getItemById = async (req, res) => {
     }
 
     // Format the item data
+    const imageUrlsArray = item.image_urls ? item.image_urls.split('***') : [];
+
+    // Remove URLs containing "promotions"
+    const filteredImageUrls = imageUrlsArray.filter(url => !url.includes("promotions"));
+
+    // Use the modified first image URL
+    const firstImageUrl = filteredImageUrls.length > 0 ? filteredImageUrls[0] : null;
+
     const formattedItem = {
       id: item.id,
       name: item.name,
+      imageURLs: filteredImageUrls, // Include all image URLs without "promotions"
       price: item.price,
       brand: item.brand.replace('Thương Hiệu', '').trim(),
       category: item.category,
@@ -40,9 +50,11 @@ const getItemById = async (req, res) => {
       specifications: item.specifications,
       is_on_sale: item.is_on_sale,
       sale_event_id: item.sale_event_id,
+      user_rating: item.user_rating,
+      rate_count: item.rate_count,
     };
 
-    console.log('Formatted Item:', formattedItem); // Add this line
+    console.log('Formatted Item:', formattedItem);
 
     // Check if the item has comments
     if (item.Comments && item.Comments.length > 0) {
@@ -58,8 +70,7 @@ const getItemById = async (req, res) => {
         },
       }));
 
-      console.log('Formatted Comments:', formattedComments); // Add this line
-
+      console.log('Formatted Comments:', formattedComments);
 
       return res.status(200).json({
         item: formattedItem,
