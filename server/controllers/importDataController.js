@@ -22,7 +22,7 @@ exports.importData = (req, res) => {
     product_information: product.productInfo,
     use_information: product.productUsage,
     specifications: product.productSpecs.join('\n'),
-    image_urls: product.imageUrls.join("_"),
+    image_urls: product.imageUrls.join("***"),
     user_rating: parseFloat(product.userRating),
     rate_count: product.rateCount,
     sold_count: product.soldCount,
