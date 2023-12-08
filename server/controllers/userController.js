@@ -87,4 +87,22 @@ const userRegister = async (req, res) => {
   }
 };
 
+/* Register pattern
+{
+  "username": "test1",
+  "password": "test1",
+  "name": "Test1",
+  "phone_number": 12345,
+  "adress": "HCM"
+
+}
+*/
+
+/* Login pattern
+{
+  "username": "test1",
+  "password": "test1"
+}
+*/
+
 module.exports = { userLogin, userRegister };

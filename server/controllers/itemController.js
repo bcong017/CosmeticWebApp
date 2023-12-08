@@ -88,4 +88,41 @@ const getItemById = async (req, res) => {
   }
 };
 
-module.exports = { getItemById };
+
+const addCommentToItem = async (req, res) => {
+  try {
+      const itemId = req.params.itemId;
+      const { commentText } = req.body;
+
+      // Check if the user is logged in
+      const user = req.user;
+      if (!user) {
+          return res.status(401).json({ error: 'Unauthorized. Please log in to comment.' });
+      }
+
+      // Create the comment in the database with the formatted comment date
+      const comment = await db.Comment.create({
+          item_id: itemId,
+          user_id: user.id,
+          comment_text: commentText,
+          comment_date: new Date().toLocaleString('en-US', { timeZone: 'UTC' }), // Format the comment date
+          // Add other comment properties as needed
+      });
+
+      // Fetch updated comments for the item
+      const itemComment = await getCommentsForItem(itemId, user);
+
+      return res.status(201).json(itemComment);
+  } catch (error) {
+      console.error('Error in addCommentToItem:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+/* Comment pattern
+{
+  "commentText": "This is a test comment."
+}
+*/
+
+module.exports = { getItemById , addCommentToItem};

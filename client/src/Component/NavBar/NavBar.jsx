@@ -15,7 +15,7 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
 } from '@nextui-org/react';
-import { Logo } from '@/Global reference/assets/Logo.jsx';
+import { Logo } from '../../Global_reference/assets/Logo';
 import './NavBar.css';
 
 const category = [
