@@ -7,11 +7,11 @@ import Footer from '@/Component/Footer/Footer.jsx';
 import '@/Global_reference/App.css';
 import UserInfoPage from '@/Pages/UserInfoPage';
 import CategoryPage from '@/Pages/CategoryPage';
-
+import AdminPage from '@/Pages/AdminPage';
 function App() {
   return (
     <div id='app-body'>
-      <NavBar></NavBar>
+      {/* <NavBar></NavBar> */}
 
       <Routes>
         <Route path='/' element={<HomePage />} />
@@ -19,9 +19,10 @@ function App() {
         <Route path='/cart' element={<CartPage />} />
         <Route path='/userInfo' element={<UserInfoPage />} />
         <Route path='/category' element={<CategoryPage />} />
+        <Route path='/admin' element={<AdminPage />} />
       </Routes>
 
-      <Footer></Footer>
+      {/* <Footer></Footer> */}
     </div>
   );
 }

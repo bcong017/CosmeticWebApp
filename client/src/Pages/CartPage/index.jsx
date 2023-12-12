@@ -19,7 +19,7 @@ function CartPage({ amount = 6 }) {
                 width={80}
                 height={80}
               />
-              <div>
+              <div className='self-center'>
                 <div className='ml-5 '>Sữa rửa mặt</div>
                 <div className='ml-5 '>Đơn giá: 11000 VND</div>
                 <div className='ml-5 '>Thành tiền: 100000 VND</div>
