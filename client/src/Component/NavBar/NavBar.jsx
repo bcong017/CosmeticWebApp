@@ -17,6 +17,7 @@ import {
 } from '@nextui-org/react';
 import { Logo } from '../../Global_reference/assets/Logo';
 import './NavBar.css';
+import LoginModal from '../LoginModal';
 
 const category = [
   {
@@ -148,15 +149,11 @@ function NavBar() {
           </NavbarItem>
 
           <NavbarItem className='flex-none'>
-            <Tooltip content='Đăng nhập / Đăng ký'>
-              <Link to='/userInfo'>
-                <div className='fa-solid fa-circle-user user-icon' />
-              </Link>
-            </Tooltip>
+            <LoginModal />
           </NavbarItem>
 
           <NavbarItem className='flex-none'>
-            <Tooltip content='Giỏ hàng'>
+            <Tooltip content='Giỏ hàng' closeDelay={0}>
               <Link to='/cart'>
                 <div className='fa-solid fa-cart-shopping cart-icon' />
               </Link>

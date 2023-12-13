@@ -1,6 +1,203 @@
-import { CheckboxGroup, Checkbox, Input, Button } from '@nextui-org/react';
+import {
+  CheckboxGroup,
+  Checkbox,
+  Input,
+  Button,
+  Pagination,
+} from '@nextui-org/react';
+import { useEffect, useState } from 'react';
 import Card from '@/Component/Card/Card';
-const list = [
+let list1 = [
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+];
+let list2 = [
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://courses.uit.edu.vn/pluginfile.php/1/core_admin/logo/0x200/1695027451/logo-header.png',
+    price: '100.000 VND',
+  },
+];
+let list3 = [
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
+  {
+    itemName: 'Sữa rửa mặt',
+    imgURL:
+      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+    price: '100.000 VND',
+  },
   {
     itemName: 'Sữa rửa mặt',
     imgURL:
@@ -123,6 +320,14 @@ const list = [
   },
 ];
 function CategoryPage() {
+  const [currentPage, setCurrentPage] = useState(1);
+  useEffect(() => {
+    if (currentPage == 1) {
+      list1 = list2;
+    } else {
+      list1 = list3;
+    }
+  }, [currentPage]);
   return (
     <div className='flex flex-row my-5 mx-5'>
       <div className='block mr-10 w-[320px]'>
@@ -174,7 +379,7 @@ function CategoryPage() {
           </span>
         </div>
         <div className='grid grid-cols-5 grid-rows-5 gap-3'>
-          {list.map((item, index) => (
+          {list1.map((item, index) => (
             <Card
               itemName={item.itemName}
               imgURL={item.imgURL}
@@ -183,6 +388,38 @@ function CategoryPage() {
               className='self-center'
             ></Card>
           ))}
+        </div>
+        <div className='flex flex-col gap-5'>
+          <Pagination
+            total={10}
+            color='secondary'
+            page={currentPage}
+            onChange={setCurrentPage}
+            showControls='true'
+            loop='true'
+          />
+          {/* <div className='flex gap-2'>
+            <Button
+              size='sm'
+              variant='flat'
+              color='secondary'
+              onPress={() =>
+                setCurrentIndex((prev) => (prev > 1 ? prev - 1 : prev + 9))
+              }
+            >
+              Previous
+            </Button>
+            <Button
+              size='sm'
+              variant='flat'
+              color='secondary'
+              onPress={() =>
+                setCurrentIndex((prev) => (prev < 10 ? prev + 1 : prev - 9))
+              }
+            >
+              Next
+            </Button>
+          </div> */}
         </div>
       </div>
     </div>

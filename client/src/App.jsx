@@ -11,7 +11,7 @@ import AdminPage from '@/Pages/AdminPage';
 function App() {
   return (
     <div id='app-body'>
-      {/* <NavBar></NavBar> */}
+      <NavBar></NavBar>
 
       <Routes>
         <Route path='/' element={<HomePage />} />
@@ -22,7 +22,7 @@ function App() {
         <Route path='/admin' element={<AdminPage />} />
       </Routes>
 
-      {/* <Footer></Footer> */}
+      <Footer></Footer>
     </div>
   );
 }
