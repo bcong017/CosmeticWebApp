@@ -18,6 +18,7 @@ import {
 import { Logo } from '../../Global_reference/assets/Logo';
 import './NavBar.css';
 import LoginModal from '../LoginModal';
+import UserDropDownMenu from './UserDropDownMenu';
 
 const category = [
   {
@@ -62,6 +63,7 @@ function NavBar() {
   const toggleCategory = (value) => {
     setIsOpenCategory(value);
   };
+  const isUser = true;
 
   return (
     <>
@@ -149,7 +151,7 @@ function NavBar() {
           </NavbarItem>
 
           <NavbarItem className='flex-none'>
-            <LoginModal />
+            {isUser ? <UserDropDownMenu /> : <LoginModal />}
           </NavbarItem>
 
           <NavbarItem className='flex-none'>

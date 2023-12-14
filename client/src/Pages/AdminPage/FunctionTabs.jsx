@@ -8,6 +8,7 @@ function FunctionTabs() {
         aria-label='Options'
         className='inline my-6'
         variant='light'
+        color='primary'
         size='lg'
       >
         <Tab key='1' title='Hàng hóa'>

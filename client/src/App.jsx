@@ -8,6 +8,7 @@ import '@/Global_reference/App.css';
 import UserInfoPage from '@/Pages/UserInfoPage';
 import CategoryPage from '@/Pages/CategoryPage';
 import AdminPage from '@/Pages/AdminPage';
+import UserOrderPage from './Pages/UserOrdersPage';
 function App() {
   return (
     <div id='app-body'>
@@ -20,6 +21,7 @@ function App() {
         <Route path='/userInfo' element={<UserInfoPage />} />
         <Route path='/category' element={<CategoryPage />} />
         <Route path='/admin' element={<AdminPage />} />
+        <Route path='/userOrderPage' element={<UserOrderPage />} />
       </Routes>
 
       <Footer></Footer>

@@ -9,7 +9,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <NextUIProvider>
       <Router>
-        <App />
+        <main className='pinkTheme'>
+          <App />
+        </main>
       </Router>
     </NextUIProvider>
   </React.StrictMode>,
