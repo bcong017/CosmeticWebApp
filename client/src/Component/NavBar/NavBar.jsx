@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Button,
@@ -19,6 +19,7 @@ import { Logo } from '../../Global_reference/assets/Logo';
 import './NavBar.css';
 import LoginModal from '../LoginModal';
 import UserDropDownMenu from './UserDropDownMenu';
+import { Token } from '@/main';
 
 const category = [
   {
@@ -63,8 +64,8 @@ function NavBar() {
   const toggleCategory = (value) => {
     setIsOpenCategory(value);
   };
-  const isUser = true;
-
+  // const isUser = true;
+  const token = useContext(Token);
   return (
     <>
       <Navbar
@@ -151,7 +152,7 @@ function NavBar() {
           </NavbarItem>
 
           <NavbarItem className='flex-none'>
-            {isUser ? <UserDropDownMenu /> : <LoginModal />}
+            {token == 'user' ? <UserDropDownMenu /> : <LoginModal />}
           </NavbarItem>
 
           <NavbarItem className='flex-none'>

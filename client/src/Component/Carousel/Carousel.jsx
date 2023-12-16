@@ -21,39 +21,40 @@ const responsive = {
     items: 1,
   },
 };
-const list = [
-  {
-    itemName: 'Sữa rửa mặt',
-    imgURL:
-      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
-    price: '100.000 VND',
-  },
-  {
-    itemName: 'Sữa rửa mặt',
-    imgURL:
-      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
-    price: '100.000 VND',
-  },
-  {
-    itemName: 'Sữa rửa mặt',
-    imgURL:
-      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
-    price: '100.000 VND',
-  },
-  {
-    itemName: 'Sữa rửa mặt',
-    imgURL:
-      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
-    price: '100.000 VND',
-  },
-  {
-    itemName: 'Sữa rửa mặt',
-    imgURL:
-      'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
-    price: '100.000 VND',
-  },
-];
-function CarouselComponent({ title }) {
+// const list = [
+//   {
+//     itemName: 'Sữa rửa mặt',
+//     imgURL:
+//       'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+//     price: '100.000 VND',
+//   },
+//   {
+//     itemName: 'Sữa rửa mặt',
+//     imgURL:
+//       'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+//     price: '100.000 VND',
+//   },
+//   {
+//     itemName: 'Sữa rửa mặt',
+//     imgURL:
+//       'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+//     price: '100.000 VND',
+//   },
+//   {
+//     itemName: 'Sữa rửa mặt',
+//     imgURL:
+//       'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+//     price: '100.000 VND',
+//   },
+//   {
+//     itemName: 'Sữa rửa mặt',
+//     imgURL:
+//       'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
+//     price: '100.000 VND',
+//   },
+// ];
+
+function CarouselComponent({ title, listOfItem = [] }) {
   return (
     <>
       <div className='item-carousel-container pl-14'>
@@ -65,10 +66,10 @@ function CarouselComponent({ title }) {
           infinite={true}
           autoPlay={true}
         >
-          {list.map((item, index) => (
+          {listOfItem?.map((item, index) => (
             <Card
-              itemName={item.itemName}
-              imgURL={item.imgURL}
+              itemName={item.name}
+              imgURL={item.first_image_url}
               price={item.price}
               key={index}
               className='self-center'

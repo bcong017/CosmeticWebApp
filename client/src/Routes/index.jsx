@@ -24,13 +24,9 @@ export default function Routing() {
           ))}
 
         {token == 'user' &&
-          [...PublicRoutes, ...userPage].map(
-            (route, idx) => (
-              console.log(route.path),
-              console.log(route.element),
-              (<Route key={idx} path={route.path} element={route.element} />)
-            ),
-          )}
+          [...PublicRoutes, ...userPage].map((route, idx) => (
+            <Route key={idx} path={route.path} element={route.element} />
+          ))}
       </Routes>
     </>
   );

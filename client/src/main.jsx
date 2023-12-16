@@ -10,7 +10,7 @@ export const Token = createContext();
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <NextUIProvider>
-      <Token.Provider value='admin'>
+      <Token.Provider value='guest'>
         <Router>
           <main className='pinkTheme'>
             <App />
