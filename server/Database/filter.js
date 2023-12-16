@@ -26,7 +26,7 @@ fs.readFile('almost.json', 'utf8', (err, data) => {
   const filteredData = updatedData.filter(item => (
     (item.imageUrls && item.imageUrls.length > 0) &&
     item.productInfo !== null &&
-    item.productIngredients !== null &&
+    (item.productIngredients !== null && item.productIngredients.trim() !== '' ) &&
     (item.productUsage && item.productUsage.trim() !== '')
   ));
 
