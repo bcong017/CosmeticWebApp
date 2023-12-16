@@ -7,7 +7,7 @@ function CardComponent({ itemName, imgURL, price }) {
       <Card
         shadow='sm'
         onPress={() => console.log('item pressed')}
-        className='my-4'
+        className='my-4 max-w-[240px]'
       >
         <CardBody className='overflow-visible p-0'>
           <Image
@@ -20,8 +20,10 @@ function CardComponent({ itemName, imgURL, price }) {
           />
         </CardBody>
         <CardFooter className='text-small justify-between'>
-          <b>{itemName}:</b>
-          <p className='text-default-500'>{price}</p>
+          <div className=''>
+            <b>{itemName}</b>
+          </div>
+          <p className='ml-2 text-default-500'>{price} vnd</p>
         </CardFooter>
       </Card>
     </Link>
