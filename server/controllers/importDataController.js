@@ -3,7 +3,7 @@ const path = require("path");
 const { Item } = require("../models"); // Assuming you have a Sequelize Item model
 
 exports.importData = (req, res) => {
-  const jsonFilePath = path.join(__dirname, "..", "Database", "almost.json");
+  const jsonFilePath = path.join(__dirname, "..", "Database", "result.json");
 
   // Read the JSON file
   const jsonData = fs.readFileSync(jsonFilePath, "utf8");
@@ -14,7 +14,7 @@ exports.importData = (req, res) => {
 
   Item.bulkCreate(data.map((product) => ({
     name: product.productName,
-    price: parseFloat(product.productPrice[0].replace('₫', '').replace(',', '')),
+    price: parseInt(product.productPrice[0].replace(' ₫', '').replace(',', ''), 10),
     brand: product.productSpecs[1], // assuming brand is present in the second item in productSpecs
     category: product.category,
     ingredients: product.productIngredients,

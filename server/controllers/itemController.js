@@ -1,6 +1,37 @@
 // controllers/itemController.js
 const db = require("../models");
 
+const getCommentsForItem = async (itemId) => {
+  try {
+    const comments = await db.Comment.findAll({
+      where: { item_id: itemId },
+      include: [
+        {
+          model: db.User,
+          attributes: ['id', 'username', 'name'],
+        },
+      ],
+    });
+
+    // Format the comments data
+    const formattedComments = comments.map((comment) => ({
+      id: comment.id,
+      comment_text: comment.comment_text,
+      comment_date: comment.comment_date,
+      user: {
+        id: comment.User.id,
+        username: comment.User.username,
+        name: comment.User.name,
+      },
+    }));
+
+    return formattedComments;
+  } catch (error) {
+    console.error('Error in getCommentsForItem:', error);
+    throw error; // Propagate the error to the caller
+  }
+};
+
 const getItemById = async (req, res) => {
   try {
     const itemId = req.params.itemId;
@@ -88,41 +119,4 @@ const getItemById = async (req, res) => {
   }
 };
 
-
-const addCommentToItem = async (req, res) => {
-  try {
-      const itemId = req.params.itemId;
-      const { commentText } = req.body;
-
-      // Check if the user is logged in
-      const user = req.user;
-      if (!user) {
-          return res.status(401).json({ error: 'Unauthorized. Please log in to comment.' });
-      }
-
-      // Create the comment in the database with the formatted comment date
-      const comment = await db.Comment.create({
-          item_id: itemId,
-          user_id: user.id,
-          comment_text: commentText,
-          comment_date: new Date().toLocaleString('en-US', { timeZone: 'UTC' }), // Format the comment date
-          // Add other comment properties as needed
-      });
-
-      // Fetch updated comments for the item
-      const itemComment = await getCommentsForItem(itemId, user);
-
-      return res.status(201).json(itemComment);
-  } catch (error) {
-      console.error('Error in addCommentToItem:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-/* Comment pattern
-{
-  "commentText": "This is a test comment."
-}
-*/
-
-module.exports = { getItemById , addCommentToItem};
+module.exports = { getCommentsForItem, getItemById };
