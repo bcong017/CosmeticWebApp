@@ -1,15 +1,17 @@
 import '@/Global_reference/App.css';
-import { createContext } from 'react';
 import Routing from './Routes';
-export const Token = createContext();
-
+import { useContext } from 'react';
+import { Token } from './main';
+import NavBar from '@/Component/NavBar/NavBar';
+import Footer from '@/Component/Footer/Footer';
 function App() {
+  const token = useContext(Token);
   return (
-    <Token.Provider value='admin'>
-      <div id='app-body'>
-        <Routing />
-      </div>
-    </Token.Provider>
+    <div id='app-body'>
+      {token != 'admin' && <NavBar />}
+      <Routing />
+      {token != 'admin' && <Footer />}
+    </div>
   );
 }
 

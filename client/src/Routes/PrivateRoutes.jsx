@@ -15,7 +15,7 @@ export const userPage = [
 
 export const adminPage = [
   {
-    path: '/admin',
+    path: '/',
     element: <AdminPage />,
   },
 ];
