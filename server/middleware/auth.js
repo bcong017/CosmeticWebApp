@@ -14,8 +14,7 @@ const authenticateUser = (req, res, next) => {
       }
 
       const decoded = jwt.verify(tokenParts[1], "UserSecretKey");
-      // You might want to attach the decoded user information to the request object
-      // req.user = decoded;
+      // Attach the decoded user information to the request object
       req.user = decoded;
       // Call next to pass control to the next middleware
       next();
@@ -27,7 +26,9 @@ const authenticateUser = (req, res, next) => {
       });
     }
   } else {
-    return res.status(401).json({ error: "Unauthorized. Please log in." });
+    // No token provided
+    req.user = null;
+    next();
   }
 };
 

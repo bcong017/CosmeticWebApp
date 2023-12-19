@@ -94,7 +94,6 @@ const userRegister = async (req, res) => {
   "name": "Test1",
   "phone_number": 12345,
   "adress": "HCM"
-
 }
 */
 
