@@ -72,6 +72,7 @@ function CarouselComponent({ title, listOfItem = [] }) {
               imgURL={item.first_image_url}
               price={item.price}
               key={index}
+              id={item.id}
               className='self-center'
             ></Card>
           ))}

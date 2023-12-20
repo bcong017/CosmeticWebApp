@@ -1,10 +1,24 @@
 import { useRef } from 'react';
 import { Button } from '@nextui-org/react';
 import { Tabs, Tab, Card, CardBody } from '@nextui-org/react';
+import { useLocation } from 'react-router-dom';
 import './style.css';
+import GetItem from '@/Api_Call/GetItem';
+import { useEffect, useState } from 'react';
+function ItemPage() {
+  let [itemInfo, setItemInfo] = useState({});
 
-function ItemPage({ amount = 4 }) {
   const imgRef = useRef();
+  const location = useLocation();
+
+  async function getItem() {
+    const item = await GetItem(location.pathname);
+    setItemInfo(item);
+  }
+  useEffect(() => {
+    getItem();
+  }, []);
+
   // const itemDetailTabsRef = useRef();
 
   // const [activeIndex, setActiveIndex] = useState(0);
@@ -19,92 +33,61 @@ function ItemPage({ amount = 4 }) {
   //     }
   //   }
   // }, [activeIndex]);
+  // let quantityOpt = [];
+  function createQuantity() {
+    let quantity = [];
+    let amount = itemInfo?.item?.quantity;
+    if (amount >= 10) {
+      amount = 10;
+    }
+
+    for (let i = 0; i < amount; i++) {
+      quantity.push(
+        <option key={i} value={i + 1}>
+          {i + 1}
+        </option>,
+      );
+    }
+
+    return quantity;
+  }
 
   return (
     <div className='block'>
       <div className='item-media-side-detail-block'>
         <div className='media'>
-          <img
-            src='https://media.hcdn.vn/catalog/product/g/o/google-shopping-dau-tay-trang-shu-uemura-lam-sang-da-150ml-1663665269_img_358x358_843626_fit_center.jpg'
-            alt=''
-            ref={imgRef}
-          />
+          <img src={itemInfo?.item?.imageURLs[0]} alt='' ref={imgRef} />
+
           <ul>
-            <li>
-              <img
-                className='variant-item-thumbnail'
-                src='https://media.hcdn.vn/catalog/product/g/o/google-shopping-dau-tay-trang-shu-uemura-lam-sang-da-150ml-1663665269_img_80x80_d200c5_fit_center.jpg'
-                alt=''
-                onClick={(e) => {
-                  imgRef.current.src = e.target.getAttribute('data-realimage');
-                }}
-                data-realimage='https://media.hcdn.vn/catalog/product/g/o/google-shopping-dau-tay-trang-shu-uemura-lam-sang-da-150ml-1663665269_img_358x358_843626_fit_center.jpg'
-              />
-            </li>
-            <li>
-              <img
-                className='variant-item-thumbnail'
-                src='https://media.hcdn.vn/catalog/product/t/e/tem-phu_100230044-1665741575_img_80x80_d200c5_fit_center.jpg'
-                alt=''
-                onClick={(e) => {
-                  imgRef.current.src = e.target.getAttribute('data-realimage');
-                }}
-                data-realimage='https://media.hcdn.vn/catalog/product/t/e/tem-phu_100230044-1665741575_img_358x358_843626_fit_center.jpg'
-              />
-            </li>
-            <li>
-              <img
-                className='variant-item-thumbnail'
-                src='https://media.hcdn.vn/catalog/product/d/a/dau-tay-trang-shu-uemura-lam-sang-da-150ml-1-1663665270_img_80x80_d200c5_fit_center.jpg'
-                alt=''
-                onClick={(e) => {
-                  imgRef.current.src = e.target.getAttribute('data-realimage');
-                }}
-                data-realimage='https://media.hcdn.vn/catalog/product/d/a/dau-tay-trang-shu-uemura-lam-sang-da-150ml-1-1663665270_img_358x358_843626_fit_center.jpg'
-              />
-            </li>
-            <li>
-              <img
-                className='variant-item-thumbnail'
-                src='https://media.hcdn.vn/catalog/product/d/a/dau-tay-trang-shu-uemura-lam-sang-da-150ml-2-1663665270_img_80x80_d200c5_fit_center.jpg'
-                alt=''
-                onClick={(e) => {
-                  imgRef.current.src = e.target.getAttribute('data-realimage');
-                }}
-                data-realimage='https://media.hcdn.vn/catalog/product/d/a/dau-tay-trang-shu-uemura-lam-sang-da-150ml-2-1663665270_img_358x358_843626_fit_center.jpg'
-              />
-            </li>
-            <li>
-              <img
-                className='variant-item-thumbnail'
-                src='https://media.hcdn.vn/catalog/product/d/a/dau-tay-trang-shu-uemura-lam-sang-da-150ml-3-1663665271_img_80x80_d200c5_fit_center.jpg'
-                alt=''
-                onClick={(e) => {
-                  imgRef.current.src = e.target.getAttribute('data-realimage');
-                }}
-                data-realimage='https://media.hcdn.vn/catalog/product/d/a/dau-tay-trang-shu-uemura-lam-sang-da-150ml-3-1663665271_img_358x358_843626_fit_center.jpg'
-              />
-            </li>
+            {itemInfo?.item?.imageURLs.map((url, index) => {
+              return (
+                <li key={index}>
+                  <img
+                    className='variant-item-thumbnail'
+                    src={url}
+                    alt=''
+                    onClick={(e) => {
+                      imgRef.current.src = e.target.src;
+                    }}
+                  />
+                </li>
+              );
+            })}
           </ul>
         </div>
         <div className='item-info'>
-          <h1 className='font-bold font text-2xl'>
-            Dầu Tẩy Trang Shu Uemura Làm Sạch & Se Lỗ Chân Lông 150ml
-          </h1>
-          <h2 className='font-bold font text-1xl '>
-            Porefinist Anti-Shine Fresh Cleansing Oil
-          </h2>
-          <h3 className='price'>Giá: 1000 VND</h3>
+          <h1 className='font-bold font text-2xl'>{itemInfo?.item?.name}</h1>
+
+          <h3 className='price'>Giá: {itemInfo?.item?.price} VND</h3>
           <div className='amount-block'>
             <label htmlFor='item-amount'>Số lượng:</label>
             <select name='item-amount' id='item-amount'>
-              <option value='1'>1</option>
-              <option value='2'>2</option>
-              <option value='3'>3</option>
-              <option value='4'>4</option>
+              {createQuantity()}
             </select>
-            {amount <= 6 && (
-              <p className='amount-remaining'>Chỉ còn {amount} sản phẩm!</p>
+            {itemInfo?.item?.quantity <= 6 && (
+              <p className='amount-remaining'>
+                Chỉ còn {itemInfo?.item?.quantity} sản phẩm!
+              </p>
             )}
           </div>
           <Button
@@ -125,14 +108,12 @@ function ItemPage({ amount = 4 }) {
             className='inline bg-section-pink'
             variant='light'
             size='lg'
+            color='primary'
           >
             <Tab key='item-info' title='Thông tin sản phẩm'>
               <Card>
                 <CardBody className='bg-heavy-pink text-yellow-50'>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
+                  {itemInfo?.item?.product_information}
                 </CardBody>
               </Card>
             </Tab>
@@ -163,11 +144,23 @@ function ItemPage({ amount = 4 }) {
               </Card>
             </Tab>
             <Tab key='item-rating' title='Đánh giá'>
-              <Card>
-                <CardBody className='bg-heavy-pink text-yellow-50'>
-                  Excepteur sint occaecat cupidatat non proident, sunt in culpa
-                  qui officia deserunt mollit anim id est laborum.
-                </CardBody>
+              <Card className='bg-heavy-pink text-yellow-50'>
+                {itemInfo.comments == null ? (
+                  <CardBody>
+                    <div className='flex justify-center items-center'>
+                      Sản phẩm chưa có bình luận.
+                    </div>
+                  </CardBody>
+                ) : (
+                  <CardBody className=' flex flex-col gap-4 overflow-hidden '>
+                    {itemInfo?.comments?.map((comment, index) => (
+                      <div key={index} className=' border-2 rounded p-2'>
+                        <div className='font-bold'>{comment.user.name}</div>
+                        <div>{comment.comment_text}</div>
+                      </div>
+                    ))}
+                  </CardBody>
+                )}
               </Card>
             </Tab>
           </Tabs>

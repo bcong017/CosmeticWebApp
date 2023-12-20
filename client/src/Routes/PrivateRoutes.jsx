@@ -1,6 +1,7 @@
 import UserInfoPage from '@/Pages/UserInfoPage';
 import AdminPage from '@/Pages/AdminPage';
 import UserOrderPage from '@/Pages/UserOrdersPage';
+import CartPage from '@/Pages/CartPage';
 
 export const userPage = [
   {
@@ -10,6 +11,10 @@ export const userPage = [
   {
     path: '/userOrderPage',
     element: <UserOrderPage />,
+  },
+  {
+    path: '/cart',
+    element: <CartPage />,
   },
 ];
 

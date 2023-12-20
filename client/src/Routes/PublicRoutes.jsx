@@ -1,5 +1,4 @@
 import ItemPage from '@/Pages/ItemPage';
-import CartPage from '@/Pages/CartPage';
 import CategoryPage from '@/Pages/CategoryPage';
 import HomePage from '@/Pages/HomePage';
 
@@ -9,13 +8,10 @@ const contentRoute = [
     element: <HomePage />,
   },
   {
-    path: '/item',
+    path: '/item/:id',
     element: <ItemPage />,
   },
-  {
-    path: '/cart',
-    element: <CartPage />,
-  },
+
   {
     path: '/category',
     element: <CategoryPage />,

@@ -1,18 +1,18 @@
 import Carousel from '@/Component/Carousel/Carousel';
 import './style.css';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
+import GetHomePageInfo from '@/Api_Call/GetHomePageInfo';
 
 function HomePage() {
   let [ItemList, setItemList] = useState([]);
+  async function getItemList() {
+    const items = await GetHomePageInfo();
+    setItemList(items);
+  }
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/`)
-      .then((res) => {
-        setItemList(res.data ?? []);
-      })
-      .catch((error) => console.log(error));
+    getItemList();
   }, []);
+
   return (
     <div>
       <Carousel
