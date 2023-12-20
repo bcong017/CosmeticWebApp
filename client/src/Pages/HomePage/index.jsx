@@ -1,12 +1,20 @@
 import Carousel from '@/Component/Carousel/Carousel';
 import './style.css';
 import { useEffect, useState } from 'react';
-import GetHomePageInfo from '@/Api_Call/GetHomePageInfo';
 
+import common from '@/Api_Call/common';
 function HomePage() {
   let [ItemList, setItemList] = useState([]);
   async function getItemList() {
-    const items = await GetHomePageInfo();
+    const items = await common
+      .getItems()
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     setItemList(items);
   }
   useEffect(() => {
