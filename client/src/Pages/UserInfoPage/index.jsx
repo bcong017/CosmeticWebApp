@@ -1,8 +1,6 @@
 import './style.css';
-import { Avatar } from '@nextui-org/react';
-import { Input } from '@nextui-org/react';
-import { RadioGroup, Radio } from '@nextui-org/react';
-import { Button } from '@nextui-org/react';
+
+import { RadioGroup, Radio, Input, Button, Avatar } from '@nextui-org/react';
 
 function UserInfoPage() {
   return (
@@ -23,18 +21,14 @@ function UserInfoPage() {
                 placeholder=''
                 className='font-semibold'
               />
-              <div className=''>
-                <form>
-                  <Input
-                    key='birthday'
-                    type='date'
-                    label='Ngày sinh:'
-                    labelPlacement='outside-left'
-                    placeholder=''
-                    className='mt-10 font-semibold'
-                  />
-                </form>
-              </div>
+              <Input
+                key='birthday'
+                type='date'
+                label='Ngày sinh:'
+                labelPlacement='outside-left'
+                placeholder=''
+                className='mt-10 font-semibold'
+              />
               <div className='flex mt-10'>
                 <div className='mr-5 font-semibold'>Giới tính: </div>
                 <RadioGroup color='secondary' label='' orientation='horizontal'>

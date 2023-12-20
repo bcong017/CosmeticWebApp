@@ -7,7 +7,7 @@ import NotFoundPage from '@/Pages/NotFoundPage';
 import { Token } from '@/main';
 export default function Routing() {
   const token = useContext(Token);
-  console.log(token);
+
   return (
     <>
       <Routes>

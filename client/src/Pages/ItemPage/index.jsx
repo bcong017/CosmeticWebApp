@@ -1,12 +1,13 @@
-import { useRef } from 'react';
-import { Button } from '@nextui-org/react';
-import { Tabs, Tab, Card, CardBody } from '@nextui-org/react';
+import { Tabs, Tab, Card, CardBody, Input, Button } from '@nextui-org/react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import './style.css';
+import { Token } from '@/main';
 import GetItem from '@/Api_Call/GetItem';
-import { useEffect, useState } from 'react';
+
 function ItemPage() {
   let [itemInfo, setItemInfo] = useState({});
+  const token = useContext(Token);
 
   const imgRef = useRef();
   const location = useLocation();
@@ -19,21 +20,6 @@ function ItemPage() {
     getItem();
   }, []);
 
-  // const itemDetailTabsRef = useRef();
-
-  // const [activeIndex, setActiveIndex] = useState(0);
-
-  // useEffect(() => {
-  //   for (let i = 0; i < 5; i++) {
-  //     if (i != activeIndex) {
-  //       itemDetailTabsRef.current.childNodes[i].className = 'item-detail-tab';
-  //     } else {
-  //       itemDetailTabsRef.current.childNodes[i].className =
-  //         'item-detail-tab active-color';
-  //     }
-  //   }
-  // }, [activeIndex]);
-  // let quantityOpt = [];
   function createQuantity() {
     let quantity = [];
     let amount = itemInfo?.item?.quantity;
@@ -143,9 +129,30 @@ function ItemPage() {
                 </CardBody>
               </Card>
             </Tab>
-            <Tab key='item-rating' title='Đánh giá'>
-              <Card className='bg-heavy-pink text-yellow-50'>
-                {itemInfo.comments == null ? (
+            <Tab key='item-comment' title='Bình luận'>
+              <Card className='bg-heavy-pink text-yellow-50 pt-5 px-4'>
+                {token != 'user' ? (
+                  <CardBody>
+                    <div className='flex justify-center items-center'>
+                      Hãy đăng nhập để bình luận.
+                    </div>
+                  </CardBody>
+                ) : (
+                  <div className='flex flex-col gap-3'>
+                    <div>Bình luận của bạn:</div>
+                    <Input
+                      key='name'
+                      type='text'
+                      placeholder='Nhập bình luận...'
+                      className='font-semibold'
+                    />
+                    <Button className='font-semibold ' disableRipple='true'>
+                      Đăng bình luận
+                    </Button>
+                  </div>
+                )}
+                {Array.isArray(itemInfo?.comments) == false ||
+                itemInfo?.comments.length == 0 ? (
                   <CardBody>
                     <div className='flex justify-center items-center'>
                       Sản phẩm chưa có bình luận.
