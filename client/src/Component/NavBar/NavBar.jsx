@@ -75,7 +75,6 @@ function NavBar() {
         maxWidth='full'
       >
         <NavbarContent justify='center'>
-          <NavbarMenuToggle className='sm:hidden text-heavy-pink' />
           <NavbarBrand>
             <Link to='/'>
               <Logo />
