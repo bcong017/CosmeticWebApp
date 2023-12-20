@@ -21,7 +21,7 @@ const app = express();
 app.use(
   cors({
     // Apply the cors middleware globally
-    origin: "http://localhost:3000", // Replace with your front-end URL
+    origin: "http://localhost:5173", // Replace with your front-end URL
     credentials: true,
   })
 );
@@ -93,15 +93,15 @@ app.use("/data", importDataRoute);
 app.use("/categories", categoryRoute);
 /**
  * This is for category functions:
- * 1. Get items in category 
+ * 1. Get items in category
  *  GET
  *  http://localhost:3000/categories/:categoryName
  *  for example:
  *   http://localhost:3000/categories/TayTrang (send all item in category TayTrang)
- * 
+ *
  * 2. Filter items for each category options (need to test later)
  * Note: Come with filter options
- * 
+ *
  */
 
 app.use("/item", itemRoute);
@@ -126,13 +126,13 @@ app.use("/comment", commentRoute);
  *  {
  *    "commentText": "This is a test comment."
  *   }
- * 
+ *
  * 2. Delete
  *  DELETE
  *   http://localhost:3000/comment/delete/:commentId
  *   for example:
  *   http://localhost:3000/comment/delete/1 (to delete comment has commentId = 1)
- * 
+ *
  * 3. Edit
  *  PUT
  *   http://localhost:3000/comment/edit/:commentId
@@ -163,7 +163,7 @@ app.use("/", userRoute);
  *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInVzZXJuYW1lIjoidGVzdDIiLCJpYXQiOjE3MDI5NzEyODMsImV4cCI6MTcwMjk3NDg4M30.6lFLfFZqQygwiQFZ_ohB4HKw_y0NGrP51s6woBFAYLE"
  *  }
  *  This token will expired 1h and will random
- * 
+ *
  * 2. Login
  *  POST
  *  http://localhost:3000/login
@@ -175,7 +175,7 @@ app.use("/", userRoute);
  *  and will send the token look like this:
  *  {
  *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInVzZXJuYW1lIjoidGVzdDIiLCJpYXQiOjE3MDI5NzEzNDYsImV4cCI6MTcwMjk3NDk0Nn0.Zz8uGWTVBYazT9CJH46RvCLsxUt8eqtuBc-AydSPH98"
- *   "role": "user" 
+ *   "role": "user"
  * }
  *  This token will expired 1h and will random
  */
