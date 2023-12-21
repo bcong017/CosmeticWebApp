@@ -12,7 +12,6 @@ import {
   NavbarItem,
   Tooltip,
   Input,
-  NavbarMenuToggle,
   NavbarMenu,
 } from '@nextui-org/react';
 import { Logo } from '../../Global_reference/assets/Logo';
@@ -20,15 +19,12 @@ import './NavBar.css';
 import LoginModal from '../LoginModal';
 import UserDropDownMenu from './UserDropDownMenu';
 import { Token } from '@/main';
-
+import { CAT } from '@/Global_reference/variables';
 const category = [
   {
     title: 'Chăm sóc da mặt',
     children: {
       faceRemover: 'Tẩy trang mặt',
-      cleanser: 'Sữa rửa mặt',
-      exfoliating: 'Tẩy tế bào chết',
-      lipBalm: 'Dưỡng môi',
     },
   },
   {
@@ -42,29 +38,40 @@ const category = [
   {
     title: 'Chăm sóc tóc và da đầu',
     children: {
-      shampoo: 'Dầu gội',
       conditioner: 'Dầu xả',
-      hairCare: 'Dưỡng tóc',
     },
   },
   {
     title: 'Nước hoa',
     children: {
-      women: 'Nước hoa nữ',
-      men: 'Nước hoa nam',
       fullBody: 'Xịt thơm toàn thân',
       intimate: 'Nước hoa vùng kín',
     },
   },
 ];
+// export const CAT = {
+//   tt: 'TayTrang',
+//   kl: 'KemLot',
+//   kn: 'KemNen',
+//   pn: 'PhanNuoc',
+//   dx: 'DauXa',
+//   tth: 'ToanThan',
+//   vk: 'VungKin',
+// };
 
 function NavBar() {
+  const valuesOfCAT = Object.values(CAT);
+  let currentIndex = 0;
   const [isOpenCategory, setIsOpenCategory] = useState(false);
-
+  function getCurrentCAT() {
+    let res = valuesOfCAT[currentIndex];
+    currentIndex++;
+    return res;
+  }
   const toggleCategory = (value) => {
     setIsOpenCategory(value);
   };
-  // const isUser = true;
+
   const token = useContext(Token);
   return (
     <>
@@ -123,7 +130,9 @@ function NavBar() {
                       <DropdownMenu disallowEmptySelection variant='light'>
                         {Object.keys(el.children).map((key) => (
                           <DropdownItem key={key}>
-                            <Link to='/test'>{el.children[key]}</Link>
+                            <Link to={`/categories/${getCurrentCAT()}`}>
+                              {el.children[key]}
+                            </Link>
                           </DropdownItem>
                         ))}
                       </DropdownMenu>

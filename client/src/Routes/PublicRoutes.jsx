@@ -13,7 +13,7 @@ const contentRoute = [
   },
 
   {
-    path: '/category',
+    path: '/categories/:name',
     element: <CategoryPage />,
   },
 ];

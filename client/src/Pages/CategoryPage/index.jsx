@@ -6,7 +6,9 @@ import {
   Pagination,
 } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Card from '@/Component/Card/Card';
+import categories from '@/Api_Call/categories';
 let list1 = [
   {
     itemName: 'Sữa rửa mặt',
@@ -320,7 +322,61 @@ let list3 = [
   },
 ];
 function CategoryPage() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const location = useLocation();
+  let [ItemsInfo, setItemsInfo] = useState({});
+
+  let arrayOfPages = [];
+  async function getItemList() {
+    const items = await categories
+      .getItems(location.pathname)
+      .then((res) => {
+        console.log(res.data);
+        return res.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // console.log(items);
+
+    // setItemsInfo(items);
+    // console.log(ItemsInfo);
+
+    // generatePages(items);
+    console.log(arrayOfPages);
+  }
+  function generatePages(items) {
+    let amountOfItems = items?.resultedItems?.length;
+
+    if (amountOfItems == undefined) return;
+
+    while (amountOfItems - 25 > 0) {
+      let page = [];
+      if (amountOfItems >= 25) {
+        for (let i = 0; i < 25; i++) {
+          page.push(items?.resultedItems?.[i]);
+        }
+      } else {
+        for (let i = 0; i < amountOfItems; i++) {
+          page.push(items?.resultedItems?.[i]);
+        }
+      }
+      arrayOfPages.push(page);
+      amountOfItems -= 25;
+    }
+    let page = [];
+    for (let i = 0; i < amountOfItems; i++) {
+      page.push(ItemsInfo?.resultedItems?.[i]);
+    }
+    arrayOfPages.push(page);
+  }
+  useEffect(() => {
+    getItemList();
+    // console.log(ItemsInfo?.resultedItems?.[0]);
+    // generatePages();
+  }, []);
+
   useEffect(() => {
     if (currentPage == 1) {
       list1 = list2;

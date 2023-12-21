@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import common from '@/Api_Call/common';
 function HomePage() {
-  let [ItemList, setItemList] = useState([]);
+  let [ItemList, setItemList] = useState({});
   async function getItemList() {
     const items = await common
       .getItems()
