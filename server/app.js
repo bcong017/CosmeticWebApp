@@ -14,6 +14,7 @@ const homeRoute = require("./routes/homeRoute");
 const commentRoute = require("./routes/commentRoute");
 const searchRoute = require("./routes/searchRoute");
 const cartRoute = require("./routes/cartRoute");
+const eventRoute = require("./routes/saleEventRoute");
 
 const app = express();
 
@@ -29,6 +30,44 @@ app.use(
 app.use(bodyParser.json());
 
 const db = require("./models");
+
+app.use("/", userRoute);
+/**
+ * This is for user functions:
+ * 1. Register
+ *  POST
+ *  http://localhost:3000/register
+ *  Need data in JSON:
+ *   {
+ *     "username": "test1",
+ *     "password": "test1",
+ *     "name": "Test1",
+ *     "phone_number": 12345,
+ *     "adress": "HCM"
+ *   }
+ *  and will send the token look like this:
+ *  {
+ *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInVzZXJuYW1lIjoidGVzdDIiLCJpYXQiOjE3MDI5NzEyODMsImV4cCI6MTcwMjk3NDg4M30.6lFLfFZqQygwiQFZ_ohB4HKw_y0NGrP51s6woBFAYLE"
+ *  }
+ *  This token will expired 1h and will random
+ * 
+ * 2. Login
+ *  POST
+ *  http://localhost:3000/login
+ *  Need data in JSON:
+ *   {
+ *     "username": "test1",
+ *     "password": "test1"
+ *   }
+ *  and will send the token look like this:
+ *  {
+ *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInVzZXJuYW1lIjoidGVzdDIiLCJpYXQiOjE3MDI5NzEzNDYsImV4cCI6MTcwMjk3NDk0Nn0.Zz8uGWTVBYazT9CJH46RvCLsxUt8eqtuBc-AydSPH98"
+ *   "role": "user" 
+ * }
+ *  This token will expired 1h and will random
+ */
+
+app.use("/admin", adminRoute);
 
 app.use(searchRoute);
 /**
@@ -98,8 +137,13 @@ app.use("/categories", categoryRoute);
  *  http://localhost:3000/categories/:categoryName
  *  for example:
  *   http://localhost:3000/categories/TayTrang (send all item in category TayTrang)
+<<<<<<< HEAD
+ * 
+ * 2. Filter items for each category options
+=======
  *
  * 2. Filter items for each category options (need to test later)
+>>>>>>> da20a92b2ceb3c07ff7678bafeb32c5facdbf379
  * Note: Come with filter options
  *
  */
@@ -144,6 +188,9 @@ app.use("/comment", commentRoute);
  *   }
  */
 
+<<<<<<< HEAD
+app.use("/event", eventRoute);
+=======
 app.use("/", userRoute);
 /**
  * This is for user functions:
@@ -179,10 +226,11 @@ app.use("/", userRoute);
  * }
  *  This token will expired 1h and will random
  */
+>>>>>>> da20a92b2ceb3c07ff7678bafeb32c5facdbf379
 
 const start = async () => {
-  //await db.sequelize.sync();
-  await db.sequelize.authenticate();
+  await db.sequelize.sync();
+  //await db.sequelize.authenticate();
   console.log("Kết nối xong");
   app.listen(3000, () => {
     console.log("Đang nghe ở port 3000");

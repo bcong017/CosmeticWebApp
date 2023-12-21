@@ -17,6 +17,11 @@ const userLogin = async (req, res) => {
       });
   
       if (user) {
+
+        // Check if the user is deactivated
+        if (user.is_active == 0) {
+          return res.status(401).json({ message: 'User is deactivated. Cannot log in.' });
+        }
         // Check user password
         const isPasswordValid = await bcrypt.compare(password, user.password);
   
@@ -87,21 +92,29 @@ const userRegister = async (req, res) => {
   }
 };
 
-/* Register pattern
-{
-  "username": "test1",
-  "password": "test1",
-  "name": "Test1",
-  "phone_number": 12345,
-  "adress": "HCM"
-}
-*/
+// controllers/userController.js
+const selfDeactivateUser = async (req, res) => {
+  try {
+    const userId = req.user.userId; // Assuming userId is the correct attribute for the user's ID
 
-/* Login pattern
-{
-  "username": "test1",
-  "password": "test1"
-}
-*/
+    // Check if the user is deactivated
+    const user = await db.User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
 
-module.exports = { userLogin, userRegister };
+    if (user.is_active == 0) {
+      return res.status(401).json({ message: 'User is already deactivated.' });
+    }
+
+    // Deactivate the user
+    await db.User.update({ is_active: 0 }, { where: { id: userId } });
+
+    return res.status(200).json({ message: 'User deactivated successfully' });
+  } catch (error) {
+    console.error('Error deactivating user:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+module.exports = { userLogin, userRegister, selfDeactivateUser };
