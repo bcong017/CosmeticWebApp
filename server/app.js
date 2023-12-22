@@ -75,6 +75,10 @@ app.use(searchRoute);
  * This is to return data of search item
  * http://localhost:3000/search?searchTerm= [nameToSearch]
  * for example http://localhost:3000/search?searchTerm=Phấn to search all Item stat with Phấn
+ * if want to use order
+ * http://localhost:3000/search?searchTerm=Phấn&order=HTL for order from High to Low price (default is Low to High)
+ * if want to use page
+ * http://localhost:3000/search?searchTerm=Phấn&order=HTL&page=1 to go to page 1
  */
 
 app.use(homeRoute);
@@ -138,9 +142,26 @@ app.use("/categories", categoryRoute);
  *  for example:
  *   http://localhost:3000/categories/TayTrang (send all item in category TayTrang)
  * 
+ * for order price
+ * http://localhost:3000/categories/TayTrang?order=HTL for order from High to Low (default is Low to High)
+ * 
+ * for pagination
+ * http://localhost:3000/categories/TayTrang?order=HTL&page=1 for page 1
+ * 
  * 2. Filter items for each category options
  * Note: Come with filter options
- *
+ * http://localhost:3000/categories/TayTrang/filter-items?country=Pháp to filter country
+ * Options:
+ *  1. productionPlaces
+ *  2. country
+ *  3. minPrice and maxPrice
+ *  4. brand
+ *  if has more than 1 filter options
+ *   http://localhost:3000/categories/TayTrang/filter-items?productionPlaces=China&country=Pháp to filter productionPlaces and country
+ *  if want to filter order price
+ *  http://localhost:3000/categories/TayTrang/filter-items?productionPlaces=China&country=Pháp&order=HTL for filter price from High to Low
+ *  for pagination
+ * http://localhost:3000/categories/TayTrang/filter-items?productionPlaces=China&country=Pháp&page=1
  */
 
 app.use("/item", itemRoute);
@@ -222,8 +243,8 @@ app.use("/", userRoute);
  */
 
 const start = async () => {
-  await db.sequelize.sync();
-  //await db.sequelize.authenticate();
+  //await db.sequelize.sync();
+  await db.sequelize.authenticate();
   console.log("Kết nối xong");
   app.listen(3000, () => {
     console.log("Đang nghe ở port 3000");
