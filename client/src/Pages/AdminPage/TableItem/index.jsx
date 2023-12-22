@@ -6,46 +6,41 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Input,
   Button,
   DropdownTrigger,
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  Chip,
-  User,
   Pagination,
 } from '@nextui-org/react';
-import { PlusIcon } from './PlusIcon';
+
 import { VerticalDotsIcon } from './VerticalDotsIcon';
-import { SearchIcon } from './SearchIcon';
+
 import { ChevronDownIcon } from './ChevronDownIcon';
 import { columns, users } from './data';
 import { capitalize } from './utils';
+import AddItemModal from './AddItemModal';
 
-// const statusColorMap = {
-//   active: 'success',
-//   paused: 'danger',
-//   vacation: 'warning',
-// };
-
-const INITIAL_VISIBLE_COLUMNS = ['id', 'iid', 'name', 'price', 'actions'];
+const INITIAL_VISIBLE_COLUMNS = [
+  'id',
+  'iid',
+  'name',
+  'price',
+  'amount',
+  'actions',
+];
 
 export default function TableItem() {
-  const [filterValue, setFilterValue] = React.useState('');
-  // const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(
     new Set(INITIAL_VISIBLE_COLUMNS),
   );
-  // const [statusFilter, setStatusFilter] = React.useState('all');
+
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: 'age',
+    column: 'amount',
     direction: 'ascending',
   });
   const [page, setPage] = React.useState(1);
-
-  const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = React.useMemo(() => {
     if (visibleColumns === 'all') return columns;
@@ -55,35 +50,14 @@ export default function TableItem() {
     );
   }, [visibleColumns]);
 
-  const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...users];
-
-    if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase()),
-      );
-    }
-    // if (
-    //   statusFilter !== 'all' &&
-    //   Array.from(statusFilter).length !== statusOptions.length
-    // ) {
-    //   filteredUsers = filteredUsers.filter((user) =>
-    //     Array.from(statusFilter).includes(user.status),
-    //   );
-    // }
-
-    return filteredUsers;
-    // }, [users, filterValue, statusFilter]);
-  }, [users, filterValue]);
-
-  const pages = Math.ceil(filteredItems.length / rowsPerPage);
+  const pages = Math.ceil([...users].length / rowsPerPage);
 
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return filteredItems.slice(start, end);
-  }, [page, filteredItems, rowsPerPage]);
+    return [...users].slice(start, end);
+  }, [page, rowsPerPage]);
 
   const sortedItems = React.useMemo(() => {
     return [...items].sort((a, b) => {
@@ -109,7 +83,7 @@ export default function TableItem() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu>
-                <DropdownItem>Xem chi tiết</DropdownItem>
+                {/* <DropdownItem>Xem chi tiết</DropdownItem> */}
                 <DropdownItem>Xóa</DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -120,103 +94,40 @@ export default function TableItem() {
     }
   }, []);
 
-  // const onNextPage = React.useCallback(() => {
-  //   if (page < pages) {
-  //     setPage(page + 1);
-  //   }
-  // }, [page, pages]);
-
-  // const onPreviousPage = React.useCallback(() => {
-  //   if (page > 1) {
-  //     setPage(page - 1);
-  //   }
-  // }, [page]);
-
   const onRowsPerPageChange = React.useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
-    setPage(1);
-  }, []);
-
-  const onSearchChange = React.useCallback((value) => {
-    if (value) {
-      setFilterValue(value);
-      setPage(1);
-    } else {
-      setFilterValue('');
-    }
-  }, []);
-
-  const onClear = React.useCallback(() => {
-    setFilterValue('');
     setPage(1);
   }, []);
 
   const topContent = React.useMemo(() => {
     return (
       <div className='flex flex-col gap-4'>
-        <div className='flex justify-between gap-3 items-end'>
-          <Input
-            isClearable
-            className='w-full sm:max-w-[44%]'
-            placeholder='Tìm theo tên sản phẩm...'
-            startContent={<SearchIcon />}
-            value={filterValue}
-            onClear={() => onClear()}
-            onValueChange={onSearchChange}
-          />
-          <div className='flex gap-3'>
-            {/* <Dropdown>
-              <DropdownTrigger className='hidden sm:flex'>
-                <Button
-                  endContent={<ChevronDownIcon className='text-small' />}
-                  variant='flat'
-                >
-                  Status
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label='Table Columns'
-                closeOnSelect={false}
-                selectedKeys={statusFilter}
-                selectionMode='multiple'
-                onSelectionChange={setStatusFilter}
+        <div className='flex justify-between '>
+          <AddItemModal />
+          <Dropdown>
+            <DropdownTrigger className='hidden sm:flex'>
+              <Button
+                endContent={<ChevronDownIcon className='text-small' />}
+                variant='flat'
               >
-                {statusOptions.map((status) => (
-                  <DropdownItem key={status.uid} className='capitalize'>
-                    {capitalize(status.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown> */}
-            <Dropdown>
-              <DropdownTrigger className='hidden sm:flex'>
-                <Button
-                  endContent={<ChevronDownIcon className='text-small' />}
-                  variant='flat'
-                >
-                  Cột cần hiển thị
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label='Table Columns'
-                closeOnSelect={false}
-                selectedKeys={visibleColumns}
-                selectionMode='multiple'
-                onSelectionChange={setVisibleColumns}
-              >
-                {columns.map((column) => (
-                  <DropdownItem key={column.uid} className='capitalize'>
-                    {capitalize(column.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Button color='primary' endContent={<PlusIcon />}>
-              Thêm sản phẩm
-            </Button>
-          </div>
+                Cột cần hiển thị
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              disallowEmptySelection
+              aria-label='Table Columns'
+              closeOnSelect={false}
+              selectedKeys={visibleColumns}
+              selectionMode='multiple'
+              onSelectionChange={setVisibleColumns}
+            >
+              {columns.map((column) => (
+                <DropdownItem key={column.uid} className='capitalize'>
+                  {capitalize(column.name)}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
         </div>
         <div className='flex justify-between items-center'>
           <span className='text-default-400 text-small'>
@@ -236,52 +147,20 @@ export default function TableItem() {
         </div>
       </div>
     );
-  }, [
-    filterValue,
-
-    visibleColumns,
-    onRowsPerPageChange,
-    users.length,
-    onSearchChange,
-    hasSearchFilter,
-  ]);
+    // }, [visibleColumns, onRowsPerPageChange, users.length]);
+  }, [visibleColumns, onRowsPerPageChange]);
 
   const bottomContent = React.useMemo(() => {
     return (
       <div className='py-2 px-2 flex justify-center items-center'>
-        {/* <span className='w-[30%] text-small text-default-400'>
-          {selectedKeys === 'all'
-            ? 'All items selected'
-            : `${selectedKeys.size} of ${filteredItems.length} selected`}
-        </span> */}
         <Pagination
           isCompact
           showControls
           showShadow
-          // color='heavypink'
-          // className='bg-heavypink'
           page={page}
           total={pages}
           onChange={setPage}
         />
-        {/* <div className='hidden sm:flex w-[30%] justify-end gap-2'>
-          <Button
-            isDisabled={pages === 1}
-            size='sm'
-            variant='flat'
-            onPress={onPreviousPage}
-          >
-            Previous
-          </Button>
-          <Button
-            isDisabled={pages === 1}
-            size='sm'
-            variant='flat'
-            onPress={onNextPage}
-          >
-            Next
-          </Button>
-        </div> */}
       </div>
     );
   });
@@ -295,9 +174,6 @@ export default function TableItem() {
       classNames={{
         wrapper: 'max-h-[382px]',
       }}
-      // selectedKeys={selectedKeys}
-      // selectionMode='multiple'
-      // onSelectionChange={setSelectedKeys}
       sortDescriptor={sortDescriptor}
       topContent={topContent}
       topContentPlacement='outside'

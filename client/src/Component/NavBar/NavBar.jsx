@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Button,
@@ -49,17 +49,9 @@ const category = [
     },
   },
 ];
-// export const CAT = {
-//   tt: 'TayTrang',
-//   kl: 'KemLot',
-//   kn: 'KemNen',
-//   pn: 'PhanNuoc',
-//   dx: 'DauXa',
-//   tth: 'ToanThan',
-//   vk: 'VungKin',
-// };
 
 function NavBar() {
+  let searchRef = useRef();
   const valuesOfCAT = Object.values(CAT);
   let currentIndex = 0;
   const [isOpenCategory, setIsOpenCategory] = useState(false);
@@ -152,10 +144,11 @@ function NavBar() {
                 <div className='fa-solid fa-magnifying-glass text-heavy-pink' />
               }
               endContent={
-                <Button className='bg-heavy-pink' radius='sm' size='sm'>
+                <Button className='bg-heavy-pink' radius='sm' size='sm' onClick={}>
                   Tìm kiếm
                 </Button>
               }
+              ref={searchRef}
             />
           </NavbarItem>
 

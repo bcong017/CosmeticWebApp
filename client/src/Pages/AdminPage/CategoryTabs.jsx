@@ -1,4 +1,4 @@
-import { Tabs, Tab, Button } from '@nextui-org/react';
+import { Tabs, Tab } from '@nextui-org/react';
 import ItemInList from './ItemInList';
 
 function CategoryTabs() {
@@ -22,15 +22,6 @@ function CategoryTabs() {
             <Tab key='11' title='Tẩy trang mặt'>
               <ItemInList />
             </Tab>
-            <Tab key='12' title='Sữa rửa mặt'>
-              <ItemInList />
-            </Tab>
-            <Tab key='13' title='Tẩy tế bào chết'>
-              <ItemInList />
-            </Tab>
-            <Tab key='4' title='Dưỡng môi'>
-              <ItemInList />
-            </Tab>
           </Tabs>
         </div>
       </Tab>
@@ -43,13 +34,7 @@ function CategoryTabs() {
             size='lg'
             color='primary'
           >
-            <Tab key='21' title='Dầu gội'>
-              <ItemInList />
-            </Tab>
-            <Tab key='22' title='Dầu xả'>
-              <ItemInList />
-            </Tab>
-            <Tab key='23' title='Dưỡng tóc'>
+            <Tab key='21' title='Dầu xả'>
               <ItemInList />
             </Tab>
           </Tabs>
@@ -64,16 +49,10 @@ function CategoryTabs() {
             size='lg'
             color='primary'
           >
-            <Tab key='31' title='Nước hoa nữ'>
+            <Tab key='31' title='Xịt thơm toàn thân'>
               <ItemInList />
             </Tab>
-            <Tab key='32' title='Nước hoa nam'>
-              <ItemInList />
-            </Tab>
-            <Tab key='33' title='Xịt thơm toàn thân'>
-              <ItemInList />
-            </Tab>
-            <Tab key='34' title='Nước hoa vùng kín'>
+            <Tab key='32' title='Nước hoa vùng kín'>
               <ItemInList />
             </Tab>
           </Tabs>

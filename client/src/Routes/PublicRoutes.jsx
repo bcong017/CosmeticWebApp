@@ -16,5 +16,9 @@ const contentRoute = [
     path: '/categories/:name',
     element: <CategoryPage />,
   },
+  {
+    path: '/search?searchTerm=',
+    element: <CategoryPage />,
+  },
 ];
 export default contentRoute;
