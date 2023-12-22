@@ -57,6 +57,7 @@ const getItemById = async (req, res) => {
           where: {
             is_active: true,
           },
+          required : false,
         },
       ],
     });
@@ -80,7 +81,7 @@ const getItemById = async (req, res) => {
 
     // Calculate the final price based on sale event
     let finalPrice;
-    if (item.sale_event_id !== null || item.sale_event_id !== 0) {
+    if (item.sale_event_id && item.SaleEvent) {
       const currentDate = new Date();
       const startDate = new Date(item.SaleEvent.start_date);
       const endDate = new Date(item.SaleEvent.end_date);
