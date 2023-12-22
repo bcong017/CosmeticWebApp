@@ -1,7 +1,7 @@
 import ItemPage from '@/Pages/ItemPage';
 import CategoryPage from '@/Pages/CategoryPage';
 import HomePage from '@/Pages/HomePage';
-
+import SearchResultPage from '@/Pages/SearchResultPage';
 const contentRoute = [
   {
     path: '/',
@@ -17,8 +17,8 @@ const contentRoute = [
     element: <CategoryPage />,
   },
   {
-    path: '/search?searchTerm=',
-    element: <CategoryPage />,
+    path: '/search/searchTerm/:input',
+    element: <SearchResultPage />,
   },
 ];
 export default contentRoute;

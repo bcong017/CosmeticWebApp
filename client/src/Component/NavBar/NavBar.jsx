@@ -20,6 +20,8 @@ import LoginModal from '../LoginModal';
 import UserDropDownMenu from './UserDropDownMenu';
 import { Token } from '@/main';
 import { CAT } from '@/Global_reference/variables';
+import common from '@/Api_Call/common';
+import { useNavigate } from 'react-router-dom';
 const category = [
   {
     title: 'Chăm sóc da mặt',
@@ -55,6 +57,7 @@ function NavBar() {
   const valuesOfCAT = Object.values(CAT);
   let currentIndex = 0;
   const [isOpenCategory, setIsOpenCategory] = useState(false);
+  const navigate = useNavigate();
   function getCurrentCAT() {
     let res = valuesOfCAT[currentIndex];
     currentIndex++;
@@ -63,7 +66,20 @@ function NavBar() {
   const toggleCategory = (value) => {
     setIsOpenCategory(value);
   };
-
+  async function handleSearch() {
+    const input = searchRef.current.value;
+    if (input != '') {
+      let res = await common.search(input);
+      if (res?.data.resultedItems.length == 0) {
+        navigate('/');
+      } else {
+        console.log(res?.data.resultedItems);
+        navigate(`/search/searchTerm/${input}`, {
+          state: res?.data.resultedItems,
+        });
+      }
+    }
+  }
   const token = useContext(Token);
   return (
     <>
@@ -144,7 +160,14 @@ function NavBar() {
                 <div className='fa-solid fa-magnifying-glass text-heavy-pink' />
               }
               endContent={
-                <Button className='bg-heavy-pink' radius='sm' size='sm' onClick={}>
+                <Button
+                  className='bg-heavy-pink'
+                  radius='sm'
+                  size='sm'
+                  onClick={() => {
+                    handleSearch();
+                  }}
+                >
                   Tìm kiếm
                 </Button>
               }

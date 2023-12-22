@@ -1,8 +1,8 @@
 import { Pagination } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
-// import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Card from '@/Component/Card/Card';
-// import categories from '@/Api_Call/categories';
+
 let list1 = [
   {
     itemName: 'Sữa rửa mặt',
@@ -315,9 +315,9 @@ let list3 = [
     price: '100.000 VND',
   },
 ];
-function CategoryPage() {
+function SearchResultPage() {
   const [currentPage, setCurrentPage] = useState(0);
-
+  const location = useLocation();
   useEffect(() => {
     if (currentPage == 1) {
       list1 = list2;
@@ -325,13 +325,17 @@ function CategoryPage() {
       list1 = list3;
     }
   }, [currentPage]);
+  useEffect(() => {
+    console.log(location.state.length);
+    console.log(location.pathname.substring(19));
+  }, []);
   return (
     <div className='flex flex-row my-5 mx-5'>
       <div className='bg-section-blue w-[100%] px-4 py-4'>
         <div className='text-xl font-bold'>
-          Chăm sóc da mặt{' '}
+          Kết quả tìm kiếm:{' ' + location.pathname.substring(19) + ' '}
           <span className='text-base font-extralight'>
-            &#40; Số lượng: 100 &#41;
+            &#40; Số lượng: {location.state.length} &#41;
           </span>
         </div>
         <div className='grid grid-cols-5 grid-rows-5 gap-3'>
@@ -360,4 +364,4 @@ function CategoryPage() {
   );
 }
 
-export default CategoryPage;
+export default SearchResultPage;
