@@ -137,13 +137,8 @@ app.use("/categories", categoryRoute);
  *  http://localhost:3000/categories/:categoryName
  *  for example:
  *   http://localhost:3000/categories/TayTrang (send all item in category TayTrang)
-<<<<<<< HEAD
  * 
  * 2. Filter items for each category options
-=======
- *
- * 2. Filter items for each category options (need to test later)
->>>>>>> da20a92b2ceb3c07ff7678bafeb32c5facdbf379
  * Note: Come with filter options
  *
  */
@@ -188,9 +183,8 @@ app.use("/comment", commentRoute);
  *   }
  */
 
-<<<<<<< HEAD
 app.use("/event", eventRoute);
-=======
+
 app.use("/", userRoute);
 /**
  * This is for user functions:
@@ -226,7 +220,6 @@ app.use("/", userRoute);
  * }
  *  This token will expired 1h and will random
  */
->>>>>>> da20a92b2ceb3c07ff7678bafeb32c5facdbf379
 
 const start = async () => {
   await db.sequelize.sync();
