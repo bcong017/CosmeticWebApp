@@ -8,3 +8,13 @@ export const CAT = {
   tth: 'ToanThan',
   vk: 'VungKin',
 };
+
+export const CAT_TITLE = {
+  TayTrang: 'Tẩy trang',
+  KemLot: 'Kem lót',
+  KemNen: 'Kem nền',
+  PhanNuoc: 'Phấn nước',
+  DauXa: 'Dầu xả',
+  ToanThan: 'Xịt thơm toàn thân',
+  VungKin: 'Nước hoa vùng kín',
+};
