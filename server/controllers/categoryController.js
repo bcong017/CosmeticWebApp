@@ -217,15 +217,19 @@ const filterItemsByOptions = async (req, res) => {
       };
     }
 
-    if (productionPlaces && productionPlaces.length > 0) {
-      whereClause.specifications = {
-        [db.Sequelize.Op.like]: `%Nơi sản xuất%${productionPlaces.trim()}%`,
-      };
-    }
-
     if (country && country.length > 0) {
       whereClause.specifications = {
-        [db.Sequelize.Op.like]: `%Xuất xứ thương hiệu%${country.trim()}%`,
+        [db.Sequelize.Op.or]: country.split(",").map((c) => ({
+          [db.Sequelize.Op.like]: `%Xuất xứ thương hiệu%${c.trim()}%`,
+        })),
+      };
+    }
+    
+    if (productionPlaces && productionPlaces.length > 0) {
+      whereClause.specifications = {
+        [db.Sequelize.Op.or]: productionPlaces.split(",").map((p) => ({
+          [db.Sequelize.Op.like]: `%Nơi sản xuất%${p.trim()}%`,
+        })),
       };
     }
 
