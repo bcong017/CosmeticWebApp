@@ -95,10 +95,7 @@ const getItemsByCategory = async (req, res) => {
         id: item.id,
         name: item.name,
         price: finalPrice, // Use the final price
-        brand: item.brand
-          .replace("Thương Hiệu", "")
-          .replace(" AS brand", "")
-          .trim(),
+        brand: item.brand,
         first_image_url: firstImageUrl,
         user_rating: item.user_rating,
       };
@@ -122,55 +119,52 @@ const getItemsByCategory = async (req, res) => {
       },
       group: ["brand"],
     });
-
+    
     const options = {
       brand: filterOptions.map((option) => option.brand),
       country: [],
       productionPlaces: [],
     };
-
+    
     filterOptions.forEach((option) => {
       const brand = option.brand || "";
       const specs = option.specifications || "";
-
+    
       const brandNameMatch = brand.match(/Thương Hiệu\s*([^$]+)/);
       const brandName = brandNameMatch
         ? brandNameMatch[1].replace(" AS brand", "").trim()
         : null;
-
-      const countryMatch = specs.match(/Xuất xứ thương hiệu\s*([^$]+)/);
-      const country = countryMatch
-        ? countryMatch[1].split("\n")[0].trim()
-        : null;
-
-      const productionPlacesMatch = specs.match(
-        /Nơi sản xuất\s*([^$]+)\nLoại da/
-      );
-      const productionPlaces = productionPlacesMatch
-        ? productionPlacesMatch[1].trim()
-        : null;
-
+    
+      let country;
+      let productionPlaces;
+    
+      try {
+        const specsObj = JSON.parse(specs);
+        country = specsObj.Country || null;
+        productionPlaces = specsObj.ProductionPlaces || null;
+      } catch (error) {
+        console.error("Error parsing specifications:", error);
+      }
+    
       if (brandName && !options.brand.includes(brandName)) {
         options.brand.push(brandName);
       }
-
+    
       if (country && !options.country.includes(country)) {
         options.country.push(country);
       }
-
-      if (
-        productionPlaces &&
-        !options.productionPlaces.includes(productionPlaces)
-      ) {
+    
+      if (productionPlaces && !options.productionPlaces.includes(productionPlaces)) {
         options.productionPlaces.push(productionPlaces);
       }
     });
-
+    
     return res.status(202).json({
       resultedItems,
       filterOptions: options,
       currentPage: page,
       totalPages,
+      totalItems,
     });
   } catch (error) {
     console.error('Error in getItemsByCategory:', error);
@@ -217,10 +211,11 @@ const filterItemsByOptions = async (req, res) => {
       };
     }
 
+    // Parse specifications JSON string
     if (country && country.length > 0) {
       whereClause.specifications = {
         [db.Sequelize.Op.or]: country.split(",").map((c) => ({
-          [db.Sequelize.Op.like]: `%Xuất xứ thương hiệu%${c.trim()}%`,
+          [db.Sequelize.Op.like]: `%${c.trim()}%`,
         })),
       };
     }
@@ -228,7 +223,7 @@ const filterItemsByOptions = async (req, res) => {
     if (productionPlaces && productionPlaces.length > 0) {
       whereClause.specifications = {
         [db.Sequelize.Op.or]: productionPlaces.split(",").map((p) => ({
-          [db.Sequelize.Op.like]: `%Nơi sản xuất%${p.trim()}%`,
+          [db.Sequelize.Op.like]: `%${p.trim()}%`,
         })),
       };
     }
@@ -344,24 +339,18 @@ const filterItemsByOptions = async (req, res) => {
 
     filterOptions.forEach((option) => {
       const brand = option.brand || "";
-      const specs = option.specifications || "";
+      const specs = option.specifications || "{}";
 
       const brandNameMatch = brand.match(/Thương Hiệu\s*([^$]+)/);
       const brandName = brandNameMatch
         ? brandNameMatch[1].replace(" AS brand", "").trim()
         : null;
 
-      const countryMatch = specs.match(/Xuất xứ thương hiệu\s*([^$]+)/);
-      const country = countryMatch
-        ? countryMatch[1].split("\n")[0].trim()
-        : null;
+      // Parse the specifications JSON string
+      const specifications = JSON.parse(specs);
 
-      const productionPlacesMatch = specs.match(
-        /Nơi sản xuất\s*([^$]+)\nLoại da/
-      );
-      const productionPlaces = productionPlacesMatch
-        ? productionPlacesMatch[1].trim()
-        : null;
+      const country = specifications.Country || null;
+      const productionPlaces = specifications.ProductionPlaces || null;
 
       if (brandName && !options.brand.includes(brandName)) {
         options.brand.push(brandName);
@@ -371,10 +360,7 @@ const filterItemsByOptions = async (req, res) => {
         options.country.push(country);
       }
 
-      if (
-        productionPlaces &&
-        !options.productionPlaces.includes(productionPlaces)
-      ) {
+      if (productionPlaces && !options.productionPlaces.includes(productionPlaces)) {
         options.productionPlaces.push(productionPlaces);
       }
     });
@@ -384,10 +370,12 @@ const filterItemsByOptions = async (req, res) => {
       filterOptions: options,
       currentPage: page,
       totalPages,
+      totalItems
     });
   } catch (error) {
     return res.status(500).json({ error });
   }
 };
+
 
 module.exports = { getItemsByCategory, filterItemsByOptions };
