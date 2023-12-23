@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 // Read the JSON file
-fs.readFile('almost.json', 'utf8', (err, data) => {
+fs.readFile('done.json', 'utf8', (err, data) => {
   if (err) {
     console.error('Error reading the file:', err);
     return;
@@ -43,7 +43,7 @@ fs.readFile('almost.json', 'utf8', (err, data) => {
   const resultJSON = JSON.stringify(reorderedData, null, 2);
 
   // Write the result back to a new file (result.json)
-  fs.writeFile('result.json', resultJSON, 'utf8', (err) => {
+  fs.writeFile('complete.json', resultJSON, 'utf8', (err) => {
     if (err) {
       console.error('Error writing the result file:', err);
       return;

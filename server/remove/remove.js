@@ -34,7 +34,7 @@ function removeDuplicatesAndUpdate(filename) {
 }
 
 // List of filenames to process
-const filenames = ['TayTrang.json', 'KemLot.json', 'KemNen.json', 'ToanThan.json', 'VungKin.json', 'DauXa.json', 'PhanNuoc.json' /* Add more filenames as needed */];
+const filenames = ['done.json' /* Add more filenames as needed */];
 
 // Process each file in the list
 filenames.forEach(filename => {

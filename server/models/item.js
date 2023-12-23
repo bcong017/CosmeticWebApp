@@ -37,6 +37,13 @@ module.exports = (sequelize) => {
     },
     specifications: {
       type: DataTypes.TEXT,
+      get() {
+        const rawValue = this.getDataValue('specifications');
+        return rawValue ? JSON.parse(rawValue) : null;
+      },
+      set(value) {
+        this.setDataValue('specifications', value ? JSON.stringify(value) : null);
+      },
     },
     is_on_sale: {
       type: DataTypes.INTEGER,

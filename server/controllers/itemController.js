@@ -109,7 +109,7 @@ const getItemById = async (req, res) => {
       quantity: item.quantity,
       product_information: item.product_information,
       use_information: item.use_information,
-      specifications: item.specifications,
+      specifications: JSON.parse(item.specifications || "{}"),
       is_on_sale: item.is_on_sale,
       sale_event_id: item.sale_event_id,
       user_rating: item.user_rating,
