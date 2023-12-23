@@ -64,6 +64,7 @@ const searchItems = async (req, res) => {
       }
 
       return {
+        id: item.id,
         name: item.name,
         price: finalPrice, // Use the final price
         brand: item.brand.replace('Thương Hiệu', '').replace(' AS brand', '').trim(),
