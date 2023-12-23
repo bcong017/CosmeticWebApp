@@ -4,7 +4,7 @@ const searchItems = async (req, res) => {
   try {
     const { searchTerm, order } = req.query;
 
-    const selectedAttributes = ['name', 'price', 'brand', 'image_urls', 'user_rating'];
+    const selectedAttributes = ['id','name', 'price', 'brand', 'image_urls', 'user_rating'];
 
     const page = req.query.page ? parseInt(req.query.page) : 1;
     const itemsPerPage = 10; // Adjust as needed
@@ -67,7 +67,7 @@ const searchItems = async (req, res) => {
         id: item.id,
         name: item.name,
         price: finalPrice, // Use the final price
-        brand: item.brand.replace('Thương Hiệu', '').replace(' AS brand', '').trim(),
+        brand: item.brand,
         first_image_url: firstImageUrl,
         user_rating: item.user_rating,
       };
