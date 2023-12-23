@@ -33,56 +33,35 @@ function CategoryPage() {
       });
   };
 
-  async function handleRadioChange(val) {
-    console.log(val);
-    setItemsInfo(
-      await fetchItems(
-        `filter-items?order=${val}&page=${selectedPage}${appendedURL.current}`,
-      ),
-    );
-  }
   async function getItemList() {
     const items = await fetchItems('');
     setItemsInfo(items);
   }
-  async function setCurrentPage() {
-    setItemsInfo(
-      await categories
-        .getItems(
-          `${location.pathname}/filter-items?page=${selectedPage}${appendedURL.current}`,
-        )
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        }),
-    );
-  }
+
   useEffect(() => {
     getItemList();
     setBrandSelected([]);
     setCountrySelected([]);
     setPPSelected([]);
+    setSelectedPage(1);
     setTitle(CAT_TITLE[location.pathname.substring(12)]);
   }, [location]);
 
-  let appendedURL = useRef();
   useEffect(() => {
-    appendedURL.current = `&country=${countrySelected.join(
+    let appendedURL = `&country=${countrySelected.join(
       ',',
     )}&productionPlaces=${ppSelected.join(',')}&brand=${brandSelected.join(
       ',',
     )}`;
-    console.log(`filter-items?${appendedURL.current}`);
     (async function () {
-      setItemsInfo(await fetchItems(`filter-items?${appendedURL.current}`));
+      setItemsInfo(
+        await fetchItems(
+          `filter-items?order=${priceOrder}&page=${selectedPage}${appendedURL}`,
+        ),
+      );
     })();
-  }, [brandSelected, countrySelected, ppSelected]);
+  }, [brandSelected, countrySelected, ppSelected, priceOrder, selectedPage]);
 
-  useEffect(() => {
-    setCurrentPage();
-  }, [selectedPage]);
   return (
     <div className='flex flex-row my-5 mx-5'>
       <div className='block mr-10 w-[320px]'>
@@ -92,9 +71,8 @@ function CategoryPage() {
           <RadioGroup
             color='primary'
             defaultValue='LTH'
-            onValueChange={(val) => {
-              handleRadioChange(val);
-            }}
+            value={priceOrder}
+            onValueChange={setPriceOrder}
           >
             <Radio value='LTH'>Từ thấp đến cao</Radio>
             <Radio value='HTL'>Từ cao đến thấp</Radio>
