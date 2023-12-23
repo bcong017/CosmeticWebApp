@@ -1,4 +1,12 @@
-import { Tabs, Tab, Card, CardBody, Input, Button } from '@nextui-org/react';
+import {
+  Tabs,
+  Tab,
+  Card,
+  CardBody,
+  Input,
+  Button,
+  Textarea,
+} from '@nextui-org/react';
 import { useEffect, useState, useContext, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import './style.css';
@@ -15,7 +23,6 @@ function ItemPage() {
   async function getItem() {
     const item = await GetItem(location.pathname);
     setItemInfo(item);
-    console.log(itemInfo);
   }
   useEffect(() => {
     getItem();
@@ -111,14 +118,49 @@ function ItemPage() {
               </Card>
             </Tab>
             <Tab key='item-specs' title='Thông số sản phẩm'>
-              <Card>
-                <CardBody className='bg-heavy-pink text-yellow-50'>
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur.
-                </CardBody>
-              </Card>
+              <div className='flex justify-center items-center'>
+                <Card className='max-w-[650px]'>
+                  <CardBody className='bg-heavy-pink text-yellow-50'>
+                    <div className='flex flex-col gap-3'>
+                      {itemInfo?.item?.specifications.Barcode != undefined && (
+                        <div>
+                          Barcode: {itemInfo?.item?.specifications.Barcode}
+                        </div>
+                      )}
+                      {itemInfo?.item?.specifications.Brand != undefined && (
+                        <div>Hãng: {itemInfo?.item?.specifications.Brand}</div>
+                      )}
+                      {itemInfo?.item?.specifications.Country != undefined && (
+                        <div>
+                          Xuất xứ: {itemInfo?.item?.specifications.Country}
+                        </div>
+                      )}
+                      {itemInfo?.item?.specifications.Country != undefined && (
+                        <div>
+                          Nơi sản xuất:{' '}
+                          {itemInfo?.item?.specifications.ProductionPlaces}
+                        </div>
+                      )}
+                      {itemInfo?.item?.specifications.Skin != undefined && (
+                        <div>
+                          Dùng cho: {itemInfo?.item?.specifications.Skin}
+                        </div>
+                      )}
+                      {itemInfo?.item?.specifications.Sex != undefined && (
+                        <div>
+                          Giới tính phù hợp:{' '}
+                          {itemInfo?.item?.specifications.Sex}
+                        </div>
+                      )}
+                      {itemInfo?.item?.specifications.Type != undefined && (
+                        <div>
+                          Vấn đề về da: {itemInfo?.item?.specifications.Type}
+                        </div>
+                      )}
+                    </div>
+                  </CardBody>
+                </Card>
+              </div>
             </Tab>
             <Tab key='item-component' title='Thành phần sản phẩm'>
               <Card>
@@ -134,7 +176,7 @@ function ItemPage() {
                 </CardBody>
               </Card>
             </Tab>
-            <Tab key='item-comment' title='Bình luận'>
+            <Tab key='item-comment' title='Phản hồi'>
               <Card className='bg-heavy-pink text-yellow-50 pt-5 px-4'>
                 {token != 'user' ? (
                   <CardBody>
@@ -144,15 +186,22 @@ function ItemPage() {
                   </CardBody>
                 ) : (
                   <div className='flex flex-col gap-3'>
-                    <div>Bình luận của bạn:</div>
-                    <Input
-                      key='name'
-                      type='text'
-                      placeholder='Nhập bình luận...'
-                      className='font-semibold'
-                    />
+                    <div>Phản hồi của bạn:</div>
+                    <div className='grid grid-rows-1 grid-cols-[90%,10%] gap-3'>
+                      <Textarea
+                        label='Bình luận'
+                        placeholder='Nhập bình luận của bạn...'
+                        className='w-[100%]'
+                      />
+                      <Input
+                        key='comment'
+                        type='number'
+                        placeholder='Điểm đánh giá...'
+                        className='font-semibold h-[100%]'
+                      />
+                    </div>
                     <Button className='font-semibold ' disableRipple='true'>
-                      Đăng bình luận
+                      Đăng đánh giá.
                     </Button>
                   </div>
                 )}
@@ -167,6 +216,7 @@ function ItemPage() {
                   <CardBody className=' flex flex-col gap-4 overflow-hidden '>
                     {itemInfo?.comments?.map((comment, index) => (
                       <div key={index} className=' border-2 rounded p-2'>
+                        {/* <div className='font-bold'>{comment.user.name}</div> */}
                         <div className='font-bold'>{comment.user.name}</div>
                         <div>{comment.comment_text}</div>
                       </div>
