@@ -69,7 +69,7 @@ function NavBar() {
   async function handleSearch() {
     const input = searchRef.current.value;
     if (input != '') {
-      let res = await common.search(input);
+      let res = await common.search({ searchTerm: input });
       if (res?.data.resultedItems.length == 0) {
         navigate('/');
       } else {

@@ -5,11 +5,11 @@ import {
   Radio,
   Pagination,
 } from '@nextui-org/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Card from '@/Component/Card/Card';
 import categories from '@/Api_Call/categories';
-import { CAT, CAT_TITLE } from '@/Global_reference/variables';
+import { CAT_TITLE } from '@/Global_reference/variables';
 
 function CategoryPage() {
   const location = useLocation();
@@ -158,9 +158,7 @@ function CategoryPage() {
               total={ItemsInfo?.totalPages}
               color='primary'
               page={ItemsInfo?.currentPage}
-              onChange={(number) => {
-                setSelectedPage(number);
-              }}
+              onChange={setSelectedPage}
               showControls='true'
               loop='true'
             />
