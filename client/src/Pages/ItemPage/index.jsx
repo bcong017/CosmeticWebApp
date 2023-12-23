@@ -15,6 +15,7 @@ function ItemPage() {
   async function getItem() {
     const item = await GetItem(location.pathname);
     setItemInfo(item);
+    console.log(itemInfo);
   }
   useEffect(() => {
     getItem();
@@ -64,7 +65,13 @@ function ItemPage() {
         <div className='item-info'>
           <h1 className='font-bold font text-2xl'>{itemInfo?.item?.name}</h1>
 
-          <h3 className='price'>Giá: {itemInfo?.item?.price} VND</h3>
+          <h3>Giá: {itemInfo?.item?.price} VND</h3>
+          <h3>Hãng: {itemInfo?.item?.brand}. </h3>
+          <h3>
+            Điểm đánh giá: {itemInfo?.item?.user_rating}/5 từ{' '}
+            {itemInfo?.item?.rate_count} người dùng.
+          </h3>
+
           <div className='amount-block'>
             <label htmlFor='item-amount'>Số lượng:</label>
             <select name='item-amount' id='item-amount'>
@@ -116,16 +123,14 @@ function ItemPage() {
             <Tab key='item-component' title='Thành phần sản phẩm'>
               <Card>
                 <CardBody className='bg-heavy-pink text-yellow-50'>
-                  Excepteur sint occaecat cupidatat non proident, sunt in culpa
-                  qui officia deserunt mollit anim id est laborum.
+                  {itemInfo?.item?.ingredients}
                 </CardBody>
               </Card>
             </Tab>
             <Tab key='item-usage' title='Hướng dẫn sử dụng'>
               <Card>
                 <CardBody className='bg-heavy-pink text-yellow-50'>
-                  Excepteur sint occaecat cupidatat non proident, sunt in culpa
-                  qui officia deserunt mollit anim id est laborum.
+                  {itemInfo?.item?.use_information}
                 </CardBody>
               </Card>
             </Tab>

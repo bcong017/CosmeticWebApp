@@ -5,8 +5,8 @@ export default {
   getItems() {
     return axios.get(`${API_HOST}`);
   },
-  search(searchTerm) {
-    return axios.post(`${API_HOST}/search`, null, { params: { searchTerm } });
+  search(params) {
+    return axios.post(`${API_HOST}/search`, null, { params });
   },
   importData() {
     return axios.post(`${API_HOST}/data/import`);

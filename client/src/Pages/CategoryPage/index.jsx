@@ -5,169 +5,62 @@ import {
   Radio,
   Pagination,
 } from '@nextui-org/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Card from '@/Component/Card/Card';
 import categories from '@/Api_Call/categories';
-import { CAT } from '@/Global_reference/variables';
+import { CAT_TITLE } from '@/Global_reference/variables';
 
 function CategoryPage() {
   const location = useLocation();
   let [ItemsInfo, setItemsInfo] = useState({});
+  let [title, setTitle] = useState('');
   let [selectedPage, setSelectedPage] = useState(1);
-  function setCategoryName() {
-    switch (location.pathname.substring(12)) {
-      case CAT.tt:
-        return 'Tẩy trang';
-      case CAT.kl:
-        return 'Kem lót';
-      case CAT.kn:
-        return 'Kem nền';
-      case CAT.pn:
-        return 'Phấn nước';
-      case CAT.dx:
-        return 'Dầu xả';
-      case CAT.tth:
-        return 'Xịt thơm toàn thân';
-      case CAT.vk:
-        return 'Nước hoa vùng kín';
-    }
-  }
+  let [brandSelected, setBrandSelected] = useState([]);
+  let [countrySelected, setCountrySelected] = useState([]);
+  let [ppSelected, setPPSelected] = useState([]);
+  let [priceOrder, setPriceOrder] = useState('LTH');
 
-  const selectedBrandFilterOption = useRef([]);
-  async function handleOnchangeBrand(value) {
-    const index = selectedBrandFilterOption.current.indexOf(
-      value.target.ariaLabel,
-    );
-
-    console.log(index);
-    if (index > -1) {
-      selectedBrandFilterOption.current.splice(index, 1);
-    } else {
-      selectedBrandFilterOption.current.push(value.target.ariaLabel);
-    }
-
-    if (selectedBrandFilterOption.current.length == 0) {
-      await getItemList();
-    } else {
-      setItemsInfo(
-        await categories
-          .getItems(
-            `${location.pathname}/filter-items?brand=${selectedBrandFilterOption.current[0]}`,
-          )
-          .then((res) => {
-            return res.data;
-          })
-          .catch((err) => {
-            console.log(err);
-          }),
-      );
-    }
-  }
-
-  const selectedCountryFilterOption = useRef([]);
-  async function handleOnchangeCountry(value) {
-    const index = selectedCountryFilterOption.current.indexOf(
-      value.target.ariaLabel,
-    );
-
-    console.log(index);
-    if (index > -1) {
-      selectedCountryFilterOption.current.splice(index, 1);
-    } else {
-      selectedCountryFilterOption.current.push(value.target.ariaLabel);
-    }
-
-    if (selectedCountryFilterOption.current.length == 0) {
-      await getItemList();
-    } else {
-      setItemsInfo(
-        await categories
-          .getItems(
-            `${location.pathname}/filter-items?country=${selectedCountryFilterOption.current[0]}`,
-          )
-          .then((res) => {
-            return res.data;
-          })
-          .catch((err) => {
-            console.log(err);
-          }),
-      );
-    }
-  }
-  const selectedProductionPlacesFilterOption = useRef([]);
-  async function handleOnchangeProductionPlaces(value) {
-    const index = selectedProductionPlacesFilterOption.current.indexOf(
-      value.target.ariaLabel,
-    );
-
-    console.log(index);
-    if (index > -1) {
-      selectedProductionPlacesFilterOption.current.splice(index, 1);
-    } else {
-      selectedProductionPlacesFilterOption.current.push(value.target.ariaLabel);
-    }
-
-    if (selectedProductionPlacesFilterOption.current.length == 0) {
-      await getItemList();
-    } else {
-      setItemsInfo(
-        await categories
-          .getItems(
-            `${location.pathname}/filter-items?productionPlaces=${selectedProductionPlacesFilterOption.current[0]}`,
-          )
-          .then((res) => {
-            return res.data;
-          })
-          .catch((err) => {
-            console.log(err);
-          }),
-      );
-    }
-  }
-  async function handleRadioChange(val) {
-    console.log(val);
-    setItemsInfo(
-      await categories
-        .getItems(`${location.pathname}/filter-items?order=${val}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        }),
-    );
-  }
-  async function getItemList() {
-    const items = await categories
-      .getItems(location.pathname)
+  const fetchItems = (option) => {
+    console.log(option);
+    return categories
+      .getItems(`${location.pathname}/${option}`)
       .then((res) => {
         return res.data;
       })
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  async function getItemList() {
+    const items = await fetchItems('');
     setItemsInfo(items);
   }
-  async function setCurrentPage() {
-    setItemsInfo(
-      await categories
-        .getItems(`${location.pathname}?page=${selectedPage}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        }),
-    );
-  }
+
   useEffect(() => {
     getItemList();
-    setCategoryName();
-  }, []);
+    setBrandSelected([]);
+    setCountrySelected([]);
+    setPPSelected([]);
+    setSelectedPage(1);
+    setTitle(CAT_TITLE[location.pathname.substring(12)]);
+  }, [location]);
+
   useEffect(() => {
-    setCurrentPage(selectedPage);
-  }, [selectedPage]);
+    let appendedURL = `&country=${countrySelected.join(
+      ',',
+    )}&productionPlaces=${ppSelected.join(',')}&brand=${brandSelected.join(
+      ',',
+    )}`;
+    (async function () {
+      setItemsInfo(
+        await fetchItems(
+          `filter-items?order=${priceOrder}&page=${selectedPage}${appendedURL}`,
+        ),
+      );
+    })();
+  }, [brandSelected, countrySelected, ppSelected, priceOrder, selectedPage]);
 
   return (
     <div className='flex flex-row my-5 mx-5'>
@@ -178,9 +71,8 @@ function CategoryPage() {
           <RadioGroup
             color='primary'
             defaultValue='LTH'
-            onValueChange={(val) => {
-              handleRadioChange(val);
-            }}
+            value={priceOrder}
+            onValueChange={setPriceOrder}
           >
             <Radio value='LTH'>Từ thấp đến cao</Radio>
             <Radio value='HTL'>Từ cao đến thấp</Radio>
@@ -189,15 +81,14 @@ function CategoryPage() {
         <div className='bg-section-pink pt-4 mt-4 pb-4 px-4'>
           <div className='text-xl ml-4 font-bold'>Thương hiệu</div>
 
-          <CheckboxGroup disableAnimation className='mt-4 ml-2'>
+          <CheckboxGroup
+            disableAnimation
+            className='mt-4 ml-2'
+            value={brandSelected}
+            onChange={setBrandSelected}
+          >
             {ItemsInfo?.filterOptions?.brand?.map((name, index) => (
-              <Checkbox
-                value={name}
-                key={index}
-                onChange={(value) => {
-                  handleOnchangeBrand(value);
-                }}
-              >
+              <Checkbox value={name} key={index}>
                 {name}
               </Checkbox>
             ))}
@@ -206,15 +97,14 @@ function CategoryPage() {
         <div className='bg-section-pink pt-4 mt-4 pb-4 px-4'>
           <div className='text-xl ml-4 font-bold'>Xuất xứ</div>
 
-          <CheckboxGroup disableAnimation className='mt-4 ml-2'>
+          <CheckboxGroup
+            disableAnimation
+            className='mt-4 ml-2'
+            value={countrySelected}
+            onChange={setCountrySelected}
+          >
             {ItemsInfo?.filterOptions?.country?.map((name, index) => (
-              <Checkbox
-                value={name}
-                key={index}
-                onChange={(value) => {
-                  handleOnchangeCountry(value);
-                }}
-              >
+              <Checkbox value={name} key={index}>
                 {name}
               </Checkbox>
             ))}
@@ -223,15 +113,14 @@ function CategoryPage() {
         <div className='bg-section-pink pt-4 mt-4 pb-4 px-4'>
           <div className='text-xl ml-4 font-bold'>Nơi sản xuất</div>
 
-          <CheckboxGroup disableAnimation className='mt-4 ml-2'>
+          <CheckboxGroup
+            disableAnimation
+            className='mt-4 ml-2'
+            value={ppSelected}
+            onChange={setPPSelected}
+          >
             {ItemsInfo?.filterOptions?.productionPlaces?.map((name, index) => (
-              <Checkbox
-                value={name}
-                key={index}
-                onChange={(value) => {
-                  handleOnchangeProductionPlaces(value);
-                }}
-              >
+              <Checkbox value={name} key={index}>
                 {name}
               </Checkbox>
             ))}
@@ -240,57 +129,41 @@ function CategoryPage() {
       </div>
       <div className='bg-section-blue w-[100%] px-4 py-4'>
         <div className='text-xl font-bold'>
-          {setCategoryName()}{' '}
+          {title}{' '}
           <span className='text-base font-extralight'>
             &#40; Số lượng: {ItemsInfo?.resultedItems?.length} &#41;
           </span>
         </div>
         <div className='grid grid-cols-5 grid-rows-2 gap-3'>
-          {ItemsInfo?.resultedItems?.map((item) => (
-            <Card
-              itemName={item.name}
-              imgURL={item.first_image_url}
-              price={item.price}
-              key={item.id}
-              id={item.id}
-              className='self-center'
-            ></Card>
-          ))}
+          {ItemsInfo?.resultedItems?.length != 0 ? (
+            ItemsInfo?.resultedItems?.map((item) => (
+              <Card
+                itemName={item.name}
+                imgURL={item.first_image_url}
+                price={item.price}
+                key={item.id}
+                id={item.id}
+                className='self-center'
+              ></Card>
+            ))
+          ) : (
+            <div className='m-[100px] flex justify-center items-center font-bold'>
+              Không có sản phẩm phù hợp
+            </div>
+          )}
         </div>
-        <div className='flex flex-col gap-5'>
-          <Pagination
-            total={ItemsInfo?.totalPages}
-            color='primary'
-            page={ItemsInfo?.currentPage}
-            onChange={(number) => {
-              setSelectedPage(number);
-            }}
-            showControls='true'
-            loop='true'
-          />
-          {/* <div className='flex gap-2'>
-            <Button
-              size='sm'
-              variant='flat'
-              color='secondary'
-              onPress={() =>
-                setCurrentIndex((prev) => (prev > 1 ? prev - 1 : prev + 9))
-              }
-            >
-              Previous
-            </Button>
-            <Button
-              size='sm'
-              variant='flat'
-              color='secondary'
-              onPress={() =>
-                setCurrentIndex((prev) => (prev < 10 ? prev + 1 : prev - 9))
-              }
-            >
-              Next
-            </Button>
-          </div> */}
-        </div>
+        {ItemsInfo?.resultedItems?.length != 0 && (
+          <div className='flex flex-col gap-5'>
+            <Pagination
+              total={ItemsInfo?.totalPages}
+              color='primary'
+              page={ItemsInfo?.currentPage}
+              onChange={setSelectedPage}
+              showControls='true'
+              loop='true'
+            />
+          </div>
+        )}
       </div>
     </div>
   );
