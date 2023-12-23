@@ -76,6 +76,7 @@ const searchItems = async (req, res) => {
       resultedItems,
       currentPage: page,
       totalPages: Math.max(1, totalPages),
+      totalItems
     });
   } catch (error) {
     console.error('Error searching items: ', error);
