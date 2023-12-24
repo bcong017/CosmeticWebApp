@@ -148,7 +148,7 @@ function CategoryPage() {
           </CheckboxGroup>
         </div>
       </div>
-      <div className='bg-section-blue w-[100%] px-4 py-4'>
+      <div className='bg-section-blue w-[100%] max-h-[750px]  px-4 py-4'>
         <div className='text-xl font-bold'>
           {title}{' '}
           <span className='text-base font-extralight'>

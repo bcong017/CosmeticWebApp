@@ -181,9 +181,11 @@ function NavBar() {
 
           <NavbarItem className='flex-none'>
             <Tooltip content='Giỏ hàng' closeDelay={0}>
-              <Link to='/cart'>
-                <div className='fa-solid fa-cart-shopping cart-icon' />
-              </Link>
+              {token == 'user' && (
+                <Link to='/cart'>
+                  <div className='fa-solid fa-cart-shopping cart-icon' />
+                </Link>
+              )}
             </Tooltip>
           </NavbarItem>
         </NavbarContent>

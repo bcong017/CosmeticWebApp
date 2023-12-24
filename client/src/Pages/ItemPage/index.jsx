@@ -208,7 +208,7 @@ function ItemPage() {
                 {Array.isArray(itemInfo?.comments) == false ||
                 itemInfo?.comments.length == 0 ? (
                   <CardBody>
-                    <div className='flex justify-center items-center'>
+                    <div className='flex justify-center items-center mb-6'>
                       Sản phẩm chưa có bình luận.
                     </div>
                   </CardBody>

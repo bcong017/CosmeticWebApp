@@ -38,15 +38,12 @@ export default function LoginModal() {
                 size='lg'
               >
                 <Tab key='login' title='Đăng nhập' className=''>
-                  {/* <ModalHeader className='flex flex-col gap-1'>
-                    Đăng nhập
-                  </ModalHeader> */}
                   <ModalBody>
                     <Input
-                      autoFocus
                       endContent={
                         <MailIcon className='text-2xl text-default-400 pointer-events-none flex-shrink-0' />
                       }
+                      autoFocus
                       label='Email'
                       placeholder='Nhập email của bạn'
                       variant='bordered'
@@ -76,6 +73,7 @@ export default function LoginModal() {
                   </ModalHeader> */}
                   <ModalBody>
                     <Input
+                      autoFocus
                       key='name'
                       type='text'
                       label='Họ và tên:'
@@ -91,12 +89,21 @@ export default function LoginModal() {
                       placeholder=''
                       className=' font-semibold'
                     />
+                    <Input
+                      key='address'
+                      type='text'
+                      label='Địa chỉ:'
+                      variant='bordered'
+                      placeholder=''
+                      className=' font-semibold'
+                    />
                     <div className='flex '>
                       <div className='mr-5 font-semibold'>Giới tính: </div>
                       <RadioGroup
                         color='secondary'
                         label=''
                         orientation='horizontal'
+                        defaultValue='male'
                       >
                         <Radio className='font-semibold' value='male'>
                           Nam
@@ -111,7 +118,6 @@ export default function LoginModal() {
                     </div>
                     <Input
                       key='Email'
-                      autoFocus
                       endContent={
                         <MailIcon className='text-2xl text-default-400 pointer-events-none flex-shrink-0' />
                       }

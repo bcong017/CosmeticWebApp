@@ -22,11 +22,11 @@ function HomePage() {
   }, []);
 
   return (
-    <div>
+    <div className='flex flex-col gap-8 mt-2'>
       <Carousel
         listOfItem={ItemList?.topSoldItems}
         title='Bán chạy'
-        className='w-1'
+        className='mt-4'
       ></Carousel>
       <Carousel
         title='Được người dùng ưa thích'
