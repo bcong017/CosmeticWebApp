@@ -6,13 +6,17 @@ import {
   Input,
   Button,
   Textarea,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from '@nextui-org/react';
 import { useEffect, useState, useContext, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import './style.css';
 import { Token } from '@/main';
 import GetItem from '@/Api_Call/GetItem';
-
+import { VerticalDotsIcon } from '../AdminPage/TableItem/VerticalDotsIcon';
 function ItemPage() {
   let [itemInfo, setItemInfo] = useState({});
   const token = useContext(Token);
@@ -215,10 +219,26 @@ function ItemPage() {
                 ) : (
                   <CardBody className=' flex flex-col gap-4 overflow-hidden '>
                     {itemInfo?.comments?.map((comment, index) => (
-                      <div key={index} className=' border-2 rounded p-2'>
+                      <div key={index} className='border-2 rounded p-2'>
                         {/* <div className='font-bold'>{comment.user.name}</div> */}
-                        <div className='font-bold'>{comment.user.name}</div>
-                        <div>{comment.comment_text}</div>
+                        <div className='grid grid-cols-[95%,5%] '>
+                          <div>
+                            <div className='font-bold'>{comment.user.name}</div>
+                            <div>{comment.comment_text}</div>
+                          </div>
+                          <div className='flex items-center '>
+                            <Dropdown>
+                              <DropdownTrigger>
+                                <Button isIconOnly size='sm' variant='light'>
+                                  <VerticalDotsIcon className='text-default-300' />
+                                </Button>
+                              </DropdownTrigger>
+                              <DropdownMenu>
+                                <DropdownItem>Xóa</DropdownItem>
+                              </DropdownMenu>
+                            </Dropdown>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </CardBody>
