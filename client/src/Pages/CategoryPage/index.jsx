@@ -190,4 +190,8 @@ function CategoryPage() {
   );
 }
 
+export function Component() {
+  return <CategoryPage />;
+}
+
 export default CategoryPage;

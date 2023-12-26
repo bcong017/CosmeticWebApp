@@ -104,4 +104,8 @@ function UserInfoPage() {
   );
 }
 
+export function Component() {
+  return <UserInfoPage />;
+}
+
 export default UserInfoPage;

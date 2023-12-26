@@ -12,16 +12,16 @@ import {
   NavbarItem,
   Tooltip,
   Input,
-  NavbarMenu,
 } from '@nextui-org/react';
 import { Logo } from '../../Global_reference/assets/Logo';
 import './NavBar.css';
 import LoginModal from '../LoginModal';
 import UserDropDownMenu from './UserDropDownMenu';
-import { Token } from '@/main';
-import { CAT } from '@/Global_reference/variables';
+import { APP_ROLE, CAT } from '@/Global_reference/variables';
 import common from '@/Api_Call/common';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/Global_reference/context/auth';
+
 const category = [
   {
     title: 'Chăm sóc da mặt',
@@ -58,6 +58,8 @@ function NavBar() {
   let currentIndex = 0;
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const navigate = useNavigate();
+  const { token, role } = useAuth();
+
   function getCurrentCAT() {
     let res = valuesOfCAT[currentIndex];
     currentIndex++;
@@ -80,7 +82,7 @@ function NavBar() {
       }
     }
   }
-  const token = useContext(Token);
+
   return (
     <>
       <Navbar
@@ -176,22 +178,22 @@ function NavBar() {
           </NavbarItem>
 
           <NavbarItem className='flex-none'>
-            {token == 'user' ? <UserDropDownMenu /> : <LoginModal />}
+            {token && role == APP_ROLE.USER ? (
+              <UserDropDownMenu />
+            ) : (
+              <LoginModal />
+            )}
           </NavbarItem>
-
-          <NavbarItem className='flex-none'>
-            <Tooltip content='Giỏ hàng' closeDelay={0}>
-              {token == 'user' && (
+          {token && role == APP_ROLE.USER && (
+            <NavbarItem className='flex-none'>
+              <Tooltip content='Giỏ hàng' closeDelay={0}>
                 <Link to='/cart'>
                   <div className='fa-solid fa-cart-shopping cart-icon' />
                 </Link>
-              )}
-            </Tooltip>
-          </NavbarItem>
+              </Tooltip>
+            </NavbarItem>
+          )}
         </NavbarContent>
-
-        {/* TODO: */}
-        <NavbarMenu>Navbar menu here</NavbarMenu>
       </Navbar>
     </>
   );

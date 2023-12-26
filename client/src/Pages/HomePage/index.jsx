@@ -38,4 +38,8 @@ function HomePage() {
   );
 }
 
+export function Component() {
+  return <HomePage />;
+}
+
 export default HomePage;

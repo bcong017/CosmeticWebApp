@@ -5,3 +5,7 @@ export default function NotFoundPage() {
     </div>
   );
 }
+
+export function Component() {
+  return <NotFoundPage />;
+}

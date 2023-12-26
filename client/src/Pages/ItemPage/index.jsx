@@ -11,16 +11,17 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@nextui-org/react';
-import { useEffect, useState, useContext, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import './style.css';
-import { Token } from '@/main';
+
 import GetItem from '@/Api_Call/GetItem';
 import { VerticalDotsIcon } from '../AdminPage/TableItem/VerticalDotsIcon';
+import { useAuth } from '@/Global_reference/context/auth';
+import { APP_ROLE } from '@/Global_reference/variables';
 function ItemPage() {
   let [itemInfo, setItemInfo] = useState({});
-  const token = useContext(Token);
-
+  const { token, role } = useAuth();
   const imgRef = useRef();
   const location = useLocation();
 
@@ -182,7 +183,7 @@ function ItemPage() {
             </Tab>
             <Tab key='item-comment' title='Phản hồi'>
               <Card className='bg-heavy-pink text-yellow-50 pt-5 px-4'>
-                {token != 'user' ? (
+                {!token && role != APP_ROLE.USER ? (
                   <CardBody>
                     <div className='flex justify-center items-center'>
                       Hãy đăng nhập để bình luận.
@@ -250,6 +251,10 @@ function ItemPage() {
       </div>
     </div>
   );
+}
+
+export function Component() {
+  return <ItemPage />;
 }
 
 export default ItemPage;

@@ -120,4 +120,8 @@ function CartPage({ amount = 6 }) {
   );
 }
 
+export function Component() {
+  return <CartPage />;
+}
+
 export default CartPage;

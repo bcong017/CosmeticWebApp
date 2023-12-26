@@ -106,4 +106,8 @@ function SearchResultPage() {
   );
 }
 
+export function Component() {
+  return <SearchResultPage />;
+}
+
 export default SearchResultPage;
