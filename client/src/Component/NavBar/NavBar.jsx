@@ -187,9 +187,6 @@ function NavBar() {
             </Tooltip>
           </NavbarItem>
         </NavbarContent>
-
-        {/* TODO: */}
-        <NavbarMenu>Navbar menu here</NavbarMenu>
       </Navbar>
     </>
   );
