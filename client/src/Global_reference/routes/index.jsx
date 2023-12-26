@@ -4,6 +4,11 @@ export const router = createBrowserRouter([
   {
     path: '',
     lazy: () => import('@/layouts/UserLayout'),
+    // async lazy() {
+    //   const { Component } = await import('@/layouts/UserLayout');
+
+    //   return Component;
+    // },
     children: [
       {
         index: true,
