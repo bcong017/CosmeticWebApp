@@ -182,4 +182,8 @@ function ItemPage() {
   );
 }
 
+export function Component() {
+  return <ItemPage />;
+}
+
 export default ItemPage;
