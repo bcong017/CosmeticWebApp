@@ -1,7 +1,9 @@
-import './style.css';
 import { Image } from '@nextui-org/react';
 import { Button } from '@nextui-org/react';
 import { Input } from '@nextui-org/react';
+import { useEffect, useState } from 'react';
+import cart from '@/Api_Call/cart';
+import { useAuth } from '@/Global_reference/context/auth';
 const itemList = {
   cartItems: [
     {
@@ -27,6 +29,30 @@ const itemList = {
   ],
 };
 function CartPage({ amount = 6 }) {
+  const [itemList, setItemList] = useState({});
+  const { token } = useAuth();
+  async function getItem() {
+    const item = await cart
+      .getItems()
+      .then(function (response) {
+        // if (response.data) {
+        //   setToken(response.data.token);
+        //   setRole('user');
+        //   clearInput();
+        //   nav('/');
+        // }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    console.log(item);
+    // setItemList(item);
+  }
+  useEffect(() => {
+    console.log(token);
+    getItem();
+  }, []);
+
   return (
     <div className='inline mt-10'>
       <div className='text-center text-3xl font-bold'>Giỏ hàng của bạn</div>
@@ -34,7 +60,7 @@ function CartPage({ amount = 6 }) {
         <div className='block'>
           <div className='text-2xl mb-3'> Số lượng sản phẩm: 12</div>
           <div className=' flex flex-col justify-around bg-section-pink min-w-[820px]'>
-            {itemList.cartItems.map((current) => {
+            {itemList?.cartItems?.map((current) => {
               return (
                 <div
                   key={current.id}

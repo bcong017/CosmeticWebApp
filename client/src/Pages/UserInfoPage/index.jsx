@@ -29,7 +29,7 @@ function UserInfoPage() {
                 placeholder=''
                 className='mt-10 font-semibold'
               />
-              <div className='flex mt-10'>
+              {/* <div className='flex mt-10'>
                 <div className='mr-5 font-semibold'>Giới tính: </div>
                 <RadioGroup color='secondary' label='' orientation='horizontal'>
                   <Radio className='font-semibold' value='male'>
@@ -42,7 +42,7 @@ function UserInfoPage() {
                     Khác
                   </Radio>
                 </RadioGroup>
-              </div>
+              </div> */}
               <Input
                 key='phoneNum'
                 type='text'
