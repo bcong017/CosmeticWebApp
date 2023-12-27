@@ -27,7 +27,7 @@ const userLogin = async (req, res) => {
   
         if (isPasswordValid) {
           // Generate JWT token for user
-          const token = jwt.sign({ userId: user.id, username: user.username }, 'UserSecretKey', {
+          const token = jwt.sign({ userId: user.id, username: user.username, role: 'user' }, 'UserSecretKey', {
             expiresIn: '1h', // Set your preferred expiration time
           });
           return res.status(200).json({ token, role: 'user' });
@@ -40,7 +40,7 @@ const userLogin = async (req, res) => {
   
         if (isPasswordValid) {
           // Generate JWT token for admin
-          const token = jwt.sign({ adminId: admin.id, username: admin.username }, 'AdminSecretKey', {
+          const token = jwt.sign({ adminId: admin.id, username: admin.username, role: 'admin' }, 'AdminSecretKey', {
             expiresIn: '1h', // Set your preferred expiration time
           });
           return res.status(200).json({ token, role: 'admin' });
@@ -117,4 +117,38 @@ const selfDeactivateUser = async (req, res) => {
   }
 };
 
-module.exports = { userLogin, userRegister, selfDeactivateUser };
+const createAdminAccount = async (req,res) =>{
+  try {
+    const { username, password } = req.body;
+
+    // Check if username is already taken
+    const existingAdmin = await db.Admin.findOne({
+      where: { username },
+    });
+
+    if (existingAdmin) {
+      return res.status(400).json({ message: 'Username is already taken' });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new admin
+    const newAdmin = await db.Admin.create({
+      username,
+      password: hashedPassword,
+    });
+
+    // Generate JWT token for newly registered admin
+    const token = jwt.sign({ adminId: newAdmin.id, username: newAdmin.username }, 'AdminSecretKey', {
+      expiresIn: '1h', // Set your preferred expiration time
+    });
+
+    return res.status(201).json({ token });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+module.exports = { userLogin, userRegister, selfDeactivateUser, createAdminAccount };

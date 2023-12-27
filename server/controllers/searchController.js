@@ -41,8 +41,8 @@ const searchItems = async (req, res) => {
       offset: offset,
     });
 
-    const resultedItems = items.map(item => {
-      let finalPrice = item.price;
+    const resultedItems = items.map((item) => {
+      let finalPrice;
 
       if (item.sale_event_id && item.SaleEvent) {
         const currentDate = new Date();
@@ -51,19 +51,27 @@ const searchItems = async (req, res) => {
 
         if (startDate <= currentDate && currentDate <= endDate) {
           // Calculate the discounted price
-          const discountedPrice = (item.price * item.SaleEvent.discount_percentage) / 100;
+          const discountedPrice =
+            (item.price * item.SaleEvent.discount_percentage) / 100;
           finalPrice = Math.max(0, item.price - discountedPrice);
+        } else {
+          finalPrice = item.price;
         }
+      } else {
+        finalPrice = item.price;
       }
 
-      const imageUrlsArray = item.image_urls ? item.image_urls.split('***') : [];
+      const imageUrlsArray = item.image_urls
+        ? item.image_urls.split("***")
+        : [];
       let firstImageUrl = imageUrlsArray[0];
 
-      if (firstImageUrl && firstImageUrl.includes('promotions')) {
+      if (firstImageUrl && firstImageUrl.includes("promotions")) {
         firstImageUrl = imageUrlsArray[1] || null;
       }
 
-      return {
+      // Construct the result object based on the presence of a sale event
+      const resultObject = {
         id: item.id,
         name: item.name,
         price: finalPrice, // Use the final price
@@ -71,6 +79,14 @@ const searchItems = async (req, res) => {
         first_image_url: firstImageUrl,
         user_rating: item.user_rating,
       };
+      // Include additional information if there is a sale event
+      if (item.sale_event_id && item.SaleEvent) {
+        resultObject.base_price = item.price;
+        resultObject.discount_percentage = item.SaleEvent.discount_percentage;
+        resultObject.end_date = item.SaleEvent.end_date.toLocaleDateString("en-GB");
+      }
+
+      return resultObject;
     });
 
     return res.status(200).json({

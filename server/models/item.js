@@ -46,8 +46,8 @@ module.exports = (sequelize) => {
       },
     },
     is_on_sale: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     user_rating: {
       type: DataTypes.DECIMAL(3, 2),

@@ -46,6 +46,106 @@ const adminDeactivateUser = async (req, res) => {
   }
 };
 
+const confirmOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
 
+    // Find the order
+    const order = await db.Order.findByPk(orderId, {
+      include: [
+        {
+          model: db.OrderItem,
+          include: [{ model: db.Item }],
+        },
+      ],
+    });
 
-module.exports = { getAllUserAccounts, adminDeactivateUser };
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    // Calculate total amount of money
+    const totalAmountOfMoney = order.OrderItems.reduce((total, orderItem) => {
+      return total + orderItem.Item.price * orderItem.quantity;
+    }, 0);
+
+    // Calculate shipping fee (5% of total amount)
+    const shippingFee = 0.05 * totalAmountOfMoney;
+
+    // Calculate money needed to pay
+    const moneyNeedToPay = totalAmountOfMoney + shippingFee;
+
+    // Create a new Receipt
+    const receipt = await db.Receipt.create({
+      order_id: orderId,
+      payment_method: 'YourPaymentMethod', // Set the actual payment method
+      ship_fee: shippingFee,
+    });
+
+    // Update the Order (mark it as confirmed)
+    await order.update({ is_confirm: 1 });
+
+    // Create Profit Statistics for each item in the order
+    await Promise.all(
+      order.OrderItems.map(async (orderItem) => {
+        const item = orderItem.Item;
+        const costPrice = 0.2 * item.price; // 20% as the cost of item
+        const profit = item.price - costPrice;
+
+        await db.ProfitStatistics.create({
+          item_id: item.id,
+          sale_date: new Date(),
+          sale_price: item.price,
+          cost_price: costPrice,
+          profit: profit,
+        });
+      })
+    );
+
+    return res.status(200).json({ message: 'Order confirmed successfully' });
+  } catch (error) {
+    console.error('Error confirming order:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const rejectOrder = async (req,res) =>{
+  try {
+    const { orderId } = req.params;
+    const order = await db.Order.findByPk(orderId);
+
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (order.is_confirm) {
+      return res.status(400).json({ error: 'Cannot decline a confirmed order' });
+    }
+
+    // Return items to the cart
+    const orderItems = await db.OrderItem.findAll({ where: { order_id: orderId } });
+    await Promise.all(
+      orderItems.map(async (orderItem) => {
+        await db.Cart.create({
+          user_id: order.user_id,
+          item_id: orderItem.item_id,
+          quantity: orderItem.quantity,
+        });
+
+        // Remove order item after returning to the cart
+        await orderItem.destroy();
+      })
+    );
+
+    // Delete the declined order
+    await order.destroy();
+
+    return res.status(200).json({ message: 'Order declined successfully' });
+  } catch (error) {
+    console.error('Error declining order:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  
+  }
+}
+
+module.exports = { getAllUserAccounts, adminDeactivateUser, confirmOrder, rejectOrder };

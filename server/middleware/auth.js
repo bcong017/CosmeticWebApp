@@ -33,11 +33,35 @@ const authenticateUser = (req, res, next) => {
 };
 
 const authenticateAdmin = (req, res, next) => {
-  // Check if the user has successfully authenticated as an admin
-  if (req.user && req.user.isAdmin) {
-    next();
+  const token = req.headers.authorization;
+
+  if (token) {
+    const tokenParts = token.split(" ");
+
+    try {
+      if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
+        throw new Error("Invalid token format");
+      }
+
+      const decoded = jwt.verify(tokenParts[1], "AdminSecretKey");
+      req.user = decoded;
+
+      if (req.user.role === 'admin') {
+        next();
+      } else {
+        return res.status(403).json({ error: "Forbidden" });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(401).json({
+        login: false,
+        error: "Unauthorized. Token verification failed.",
+      });
+    }
   } else {
-    return res.status(403).json({ error: "Forbidden" });
+    // No token provided
+    req.user = null;
+    next();
   }
 };
 

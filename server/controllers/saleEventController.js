@@ -30,7 +30,10 @@ const createSaleEvent = async (req, res) => {
     });
 
     // Update sale_event_id for all matching items
-    await Promise.all(itemsToUpdate.map(item => item.update({ sale_event_id: createdEvent.id })));
+    await Promise.all(itemsToUpdate.map(item => item.update({ sale_event_id: createdEvent.id, is_on_sale: true })));
+
+    // Update is_on_sale status for associated items
+    await updateIsOnSaleStatus();
 
     return res.status(201).json({ message: 'Sale event created successfully' });
   } catch (error) {
@@ -76,6 +79,9 @@ const updateSaleEvent = async (req, res) => {
     // Update sale_event_id for all matching items
     await Promise.all(itemsToUpdate.map(item => item.update({ sale_event_id: saleEventToUpdate.id })));
 
+    // Update is_on_sale status for associated items
+    await updateIsOnSaleStatus();
+
     return res.status(200).json({ message: 'Sale event updated successfully' });
   } catch (error) {
     return res.status(500).json({ error });
@@ -110,4 +116,39 @@ const deleteSaleEvent = async (req, res) => {
   }
 };
 
-module.exports = { createSaleEvent, updateSaleEvent, deleteSaleEvent };
+const updateIsOnSaleStatus = async () => {
+  try {
+    const currentDate = new Date();
+
+    // Find all items with an associated sale event
+    const itemsWithSaleEvent = await db.Item.findAll({
+      include: [
+        {
+          model: db.SaleEvent,
+          where: {
+            is_active: true,
+          },
+        },
+      ],
+    });
+
+    // Update is_on_sale status based on the current date and end date of the sale event
+    await Promise.all(
+      itemsWithSaleEvent.map(async (item) => {
+        if (item.SaleEvent && item.SaleEvent.end_date < currentDate) {
+          // If end date is in the past, set is_on_sale to false
+          await item.update({ is_on_sale: false });
+        } else {
+          // Otherwise, set is_on_sale to true
+          await item.update({ is_on_sale: true });
+        }
+      })
+    );
+
+    console.log('is_on_sale status updated successfully');
+  } catch (error) {
+    console.error('Error updating is_on_sale status:', error);
+  }
+};
+
+module.exports = { createSaleEvent, updateSaleEvent, deleteSaleEvent, updateIsOnSaleStatus };

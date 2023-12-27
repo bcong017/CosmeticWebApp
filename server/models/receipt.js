@@ -15,6 +15,9 @@ module.exports = (sequelize) => {
     payment_method: {
       type: DataTypes.STRING(50),
     },
+    ship_fee: {
+      type: DataTypes.DECIMAL(10, 3)
+    }
   });
 
   Receipt.associate = (models) => {

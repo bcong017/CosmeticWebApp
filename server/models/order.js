@@ -16,7 +16,11 @@ module.exports = (sequelize) => {
       type: DataTypes.DATE,
     },
     total_amount: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.DECIMAL(10, 3),
+    },
+    is_confirm: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
   });
 

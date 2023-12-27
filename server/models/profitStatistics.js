@@ -16,13 +16,13 @@ module.exports = (sequelize) => {
       type: DataTypes.DATE,
     },
     sale_price: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.DECIMAL(10, 3),
     },
     cost_price: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.DECIMAL(10, 3),
     },
     profit: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.DECIMAL(10, 3),
     },
   });
 

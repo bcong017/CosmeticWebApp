@@ -3,6 +3,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
+const schedule = require('node-schedule');
+
+const {updateIsOnSaleStatus } = require('./routes/saleEventRoute');
 
 // For routing
 const categoryRoute = require("./routes/categoryRoute");
@@ -15,6 +18,7 @@ const commentRoute = require("./routes/commentRoute");
 const searchRoute = require("./routes/searchRoute");
 const cartRoute = require("./routes/cartRoute");
 const eventRoute = require("./routes/saleEventRoute");
+const orderRoute = require("./routes/orderRoute");
 
 const app = express();
 
@@ -30,6 +34,10 @@ app.use(
 app.use(bodyParser.json());
 
 const db = require("./models");
+
+schedule.scheduleJob('0 0 * * *', async () => {
+  await updateIsOnSaleStatus();
+});
 
 app.use("/", userRoute);
 /**
@@ -97,8 +105,8 @@ app.use("/cart", cartRoute);
  *    http://localhost:3000/cart/add
  *    Need data in JSON look like this
  *      {
- *         "item_id": 1 (for example),
- *         "quantity": 2 (for example)
+ *         "item_id": 1,
+ *         "quantity": 2
  *       }
 
  * 2. Edit
@@ -205,6 +213,8 @@ app.use("/comment", commentRoute);
  */
 
 app.use("/event", eventRoute);
+
+app.use("/order", orderRoute);
 
 app.use("/", userRoute);
 /**

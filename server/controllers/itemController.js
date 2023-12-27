@@ -23,6 +23,7 @@ const getCommentsForItem = async (itemId) => {
         username: comment.User.username,
         name: comment.User.name,
       },
+      isCurrentUserComment: req.user && req.user.userId === comment.User.id,
     }));
 
     return formattedComments;
@@ -53,15 +54,14 @@ const getItemById = async (req, res) => {
         },
         {
           model: db.SaleEvent,
-          attributes: ["discount_percentage", "start_date", "end_date"],
+          attributes: ["event_name", "discount_percentage", "end_date"],
           where: {
             is_active: true,
           },
-          required : false,
+          required: false,
         },
       ],
     });
-    
 
     if (!item) {
       return res.status(404).json({ error: "Item not found" });
@@ -81,6 +81,7 @@ const getItemById = async (req, res) => {
 
     // Calculate the final price based on sale event
     let finalPrice;
+    var discountPercentage = 0;
     if (item.sale_event_id && item.SaleEvent) {
       const currentDate = new Date();
       const startDate = new Date(item.SaleEvent.start_date);
@@ -88,8 +89,9 @@ const getItemById = async (req, res) => {
 
       if (startDate <= currentDate && currentDate <= endDate) {
         // Calculate the discounted price
+        discountPercentage = item.SaleEvent.discount_percentage;
         const discountedPrice =
-          (item.price * item.SaleEvent.discount_percentage) / 100;
+          (item.price * discountPercentage) / 100;
         finalPrice = Math.max(0, item.price - discountedPrice);
       } else {
         finalPrice = item.price;
@@ -97,6 +99,8 @@ const getItemById = async (req, res) => {
     } else {
       finalPrice = item.price;
     }
+
+    const priceAfterSale = finalPrice;
 
     const formattedItem = {
       id: item.id,
@@ -111,9 +115,16 @@ const getItemById = async (req, res) => {
       use_information: item.use_information,
       specifications: JSON.parse(item.specifications || "{}"),
       is_on_sale: item.is_on_sale,
-      sale_event_id: item.sale_event_id,
       user_rating: item.user_rating,
       rate_count: item.rate_count,
+      sale_event: item.SaleEvent
+        ? {
+            event_name: item.SaleEvent.event_name,
+            discount_percentage: `${item.SaleEvent.discount_percentage}%`,
+            end_date: item.SaleEvent.end_date.toLocaleDateString("en-GB"),
+          }
+        : null,
+      price_after_sale: priceAfterSale,
     };
 
     console.log("Formatted Item:", formattedItem);
@@ -124,7 +135,7 @@ const getItemById = async (req, res) => {
       const formattedComments = item.Comments.map((comment) => ({
         id: comment.id,
         comment_text: comment.comment_text,
-        comment_date: comment.comment_date,
+        comment_date: comment.comment_date.toLocaleDateString("en-GB"),
         user: {
           id: comment.User.id,
           username: comment.User.username,
@@ -149,5 +160,6 @@ const getItemById = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 module.exports = { getCommentsForItem, getItemById };

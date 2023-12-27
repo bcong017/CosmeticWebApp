@@ -4,13 +4,13 @@ const db = require("../models");
 const getItemsByCategory = async (req, res) => {
   try {
     const selectedAttributes = [
-      "id",
-      "name",
-      "price",
-      "brand",
-      "image_urls",
-      "user_rating",
-      "sale_event_id",
+      'id',
+      'name',
+      'price',
+      'brand',
+      'image_urls',
+      'user_rating',
+      'sale_event_id',
     ];
 
     const page = req.query.page ? parseInt(req.query.page) : 1;
@@ -30,7 +30,7 @@ const getItemsByCategory = async (req, res) => {
       include: [
         {
           model: db.SaleEvent,
-          attributes: ["discount_percentage", "start_date", "end_date"],
+          attributes: ['discount_percentage', 'start_date', 'end_date'],
           where: {
             is_active: true,
           },
@@ -40,7 +40,8 @@ const getItemsByCategory = async (req, res) => {
     });
 
     // Calculate totalPages
-    const totalPages = totalItems <= itemsPerPage ? 1 : Math.ceil(totalItems / itemsPerPage);
+    const totalPages =
+      totalItems <= itemsPerPage ? 1 : Math.ceil(totalItems / itemsPerPage);
 
     // Fetch the items for the current page
     const items = await db.Item.findAll({
@@ -51,7 +52,7 @@ const getItemsByCategory = async (req, res) => {
       include: [
         {
           model: db.SaleEvent,
-          attributes: ["discount_percentage", "start_date", "end_date"],
+          attributes: ['discount_percentage', 'start_date', 'end_date'],
           where: {
             is_active: true,
           },
@@ -64,7 +65,8 @@ const getItemsByCategory = async (req, res) => {
     });
 
     const resultedItems = items.map((item) => {
-      let finalPrice;
+      let finalPrice = item.price; // Default to item price
+
       if (item.sale_event_id && item.SaleEvent) {
         const currentDate = new Date();
         const startDate = new Date(item.SaleEvent.start_date);
@@ -75,23 +77,18 @@ const getItemsByCategory = async (req, res) => {
           const discountedPrice =
             (item.price * item.SaleEvent.discount_percentage) / 100;
           finalPrice = Math.max(0, item.price - discountedPrice);
-        } else {
-          finalPrice = item.price;
         }
-      } else {
-        finalPrice = item.price;
       }
 
-      const imageUrlsArray = item.image_urls
-        ? item.image_urls.split("***")
-        : [];
+      const imageUrlsArray = item.image_urls ? item.image_urls.split('***') : [];
       let firstImageUrl = imageUrlsArray[0];
 
-      if (firstImageUrl && firstImageUrl.includes("promotions")) {
+      if (firstImageUrl && firstImageUrl.includes('promotions')) {
         firstImageUrl = imageUrlsArray[1] || null;
       }
 
-      return {
+      // Construct the result object based on the presence of a sale event
+      const resultObject = {
         id: item.id,
         name: item.name,
         price: finalPrice, // Use the final price
@@ -99,66 +96,78 @@ const getItemsByCategory = async (req, res) => {
         first_image_url: firstImageUrl,
         user_rating: item.user_rating,
       };
+      // resultObject   resultedItems
+      // Include additional information if there is a sale event
+      if (item.sale_event_id && item.SaleEvent) {
+        resultObject.base_price = item.price;
+        resultObject.discount_percentage = item.SaleEvent.discount_percentage;
+        resultObject.end_date = item.SaleEvent.end_date.toLocaleDateString("en-GB");
+      }
+
+      return resultObject;
     });
 
     const filterOptions = await db.Item.findAll({
       attributes: [
         [
           db.sequelize.fn(
-            "CONCAT",
+            'CONCAT',
             db.sequelize.literal(
               'CASE WHEN brand LIKE "Thương Hiệu%" THEN TRIM(SUBSTRING(brand, 14)) ELSE TRIM(brand) END'
             )
           ),
-          "brand",
+          'brand',
         ],
-        [db.sequelize.literal("MAX(specifications)"), "specifications"],
+        [db.sequelize.literal('MAX(specifications)'), 'specifications'],
       ],
       where: {
         category: req.params.categoryName,
       },
-      group: ["brand"],
+      group: ['brand'],
     });
-    
+
     const options = {
       brand: filterOptions.map((option) => option.brand),
       country: [],
       productionPlaces: [],
     };
-    
+
     filterOptions.forEach((option) => {
-      const brand = option.brand || "";
-      const specs = option.specifications || "";
-    
+      const brand = option.brand || '';
+      const specs = option.specifications || '';
+
       const brandNameMatch = brand.match(/Thương Hiệu\s*([^$]+)/);
       const brandName = brandNameMatch
-        ? brandNameMatch[1].replace(" AS brand", "").trim()
+        ? brandNameMatch[1].replace(' AS brand', '').trim()
         : null;
-    
+
       let country;
       let productionPlaces;
-    
+
       try {
         const specsObj = JSON.parse(specs);
         country = specsObj.Country || null;
         productionPlaces = specsObj.ProductionPlaces || null;
       } catch (error) {
-        console.error("Error parsing specifications:", error);
+        console.error('Error parsing specifications:', error);
       }
-    
+
       if (brandName && !options.brand.includes(brandName)) {
         options.brand.push(brandName);
       }
-    
+
       if (country && !options.country.includes(country)) {
         options.country.push(country);
       }
-    
-      if (productionPlaces && !options.productionPlaces.includes(productionPlaces)) {
+
+      if (
+        productionPlaces &&
+        !options.productionPlaces.includes(productionPlaces)
+      ) {
         options.productionPlaces.push(productionPlaces);
       }
     });
-    
+
     return res.status(202).json({
       resultedItems,
       filterOptions: options,
@@ -171,6 +180,7 @@ const getItemsByCategory = async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 const filterItemsByOptions = async (req, res) => {
   try {
@@ -219,7 +229,7 @@ const filterItemsByOptions = async (req, res) => {
         })),
       };
     }
-    
+
     if (productionPlaces && productionPlaces.length > 0) {
       whereClause.specifications = {
         [db.Sequelize.Op.or]: productionPlaces.split(",").map((p) => ({
@@ -228,10 +238,10 @@ const filterItemsByOptions = async (req, res) => {
       };
     }
 
-    let orderBy = [['price', 'ASC']]; // Default order: Low to High
+    let orderBy = [["price", "ASC"]]; // Default order: Low to High
 
-    if (order === 'HTL') {
-      orderBy = [['price', 'DESC']]; // High to Low
+    if (order === "HTL") {
+      orderBy = [["price", "DESC"]]; // High to Low
     }
 
     const totalItems = await db.Item.count({
@@ -249,7 +259,8 @@ const filterItemsByOptions = async (req, res) => {
     });
 
     // Calculate totalPages
-    const totalPages = totalItems <= itemsPerPage ? 1 : Math.ceil(totalItems / itemsPerPage);
+    const totalPages =
+      totalItems <= itemsPerPage ? 1 : Math.ceil(totalItems / itemsPerPage);
 
     // Fetch the items for the current page with ordering
     const items = await db.Item.findAll({
@@ -299,17 +310,23 @@ const filterItemsByOptions = async (req, res) => {
         firstImageUrl = imageUrlsArray[1] || null;
       }
 
-      return {
+      // Construct the result object based on the presence of a sale event
+      const resultObject = {
         id: item.id,
         name: item.name,
         price: finalPrice, // Use the final price
-        brand: item.brand
-          .replace("Thương Hiệu", "")
-          .replace(" AS brand", "")
-          .trim(),
+        brand: item.brand,
         first_image_url: firstImageUrl,
         user_rating: item.user_rating,
       };
+      // Include additional information if there is a sale event
+      if (item.sale_event_id && item.SaleEvent) {
+        resultObject.base_price = item.price;
+        resultObject.discount_percentage = item.SaleEvent.discount_percentage;
+        resultObject.end_date = item.SaleEvent.end_date.toLocaleDateString("en-GB");
+      }
+
+      return resultObject;
     });
 
     const filterOptions = await db.Item.findAll({
@@ -360,7 +377,10 @@ const filterItemsByOptions = async (req, res) => {
         options.country.push(country);
       }
 
-      if (productionPlaces && !options.productionPlaces.includes(productionPlaces)) {
+      if (
+        productionPlaces &&
+        !options.productionPlaces.includes(productionPlaces)
+      ) {
         options.productionPlaces.push(productionPlaces);
       }
     });
@@ -370,12 +390,11 @@ const filterItemsByOptions = async (req, res) => {
       filterOptions: options,
       currentPage: page,
       totalPages,
-      totalItems
+      totalItems,
     });
   } catch (error) {
     return res.status(500).json({ error });
   }
 };
-
 
 module.exports = { getItemsByCategory, filterItemsByOptions };
