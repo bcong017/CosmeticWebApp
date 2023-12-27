@@ -28,26 +28,33 @@ const itemList = {
     },
   ],
 };
-function CartPage({ amount = 6 }) {
-  const [itemList, setItemList] = useState({});
+function CartPage() {
+  const [itemList, setItemList] = useState([]);
   const { token } = useAuth();
-  async function getItem() {
-    const item = await cart
+
+  function getItem() {
+    cart
       .getItems()
       .then(function (response) {
-        // if (response.data) {
-        //   setToken(response.data.token);
-        //   setRole('user');
-        //   clearInput();
-        //   nav('/');
-        // }
+        setItemList(response.data.cartItems);
       })
       .catch(function (error) {
         console.log(error);
       });
-    console.log(item);
-    // setItemList(item);
   }
+
+  const handleDeleteItem = (target) => {
+    cart
+      .deleteItem(target)
+      .then(function (response) {
+        console.log(response.data.message);
+        getItem();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     console.log(token);
     getItem();
@@ -60,7 +67,7 @@ function CartPage({ amount = 6 }) {
         <div className='block'>
           <div className='text-2xl mb-3'> Số lượng sản phẩm: 12</div>
           <div className=' flex flex-col justify-around bg-section-pink min-w-[820px]'>
-            {itemList?.cartItems?.map((current) => {
+            {itemList?.map((current) => {
               return (
                 <div
                   key={current.id}
@@ -100,14 +107,16 @@ function CartPage({ amount = 6 }) {
                           className='w-[70px]'
                         />
                       </div>
-                      {current.quantity <= 6 && (
-                        <p className='amount-remaining self-center'>
-                          Chỉ còn {amount} sản phẩm!
-                        </p>
-                      )}
                     </div>
                   </div>
-                  <i className='fa-solid fa-trash self-center hover:cursor-pointer hover:text-red-500 '></i>
+                  <i
+                    data={current.id}
+                    key={current.id}
+                    className='fa-solid fa-trash self-center hover:cursor-pointer hover:text-red-500 '
+                    onClick={() => {
+                      handleDeleteItem(current.id);
+                    }}
+                  ></i>
                 </div>
               );
             })}
