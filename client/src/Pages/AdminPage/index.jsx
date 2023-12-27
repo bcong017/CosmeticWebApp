@@ -26,4 +26,8 @@ function AdminPage() {
   );
 }
 
+export function Component() {
+  return <AdminPage />;
+}
+
 export default AdminPage;

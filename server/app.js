@@ -58,7 +58,7 @@ app.use("/", userRoute);
  *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInVzZXJuYW1lIjoidGVzdDIiLCJpYXQiOjE3MDI5NzEyODMsImV4cCI6MTcwMjk3NDg4M30.6lFLfFZqQygwiQFZ_ohB4HKw_y0NGrP51s6woBFAYLE"
  *  }
  *  This token will expired 1h and will random
- * 
+ *
  * 2. Login
  *  POST
  *  http://localhost:3000/login
@@ -70,7 +70,7 @@ app.use("/", userRoute);
  *  and will send the token look like this:
  *  {
  *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInVzZXJuYW1lIjoidGVzdDIiLCJpYXQiOjE3MDI5NzEzNDYsImV4cCI6MTcwMjk3NDk0Nn0.Zz8uGWTVBYazT9CJH46RvCLsxUt8eqtuBc-AydSPH98"
- *   "role": "user" 
+ *   "role": "user"
  * }
  *  This token will expired 1h and will random
  */
@@ -149,13 +149,13 @@ app.use("/categories", categoryRoute);
  *  http://localhost:3000/categories/:categoryName
  *  for example:
  *   http://localhost:3000/categories/TayTrang (send all item in category TayTrang)
- * 
+ *
  * for order price
  * http://localhost:3000/categories/TayTrang?order=HTL for order from High to Low (default is Low to High)
- * 
+ *
  * for pagination
  * http://localhost:3000/categories/TayTrang?order=HTL&page=1 for page 1
- * 
+ *
  * 2. Filter items for each category options
  * Note: Come with filter options
  * http://localhost:3000/categories/TayTrang/filter-items?country=Pháp to filter country
@@ -254,7 +254,7 @@ app.use("/", userRoute);
 
 const start = async () => {
   await db.sequelize.sync();
-  //await db.sequelize.authenticate();
+  // await db.sequelize.authenticate();
   console.log("Kết nối xong");
   app.listen(3000, () => {
     console.log("Đang nghe ở port 3000");

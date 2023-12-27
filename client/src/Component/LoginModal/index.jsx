@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import auth from '@/Api_Call/auth.js';
 
 import {
   Modal,
@@ -16,9 +16,101 @@ import {
 } from '@nextui-org/react';
 import { MailIcon } from './MailIcon.jsx';
 import { LockIcon } from './LockIcon.jsx';
+import { useMemo, useState } from 'react';
+import { useAuth } from '@/Global_reference/context/auth.jsx';
+import { useNavigate } from 'react-router-dom';
+import { APP_ROLE } from '@/Global_reference/variables.js';
 
 export default function LoginModal() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [name, setName] = useState('');
+  const [phoneNum, setPhoneNum] = useState('');
+  const [address, setAddress] = useState('');
+  // const [gender, setGender] = useState('male');
+  const [resPassword, setResPassword] = useState('');
+  const [resEmail, setResEmail] = useState('');
+  const [resRePassword, setResRePassword] = useState('');
+  const { setToken, setRole } = useAuth();
+  const nav = useNavigate();
+
+  const clearInput = () => {
+    setLoginPassword('');
+    setLoginEmail('');
+    setName('');
+    setPhoneNum('');
+    setAddress('');
+    // setGender('male');
+    setResPassword('');
+    setResRePassword('');
+    setResEmail('');
+  };
+
+  const validateEmail = (email) =>
+    email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
+
+  const isInvalidLogin = useMemo(() => {
+    if (loginEmail === '') return false;
+
+    return validateEmail(loginEmail) ? false : true;
+  }, [loginEmail]);
+
+  const isInvalidReg = useMemo(() => {
+    if (resEmail === '') return false;
+
+    return validateEmail(resEmail) ? false : true;
+  }, [resEmail]);
+
+  const handleOnclickLogin = async () => {
+    if (isInvalidLogin) return;
+    if (!loginPassword) return;
+    await auth
+      .login({ username: loginEmail, password: loginPassword })
+      .then(function (response) {
+        if (response.data) {
+          setToken(response.data.token);
+          setRole(response.data.role);
+          clearInput();
+          nav('/');
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  // {
+  //   "username": "test1@gmail.co1",
+  //   "password": "test1",
+  //   "name": "",
+  //   "phone_number": "",
+  //   "adress": ""
+  // }
+  const handleOnclickRegister = async () => {
+    if (!resEmail) return;
+    if (!resPassword) return;
+    if (!resRePassword) return;
+    if (!(resPassword == resRePassword)) return;
+    await auth
+      .register({
+        username: resEmail,
+        password: resPassword,
+        name: name,
+        phone_number: phoneNum,
+        adress: address,
+      })
+      .then(function (response) {
+        if (response.data) {
+          setToken(response.data.token);
+          setRole(APP_ROLE.USER);
+          clearInput();
+          nav('/');
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -37,19 +129,31 @@ export default function LoginModal() {
                 variant='light'
                 size='lg'
               >
-                <Tab key='login' title='Đăng nhập' className=''>
-                  {/* <ModalHeader className='flex flex-col gap-1'>
-                    Đăng nhập
-                  </ModalHeader> */}
+                <Tab
+                  key='login'
+                  title='Đăng nhập'
+                  className=''
+                  onSelectionChange={() => {
+                    clearInput();
+                  }}
+                >
                   <ModalBody>
                     <Input
-                      autoFocus
                       endContent={
                         <MailIcon className='text-2xl text-default-400 pointer-events-none flex-shrink-0' />
                       }
+                      autoFocus
                       label='Email'
                       placeholder='Nhập email của bạn'
                       variant='bordered'
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      isRequired
+                      isInvalid={isInvalidLogin}
+                      color={isInvalidLogin ? 'danger' : 'success'}
+                      errorMessage={
+                        isInvalidLogin && 'Vui lòng nhập email hợp lệ'
+                      }
                     />
                     <Input
                       endContent={
@@ -59,15 +163,23 @@ export default function LoginModal() {
                       placeholder='Nhập mật khẩu của bạn'
                       type='password'
                       variant='bordered'
+                      value={loginPassword}
+                      isRequired
+                      onChange={(e) => setLoginPassword(e.target.value)}
                     />
                   </ModalBody>
                   <ModalFooter>
                     <Button color='danger' variant='flat' onPress={onClose}>
                       Đóng
                     </Button>
-                    <Link to='/userInfo'>
-                      <Button className='bg-heavy-pink'>Đăng nhập</Button>
-                    </Link>
+                    <Button
+                      className='bg-heavy-pink'
+                      onClick={() => {
+                        handleOnclickLogin();
+                      }}
+                    >
+                      Đăng nhập
+                    </Button>
                   </ModalFooter>
                 </Tab>
                 <Tab key='sign-up' title='Đăng ký' className=''>
@@ -76,12 +188,17 @@ export default function LoginModal() {
                   </ModalHeader> */}
                   <ModalBody>
                     <Input
+                      autoFocus
                       key='name'
                       type='text'
                       label='Họ và tên:'
                       variant='bordered'
                       placeholder=''
                       className='font-semibold'
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                      }}
                     />
                     <Input
                       key='phoneNum'
@@ -90,13 +207,33 @@ export default function LoginModal() {
                       variant='bordered'
                       placeholder=''
                       className=' font-semibold'
+                      value={phoneNum}
+                      onChange={(e) => {
+                        setPhoneNum(e.target.value);
+                      }}
                     />
-                    <div className='flex '>
+                    <Input
+                      key='address'
+                      type='text'
+                      label='Địa chỉ:'
+                      variant='bordered'
+                      placeholder=''
+                      className=' font-semibold'
+                      value={address}
+                      onChange={(e) => {
+                        setAddress(e.target.value);
+                      }}
+                    />
+                    {/* <div className='flex '>
                       <div className='mr-5 font-semibold'>Giới tính: </div>
                       <RadioGroup
                         color='secondary'
                         label=''
                         orientation='horizontal'
+                        value={gender}
+                        onChange={(e) => {
+                          setGender(e.target.value);
+                        }}
                       >
                         <Radio className='font-semibold' value='male'>
                           Nam
@@ -108,10 +245,9 @@ export default function LoginModal() {
                           Khác
                         </Radio>
                       </RadioGroup>
-                    </div>
+                    </div> */}
                     <Input
                       key='Email'
-                      autoFocus
                       endContent={
                         <MailIcon className='text-2xl text-default-400 pointer-events-none flex-shrink-0' />
                       }
@@ -119,6 +255,15 @@ export default function LoginModal() {
                       placeholder='Nhập email của bạn'
                       variant='bordered'
                       className=' font-semibold'
+                      value={resEmail}
+                      onChange={(e) => {
+                        setResEmail(e.target.value);
+                      }}
+                      isInvalid={isInvalidReg}
+                      color={isInvalidReg ? 'danger' : 'success'}
+                      errorMessage={
+                        isInvalidReg && 'Vui lòng nhập email hợp lệ'
+                      }
                     />
                     <Input
                       key='Password'
@@ -130,6 +275,10 @@ export default function LoginModal() {
                       type='password'
                       className=' font-semibold'
                       variant='bordered'
+                      value={resPassword}
+                      onChange={(e) => {
+                        setResPassword(e.target.value);
+                      }}
                     />
                     <Input
                       key='RePassword'
@@ -141,15 +290,24 @@ export default function LoginModal() {
                       type='password'
                       className=' font-semibold'
                       variant='bordered'
+                      value={resRePassword}
+                      onChange={(e) => {
+                        setResRePassword(e.target.value);
+                      }}
                     />
                   </ModalBody>
                   <ModalFooter>
                     <Button color='danger' variant='flat' onPress={onClose}>
                       Đóng
                     </Button>
-                    <Link to='/userInfo'>
-                      <Button className='bg-heavy-pink'>Đăng ký</Button>
-                    </Link>
+                    <Button
+                      className='bg-heavy-pink'
+                      onClick={() => {
+                        handleOnclickRegister();
+                      }}
+                    >
+                      Đăng ký
+                    </Button>
                   </ModalFooter>
                 </Tab>
               </Tabs>

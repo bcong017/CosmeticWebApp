@@ -26,3 +26,7 @@ export default function AboutPage() {
     </div>
   );
 }
+
+export function Component() {
+  return <AboutPage />;
+}

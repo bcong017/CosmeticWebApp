@@ -46,6 +46,7 @@ function SearchResultPage() {
       );
     })();
   }, [selectedPage, priceOrder]);
+
   return (
     <div className='flex flex-row my-5 mx-5'>
       <div className='block mr-10 w-[320px]'>
@@ -103,6 +104,10 @@ function SearchResultPage() {
       </div>
     </div>
   );
+}
+
+export function Component() {
+  return <SearchResultPage />;
 }
 
 export default SearchResultPage;

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Dropdown,
   DropdownItem,
@@ -7,10 +7,18 @@ import {
   DropdownMenu,
   Button,
 } from '@nextui-org/react';
+import { useAuth } from '@/Global_reference/context/auth';
 
 export default function UserDropDownMenu() {
   const [isOpenCategory, setIsOpenCategory] = useState(false);
-
+  const { setToken, setRole } = useAuth();
+  const nav = useNavigate();
+  const handleLogOut = () => {
+    setToken('');
+    setRole('');
+    nav('/');
+  };
+  useEffect(() => {}, []);
   const toggleCategory = (value) => {
     setIsOpenCategory(value);
   };
@@ -40,8 +48,13 @@ export default function UserDropDownMenu() {
           <DropdownItem key='2'>
             <Link to='/userOrderPage'>Đơn hàng của tôi.</Link>
           </DropdownItem>
-          <DropdownItem key='3'>
-            <Link to='/'>Đăng xuất.</Link>
+          <DropdownItem
+            key='3'
+            onClick={() => {
+              handleLogOut();
+            }}
+          >
+            Đăng xuất.
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>

@@ -1,21 +1,33 @@
-import { Tabs, Tab, Card, CardBody, Input, Button } from '@nextui-org/react';
-import { useEffect, useState, useContext, useRef } from 'react';
+import {
+  Tabs,
+  Tab,
+  Card,
+  CardBody,
+  Input,
+  Button,
+  Textarea,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from '@nextui-org/react';
+import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import './style.css';
-import { Token } from '@/main';
-import GetItem from '@/Api_Call/GetItem';
 
+import GetItem from '@/Api_Call/GetItem';
+import { VerticalDotsIcon } from '../AdminPage/TableItem/VerticalDotsIcon';
+import { useAuth } from '@/Global_reference/context/auth';
+import { APP_ROLE } from '@/Global_reference/variables';
 function ItemPage() {
   let [itemInfo, setItemInfo] = useState({});
-  const token = useContext(Token);
-
+  const { token, role } = useAuth();
   const imgRef = useRef();
   const location = useLocation();
 
   async function getItem() {
     const item = await GetItem(location.pathname);
     setItemInfo(item);
-    console.log(itemInfo);
   }
   useEffect(() => {
     getItem();
@@ -111,14 +123,49 @@ function ItemPage() {
               </Card>
             </Tab>
             <Tab key='item-specs' title='Thông số sản phẩm'>
-              <Card>
-                <CardBody className='bg-heavy-pink text-yellow-50'>
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur.
-                </CardBody>
-              </Card>
+              <div className='flex justify-center items-center'>
+                <Card className='max-w-[650px]'>
+                  <CardBody className='bg-heavy-pink text-yellow-50'>
+                    <div className='flex flex-col gap-3'>
+                      {itemInfo?.item?.specifications.Barcode != undefined && (
+                        <div>
+                          Barcode: {itemInfo?.item?.specifications.Barcode}
+                        </div>
+                      )}
+                      {itemInfo?.item?.specifications.Brand != undefined && (
+                        <div>Hãng: {itemInfo?.item?.specifications.Brand}</div>
+                      )}
+                      {itemInfo?.item?.specifications.Country != undefined && (
+                        <div>
+                          Xuất xứ: {itemInfo?.item?.specifications.Country}
+                        </div>
+                      )}
+                      {itemInfo?.item?.specifications.Country != undefined && (
+                        <div>
+                          Nơi sản xuất:{' '}
+                          {itemInfo?.item?.specifications.ProductionPlaces}
+                        </div>
+                      )}
+                      {itemInfo?.item?.specifications.Skin != undefined && (
+                        <div>
+                          Dùng cho: {itemInfo?.item?.specifications.Skin}
+                        </div>
+                      )}
+                      {itemInfo?.item?.specifications.Sex != undefined && (
+                        <div>
+                          Giới tính phù hợp:{' '}
+                          {itemInfo?.item?.specifications.Sex}
+                        </div>
+                      )}
+                      {itemInfo?.item?.specifications.Type != undefined && (
+                        <div>
+                          Vấn đề về da: {itemInfo?.item?.specifications.Type}
+                        </div>
+                      )}
+                    </div>
+                  </CardBody>
+                </Card>
+              </div>
             </Tab>
             <Tab key='item-component' title='Thành phần sản phẩm'>
               <Card>
@@ -134,9 +181,9 @@ function ItemPage() {
                 </CardBody>
               </Card>
             </Tab>
-            <Tab key='item-comment' title='Bình luận'>
+            <Tab key='item-comment' title='Phản hồi'>
               <Card className='bg-heavy-pink text-yellow-50 pt-5 px-4'>
-                {token != 'user' ? (
+                {!token && role != APP_ROLE.USER ? (
                   <CardBody>
                     <div className='flex justify-center items-center'>
                       Hãy đăng nhập để bình luận.
@@ -144,31 +191,55 @@ function ItemPage() {
                   </CardBody>
                 ) : (
                   <div className='flex flex-col gap-3'>
-                    <div>Bình luận của bạn:</div>
-                    <Input
-                      key='name'
-                      type='text'
-                      placeholder='Nhập bình luận...'
-                      className='font-semibold'
-                    />
+                    <div>Phản hồi của bạn:</div>
+                    <div className='grid grid-rows-1 grid-cols-[90%,10%] gap-3'>
+                      <Textarea
+                        label='Bình luận'
+                        placeholder='Nhập bình luận của bạn...'
+                        className='w-[100%]'
+                      />
+                      <Input
+                        key='comment'
+                        type='number'
+                        placeholder='Điểm đánh giá...'
+                        className='font-semibold h-[100%]'
+                      />
+                    </div>
                     <Button className='font-semibold ' disableRipple='true'>
-                      Đăng bình luận
+                      Đăng đánh giá.
                     </Button>
                   </div>
                 )}
                 {Array.isArray(itemInfo?.comments) == false ||
                 itemInfo?.comments.length == 0 ? (
                   <CardBody>
-                    <div className='flex justify-center items-center'>
+                    <div className='flex justify-center items-center mb-6'>
                       Sản phẩm chưa có bình luận.
                     </div>
                   </CardBody>
                 ) : (
                   <CardBody className=' flex flex-col gap-4 overflow-hidden '>
                     {itemInfo?.comments?.map((comment, index) => (
-                      <div key={index} className=' border-2 rounded p-2'>
-                        <div className='font-bold'>{comment.user.name}</div>
-                        <div>{comment.comment_text}</div>
+                      <div key={index} className='border-2 rounded p-2'>
+                        {/* <div className='font-bold'>{comment.user.name}</div> */}
+                        <div className='grid grid-cols-[95%,5%] '>
+                          <div>
+                            <div className='font-bold'>{comment.user.name}</div>
+                            <div>{comment.comment_text}</div>
+                          </div>
+                          <div className='flex items-center '>
+                            <Dropdown>
+                              <DropdownTrigger>
+                                <Button isIconOnly size='sm' variant='light'>
+                                  <VerticalDotsIcon className='text-default-300' />
+                                </Button>
+                              </DropdownTrigger>
+                              <DropdownMenu>
+                                <DropdownItem>Xóa</DropdownItem>
+                              </DropdownMenu>
+                            </Dropdown>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </CardBody>
@@ -180,6 +251,10 @@ function ItemPage() {
       </div>
     </div>
   );
+}
+
+export function Component() {
+  return <ItemPage />;
 }
 
 export default ItemPage;

@@ -20,6 +20,7 @@ function CategoryPage() {
   let [countrySelected, setCountrySelected] = useState([]);
   let [ppSelected, setPPSelected] = useState([]);
   let [priceOrder, setPriceOrder] = useState('LTH');
+  let [quantity, setQuantity] = useState(0);
 
   const fetchItems = (option) => {
     console.log(option);
@@ -59,9 +60,29 @@ function CategoryPage() {
           `filter-items?order=${priceOrder}&page=${selectedPage}${appendedURL}`,
         ),
       );
+      setSelectedPage(1);
     })();
-  }, [brandSelected, countrySelected, ppSelected, priceOrder, selectedPage]);
+  }, [brandSelected, countrySelected, ppSelected, priceOrder]);
 
+  useEffect(() => {
+    setQuantity(ItemsInfo?.totalItems ?? 0);
+  }, [ItemsInfo]);
+
+  useEffect(() => {
+    let appendedURL = `&country=${countrySelected.join(
+      ',',
+    )}&productionPlaces=${ppSelected.join(',')}&brand=${brandSelected.join(
+      ',',
+    )}`;
+    (async function () {
+      setItemsInfo(
+        await fetchItems(
+          `filter-items?order=${priceOrder}&page=${selectedPage}${appendedURL}`,
+        ),
+      );
+      setSelectedPage(selectedPage);
+    })();
+  }, [selectedPage]);
   return (
     <div className='flex flex-row my-5 mx-5'>
       <div className='block mr-10 w-[320px]'>
@@ -127,11 +148,11 @@ function CategoryPage() {
           </CheckboxGroup>
         </div>
       </div>
-      <div className='bg-section-blue w-[100%] px-4 py-4'>
+      <div className='bg-section-blue w-[100%] max-h-[750px]  px-4 py-4'>
         <div className='text-xl font-bold'>
           {title}{' '}
           <span className='text-base font-extralight'>
-            &#40; Số lượng: {ItemsInfo?.resultedItems?.length} &#41;
+            &#40; Số lượng: {quantity} &#41;
           </span>
         </div>
         <div className='grid grid-cols-5 grid-rows-2 gap-3'>
@@ -167,6 +188,10 @@ function CategoryPage() {
       </div>
     </div>
   );
+}
+
+export function Component() {
+  return <CategoryPage />;
 }
 
 export default CategoryPage;

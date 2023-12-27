@@ -65,3 +65,7 @@ export default function UserOrderPage() {
     </div>
   );
 }
+
+export function Component() {
+  return <UserOrderPage />;
+}

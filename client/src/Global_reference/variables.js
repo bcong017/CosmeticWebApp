@@ -18,3 +18,14 @@ export const CAT_TITLE = {
   ToanThan: 'Xịt thơm toàn thân',
   VungKin: 'Nước hoa vùng kín',
 };
+
+export const STORAGE_KEY = {
+  TOKEN: '_token',
+  ROLE: '_role',
+};
+
+export const APP_ROLE = {
+  GUEST: 'guest',
+  USER: 'user',
+  ADMIN: 'admin',
+}

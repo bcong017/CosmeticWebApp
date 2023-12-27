@@ -11,7 +11,7 @@ export default {
   editItem(payload) {
     return axios.put(`${API_HOST}/cart/edit`, payload);
   },
-  deleteItem(cid, payload) {
-    return axios.post(`${API_HOST}/cart/delete/${cid}`, payload);
+  deleteItem(cid) {
+    return axios.delete(`${API_HOST}/cart/delete/${cid}`);
   },
 };

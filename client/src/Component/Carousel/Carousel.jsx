@@ -2,6 +2,7 @@ import Carousel from 'react-multi-carousel';
 import Card from '../Card/Card.jsx';
 import './Carousel.css';
 import 'react-multi-carousel/lib/styles.css';
+import { useRef } from 'react';
 
 const responsive = {
   superLargeDesktop: {
@@ -21,38 +22,6 @@ const responsive = {
     items: 1,
   },
 };
-// const list = [
-//   {
-//     itemName: 'Sữa rửa mặt',
-//     imgURL:
-//       'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
-//     price: '100.000 VND',
-//   },
-//   {
-//     itemName: 'Sữa rửa mặt',
-//     imgURL:
-//       'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
-//     price: '100.000 VND',
-//   },
-//   {
-//     itemName: 'Sữa rửa mặt',
-//     imgURL:
-//       'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
-//     price: '100.000 VND',
-//   },
-//   {
-//     itemName: 'Sữa rửa mặt',
-//     imgURL:
-//       'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
-//     price: '100.000 VND',
-//   },
-//   {
-//     itemName: 'Sữa rửa mặt',
-//     imgURL:
-//       'https://media.hcdn.vn/catalog/category/19_3_img_250x250_8e0796_fit_center.jpg',
-//     price: '100.000 VND',
-//   },
-// ];
 
 function CarouselComponent({ title, listOfItem = [] }) {
   return (
@@ -65,6 +34,8 @@ function CarouselComponent({ title, listOfItem = [] }) {
           draggable={false}
           infinite={true}
           autoPlay={true}
+          // customRightArrow={<CustomRightArrow />}
+          // ref={r}
         >
           {listOfItem?.map((item, index) => (
             <Card
