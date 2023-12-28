@@ -46,13 +46,13 @@ app.use("/", userRoute);
  *  POST
  *  http://localhost:3000/register
  *  Need data in JSON:
- *   {
- *     "username": "test1",
- *     "password": "test1",
- *     "name": "Test1",
- *     "phone_number": 12345,
- *     "adress": "HCM"
- *   }
+    {
+      "username": "test1",
+      "password": "test1",
+      "name": "Test1",
+      "phone_number": 12345,
+      "adress": "HCM"
+    }
  *  and will send the token look like this:
  *  {
  *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInVzZXJuYW1lIjoidGVzdDIiLCJpYXQiOjE3MDI5NzEyODMsImV4cCI6MTcwMjk3NDg4M30.6lFLfFZqQygwiQFZ_ohB4HKw_y0NGrP51s6woBFAYLE"
@@ -63,19 +63,81 @@ app.use("/", userRoute);
  *  POST
  *  http://localhost:3000/login
  *  Need data in JSON:
- *   {
- *     "username": "test1",
- *     "password": "test1"
- *   }
- *  and will send the token look like this:
- *  {
- *   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInVzZXJuYW1lIjoidGVzdDIiLCJpYXQiOjE3MDI5NzEzNDYsImV4cCI6MTcwMjk3NDk0Nn0.Zz8uGWTVBYazT9CJH46RvCLsxUt8eqtuBc-AydSPH98"
- *   "role": "user"
- * }
- *  This token will expired 1h and will random
+    {
+      "username": "test1",
+      "password": "test1"
+    }
+*  and will send the token look like this:
+   {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInVzZXJuYW1lIjoidGVzdDIiLCJpYXQiOjE3MDI5NzEzNDYsImV4cCI6MTcwMjk3NDk0Nn0.Zz8uGWTVBYazT9CJH46RvCLsxUt8eqtuBc-AydSPH98"
+    "role": "user"
+  }
+*  This token will expired 1h and will random
+* 3. Deactivate account
+*  POST
+*  http://localhost:3000/user/deactivate
+*  This will deactivate the user account and prevent them from login
+* 
+* 4. Get user info
+*  GET
+*  http://localhost:3000/user/info
+*  This will get user information such as Name, Phone number and Address
+*
+*  5. Change password
+*  POST
+*  http://localhost:3000/user/change-password
+*  Need data in JSON
+  {
+  "oldPassword": "test1",
+  "newPassword": "test2",
+  "confirmPassword": "test2"
+  }
+*  This will change user password into the new one
  */
 
 app.use("/admin", adminRoute);
+/**
+ * This is for admin functions:
+ * 1. Deactivate user account
+ * POST
+ * http://localhost:3000/admin/deactivate/:userId
+ * 
+ * This will deactivate user account
+ * 
+ * 2. Get all order information
+ * GET
+ * http://localhost:3000/admin
+ * 
+ * This will get all the order information so it can be confirm or reject
+ * 
+ * 3. Confirm order
+ * POST
+ * http://localhost:3000/admin/confirm/:orderId
+ * 
+ * This will confirm the order
+ * 
+ * 4. Reject order
+ * POST
+ * http://localhost:3000/admin/reject/:orderId
+ * 
+ * This will reject the order, delete the order, get all the cart items in that order back into user's cart
+ * 
+ * 5. Add product
+ * POST
+ * http://localhost:3000/admin
+ * 
+ * This will add the product into storage/ database
+ * 
+ * 6. Edit product
+ * PUT
+ * http://localhost:3000/admin/edit/:itemId
+ * 
+ * This will edit the product information: Name, Quantity, Price,... 
+ * 
+ * 7. Remove product
+ * DELETE
+ * http://localhost:3000/admin/delete/:itemId
+ */
 
 app.use(searchRoute);
 /**

@@ -1,4 +1,3 @@
-// models/saleEvent/saleEvent.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
@@ -23,6 +22,14 @@ module.exports = (sequelize) => {
     is_active: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+    },
+    brand: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    category: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
     },
   });
 
