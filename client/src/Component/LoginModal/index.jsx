@@ -3,8 +3,8 @@ import auth from '@/Api_Call/auth.js';
 import {
   Modal,
   ModalContent,
-  RadioGroup,
-  Radio,
+  // RadioGroup,
+  // Radio,
   ModalBody,
   ModalFooter,
   Button,
@@ -16,7 +16,7 @@ import {
 } from '@nextui-org/react';
 import { MailIcon } from './MailIcon.jsx';
 import { LockIcon } from './LockIcon.jsx';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/Global_reference/context/auth.jsx';
 import { useNavigate } from 'react-router-dom';
 import { APP_ROLE } from '@/Global_reference/variables.js';
@@ -32,7 +32,7 @@ export default function LoginModal() {
   const [resPassword, setResPassword] = useState('');
   const [resEmail, setResEmail] = useState('');
   const [resRePassword, setResRePassword] = useState('');
-  const { setToken, setRole } = useAuth();
+  const { setToken, setRole, role } = useAuth();
   const nav = useNavigate();
 
   const clearInput = () => {
@@ -68,24 +68,17 @@ export default function LoginModal() {
     await auth
       .login({ username: loginEmail, password: loginPassword })
       .then(function (response) {
-        if (response.data) {
+        {
           setToken(response.data.token);
           setRole(response.data.role);
           clearInput();
-          nav('/');
         }
       })
       .catch(function (error) {
         console.log(error);
       });
   };
-  // {
-  //   "username": "test1@gmail.co1",
-  //   "password": "test1",
-  //   "name": "",
-  //   "phone_number": "",
-  //   "adress": ""
-  // }
+
   const handleOnclickRegister = async () => {
     if (!resEmail) return;
     if (!resPassword) return;
@@ -112,9 +105,17 @@ export default function LoginModal() {
       });
   };
 
+  useEffect(() => {
+    if (role == APP_ROLE.ADMIN) {
+      nav('/admin');
+    } else {
+      nav('/');
+    }
+  }, [role]);
+
   return (
     <>
-      <Tooltip content='Đăng nhập / Đăng ký' closeDelay={0}>
+      <Tooltip content='Đăng nhập/ Đăng ký' closeDelay={0}>
         <Button onPress={onOpen} color='none' isIconOnly disableRipple='true'>
           <div className='fa-solid fa-circle-user user-icon' />
         </Button>
