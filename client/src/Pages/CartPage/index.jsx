@@ -63,9 +63,9 @@ function CartPage() {
   return (
     <div className='inline mt-10'>
       <div className='text-center text-3xl font-bold'>Giỏ hàng của bạn</div>
-      <div className='flex justify-around'>
+      <div className='flex justify-around mt-8'>
         <div className='block'>
-          <div className='text-2xl mb-3'> Số lượng sản phẩm: 12</div>
+          {/* <div className='text-2xl mb-3'> Số lượng sản phẩm: 12</div> */}
           <div className=' flex flex-col justify-around bg-section-pink min-w-[820px]'>
             {itemList?.map((current) => {
               return (
