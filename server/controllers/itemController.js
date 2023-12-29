@@ -30,6 +30,8 @@ const getCommentsForItem = async (itemId, req) => {
       }
     }
 
+    const loggedInUserId = req.user ? req.user.userId : null;
+
     const comments = await db.Comment.findAll({
       where: { item_id: itemId },
       include: [
@@ -50,7 +52,7 @@ const getCommentsForItem = async (itemId, req) => {
         username: comment.User.username,
         name: comment.User.name,
       },
-      isCurrentUserComment: req.user && req.user.userId === comment.User.id,
+      isCurrentUserComment: loggedInUserId && loggedInUserId === comment.User.id,
     }));
 
     return formattedComments;

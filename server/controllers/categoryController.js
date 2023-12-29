@@ -66,7 +66,6 @@ const getItemsByCategory = async (req, res) => {
 
     const resultedItems = items.map((item) => {
       let finalPrice = item.price; // Default to item price
-      console.log(item.is_on_sale);
       if (item.is_on_sale) {
         const currentDate = new Date();
         const startDate = new Date(item.SaleEvent.start_date);

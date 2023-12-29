@@ -56,8 +56,6 @@ const getTopItems = async (req, res) => {
       return items.map((item) => {
         let finalPrice = item.price;
 
-        console.log("DMMM");
-        console.log(item.is_on_sale);
         if (item.is_on_sale) {
           const currentDate = new Date();
           const startDate = new Date(item.SaleEvent.start_date);
