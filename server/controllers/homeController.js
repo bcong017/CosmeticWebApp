@@ -13,7 +13,7 @@ const getTopItems = async (req, res) => {
         "brand",
         "sold_count",
         "image_urls",
-        "sale_event_id",
+        "is_on_sale",
       ],
       include: [
         {
@@ -37,7 +37,7 @@ const getTopItems = async (req, res) => {
         "brand",
         "sold_count",
         "image_urls",
-        "sale_event_id",
+        "is_on_sale",
       ],
       include: [
         {
@@ -51,11 +51,14 @@ const getTopItems = async (req, res) => {
       ],
     });
 
+  
     const formatItems = (items) => {
       return items.map((item) => {
         let finalPrice = item.price;
 
-        if (item.sale_event_id && item.SaleEvent) {
+        console.log("DMMM");
+        console.log(item.is_on_sale);
+        if (item.is_on_sale) {
           const currentDate = new Date();
           const startDate = new Date(item.SaleEvent.start_date);
           const endDate = new Date(item.SaleEvent.end_date);
@@ -89,7 +92,7 @@ const getTopItems = async (req, res) => {
         };
 
         // Include additional information if there is a sale event
-        if (item.sale_event_id && item.SaleEvent) {
+        if (item.is_on_sale) {
           resultObject.base_price = item.price;
           resultObject.discount_percentage = item.SaleEvent.discount_percentage;
           resultObject.end_date =

@@ -301,4 +301,30 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-module.exports = { getAllUserAccounts, adminDeactivateUser, confirmOrder, rejectOrder, addItem, editItem, deleteItem, getAllOrders };
+const adminActivateUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Check if the user exists
+    const user = await db.User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Check if the user is already deactivated
+    if (user.is_active == false) {
+      return res.status(400).json({ message: 'User is already deactivated.' });
+    }
+
+    // Deactivate the user
+    user.is_active = false;
+    await user.save();
+
+    return res.status(200).json({ message: 'User deactivated by admin successfully' });
+  } catch (error) {
+    console.error('Error deactivating user by admin:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+module.exports = { getAllUserAccounts, adminDeactivateUser, confirmOrder, rejectOrder, addItem, editItem, deleteItem, getAllOrders, adminActivateUser };

@@ -101,7 +101,7 @@ const getItemsByCategory = async (req, res) => {
       };
 
       // Include additional information if there is a sale event
-      if (item.sale_event_id && item.SaleEvent) {
+      if (item.is_on_sale) {
         resultObject.base_price = item.price;
         resultObject.discount_percentage = item.SaleEvent.discount_percentage;
         resultObject.end_date =
@@ -321,7 +321,7 @@ const filterItemsByOptions = async (req, res) => {
       };
 
       // Include additional information if there is a sale event
-      if (item.sale_event_id && item.SaleEvent) {
+      if (item.is_on_sale) {
         resultObject.base_price = item.price;
         resultObject.discount_percentage = item.SaleEvent.discount_percentage;
         resultObject.end_date =
