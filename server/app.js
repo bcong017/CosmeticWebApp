@@ -3,9 +3,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
-const schedule = require('node-schedule');
+const schedule = require("node-schedule");
 
-const {updateIsOnSaleStatus } = require('./routes/saleEventRoute');
+const { updateIsOnSaleStatus } = require("./routes/saleEventRoute");
 
 // For routing
 const categoryRoute = require("./routes/categoryRoute");
@@ -35,7 +35,7 @@ app.use(bodyParser.json());
 
 const db = require("./models");
 
-schedule.scheduleJob('0 0 * * *', async () => {
+schedule.scheduleJob("0 0 * * *", async () => {
   await updateIsOnSaleStatus();
 });
 
@@ -101,39 +101,39 @@ app.use("/admin", adminRoute);
  * 1. Deactivate user account
  * POST
  * http://localhost:3000/admin/deactivate/:userId
- * 
+ *
  * This will deactivate user account
- * 
+ *
  * 2. Get all order information
  * GET
  * http://localhost:3000/admin
- * 
+ *
  * This will get all the order information so it can be confirm or reject
- * 
+ *
  * 3. Confirm order
  * POST
  * http://localhost:3000/admin/confirm/:orderId
- * 
+ *
  * This will confirm the order
- * 
+ *
  * 4. Reject order
  * POST
  * http://localhost:3000/admin/reject/:orderId
- * 
+ *
  * This will reject the order, delete the order, get all the cart items in that order back into user's cart
- * 
+ *
  * 5. Add product
  * POST
  * http://localhost:3000/admin
- * 
+ *
  * This will add the product into storage/ database
- * 
+ *
  * 6. Edit product
  * PUT
  * http://localhost:3000/admin/edit/:itemId
- * 
- * This will edit the product information: Name, Quantity, Price,... 
- * 
+ *
+ * This will edit the product information: Name, Quantity, Price,...
+ *
  * 7. Remove product
  * DELETE
  * http://localhost:3000/admin/delete/:itemId
@@ -315,8 +315,8 @@ app.use("/", userRoute);
  */
 
 const start = async () => {
-  await db.sequelize.sync();
-  // await db.sequelize.authenticate();
+  // await db.sequelize.sync();
+  await db.sequelize.authenticate();
   console.log("Kết nối xong");
   app.listen(3000, () => {
     console.log("Đang nghe ở port 3000");

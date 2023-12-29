@@ -4,30 +4,30 @@ import { Input } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import cart from '@/Api_Call/cart';
 import { useAuth } from '@/Global_reference/context/auth';
-const itemList = {
-  cartItems: [
-    {
-      id: 1,
-      item: {
-        name: "Nước Tẩy Trang L'Oreal Tươi Mát Cho Da Dầu, Hỗn Hợp 400ml",
-        price: '159.000',
-        image_url:
-          'https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-205100137-1695896128_img_800x800_eb97c5_fit_center.png',
-      },
-      quantity: 4,
-    },
-    {
-      id: 2,
-      item: {
-        name: "Nước Tẩy Trang L'Oreal Làm Sạch Sâu Trang Điểm 400ml",
-        price: '155.000',
-        image_url:
-          'https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-205100146-1695896051_img_800x800_eb97c5_fit_center.png',
-      },
-      quantity: 2,
-    },
-  ],
-};
+// const itemList = {
+//   cartItems: [
+//     {
+//       id: 1,
+//       item: {
+//         name: "Nước Tẩy Trang L'Oreal Tươi Mát Cho Da Dầu, Hỗn Hợp 400ml",
+//         price: '159.000',
+//         image_url:
+//           'https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-205100137-1695896128_img_800x800_eb97c5_fit_center.png',
+//       },
+//       quantity: 4,
+//     },
+//     {
+//       id: 2,
+//       item: {
+//         name: "Nước Tẩy Trang L'Oreal Làm Sạch Sâu Trang Điểm 400ml",
+//         price: '155.000',
+//         image_url:
+//           'https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-205100146-1695896051_img_800x800_eb97c5_fit_center.png',
+//       },
+//       quantity: 2,
+//     },
+//   ],
+// };
 function CartPage() {
   const [itemList, setItemList] = useState([]);
   const { token } = useAuth();

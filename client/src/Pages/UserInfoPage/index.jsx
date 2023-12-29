@@ -51,14 +51,6 @@ function UserInfoPage() {
                 placeholder=''
                 className='mt-10 font-semibold'
               />
-              <Input
-                key='email'
-                type='email'
-                label='Email:'
-                labelPlacement='outside-left'
-                placeholder=''
-                className='mt-10 font-semibold'
-              />
               <Button
                 endContent={<i className='fa-solid fa-check'></i>}
                 disableRipple='true'
