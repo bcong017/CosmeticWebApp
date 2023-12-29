@@ -1,23 +1,76 @@
-import { Image } from '@nextui-org/react';
+import { Button } from '@nextui-org/react';
+import { useEffect, useState } from 'react';
+import admin from '@/Api_Call/admin';
 
 export default function UserItem() {
+  const [userList, setUserList] = useState([]);
+
+  const getUserList = () => {
+    admin
+      .getUsers()
+      .then((res) => {
+        setUserList(res.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const handleState = (state, id) => {
+    if (state) {
+      admin.deactivateUser(id).catch(function (error) {
+        console.log(error);
+      });
+      getUserList();
+    }
+    // else{
+    //   admin.
+    // }
+  };
+
+  useEffect(() => {
+    getUserList();
+  }, []);
+
   return (
-    <div className='justify-evenly flex bg-pink-300 m-5 pt-4 pb-4 '>
-      <Image
-        className='variant-item-thumbnail'
-        src='https://w7.pngwing.com/pngs/81/570/png-transparent-profile-logo-computer-icons-user-user-blue-heroes-logo-thumbnail.png'
-        alt=''
-        width={80}
-        height={80}
-      />
-      <div className='self-center'>
-        <div className='ml-5 '>Họ và tên: NBC</div>
-        <div className='ml-5 '>Ngày gia nhập: 24/6/2023</div>
-      </div>
-      <div className='ml-5 self-center flex'>
-        <div className='flex flex-col'></div>
-      </div>
-      <i className='fa-solid fa-trash self-center hover:cursor-pointer hover:text-red-500 '></i>
-    </div>
+    <>
+      {userList?.users?.map((current, index) => {
+        return (
+          <div
+            key={index}
+            className='justify-evenly flex bg-pink-300 m-5 py-4 '
+          >
+            <div className='self-center w-[250px]'>
+              <div className='ml-5 '>Họ và tên: {current.name}</div>
+              <div className='ml-5 '>Số điện thoại: {current.phone_number}</div>
+              <div className='ml-5 '>Địa chỉ: {current.address}</div>
+            </div>
+            {current.is_active ? (
+              <Button
+                className='self-center w-[100px]'
+                onClick={() => {
+                  handleState(current.is_active, current.id);
+                }}
+                color='primary'
+                disableRipple='true'
+              >
+                Vô hiệu hóa
+              </Button>
+            ) : (
+              <Button
+                className='self-center w-[100px]'
+                onClick={() => {
+                  handleState(current.is_active, current.id);
+                }}
+                color='primary'
+                disableRipple='true'
+              >
+                Kích hoạt
+              </Button>
+            )}
+          </div>
+        );
+      })}
+    </>
   );
 }

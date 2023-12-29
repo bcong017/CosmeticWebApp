@@ -31,12 +31,10 @@ function SearchResultPage() {
     searchInput.current = location.pathname.substring(19);
     console.log(searchInput.current);
     getItemList();
-    console.log(itemsInfo);
   }, [location]);
 
   useEffect(() => {
     (async function () {
-      console.log(itemsInfo);
       setItemsInfo(
         await fetchItems({
           searchTerm: searchInput.current,

@@ -6,7 +6,7 @@ export default {
     return axios.get(`${API_HOST}/admin/user`);
   },
   deactivateUser(uid) {
-    return axios.post(`${API_HOST}/deactivate/${uid}`);
+    return axios.post(`${API_HOST}/admin/deactivate/${uid}`);
   },
   getOrders() {
     return axios.get(`${API_HOST}/admin/order`);
