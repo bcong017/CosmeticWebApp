@@ -80,6 +80,8 @@ const getItemsByCategory = async (req, res) => {
         }
       }
 
+      finalPrice = finalPrice.toFixed(3);
+
       const imageUrlsArray = item.image_urls ? item.image_urls.split('***') : [];
       let firstImageUrl = imageUrlsArray[0];
 
@@ -96,7 +98,7 @@ const getItemsByCategory = async (req, res) => {
         first_image_url: firstImageUrl,
         user_rating: item.user_rating,
       };
-      // resultObject   resultedItems
+
       // Include additional information if there is a sale event
       if (item.sale_event_id && item.SaleEvent) {
         resultObject.base_price = item.price;
@@ -180,7 +182,6 @@ const getItemsByCategory = async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 
 const filterItemsByOptions = async (req, res) => {
   try {
@@ -282,7 +283,7 @@ const filterItemsByOptions = async (req, res) => {
     });
 
     const resultedItems = items.map((item) => {
-      let finalPrice;
+      let finalPrice = item.price; // Default to item price
 
       if (item.sale_event_id && item.SaleEvent) {
         const currentDate = new Date();
@@ -294,19 +295,15 @@ const filterItemsByOptions = async (req, res) => {
           const discountedPrice =
             (item.price * item.SaleEvent.discount_percentage) / 100;
           finalPrice = Math.max(0, item.price - discountedPrice);
-        } else {
-          finalPrice = item.price;
         }
-      } else {
-        finalPrice = item.price;
       }
 
-      const imageUrlsArray = item.image_urls
-        ? item.image_urls.split("***")
-        : [];
+      finalPrice = finalPrice.toFixed(3);
+      
+      const imageUrlsArray = item.image_urls ? item.image_urls.split('***') : [];
       let firstImageUrl = imageUrlsArray[0];
 
-      if (firstImageUrl && firstImageUrl.includes("promotions")) {
+      if (firstImageUrl && firstImageUrl.includes('promotions')) {
         firstImageUrl = imageUrlsArray[1] || null;
       }
 
@@ -319,6 +316,7 @@ const filterItemsByOptions = async (req, res) => {
         first_image_url: firstImageUrl,
         user_rating: item.user_rating,
       };
+
       // Include additional information if there is a sale event
       if (item.sale_event_id && item.SaleEvent) {
         resultObject.base_price = item.price;

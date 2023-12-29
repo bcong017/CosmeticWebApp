@@ -148,4 +148,137 @@ const rejectOrder = async (req,res) =>{
   }
 }
 
-module.exports = { getAllUserAccounts, adminDeactivateUser, confirmOrder, rejectOrder };
+const addItem = async (req, res) => {
+  try {
+    const {
+      image_urls,
+      name,
+      price,
+      brand,
+      category,
+      ingredients,
+      quantity,
+      product_information,
+      use_information,
+      specifications,
+    } = req.body;
+
+    // Split image_urls into an array of links using comma and space as separators
+    const imageUrlsArray = image_urls.split(', ').map(link => link.trim());
+
+    // Check if there is a sale event for the given category or brand
+    const saleEvent = await db.SaleEvent.findOne({
+      attributes: ["id", "brand", "category", "discount_percentage", "start_date", "end_date"],
+      where: {
+        is_active: true,
+        [db.Sequelize.Op.or]: [
+          { brand: brand || null },
+          { category: category || null },
+        ],
+      },
+    });
+
+    // Create a new item
+    const newItem = await db.Item.create({
+      image_urls: imageUrlsArray.join('***'), // Rejoin the links to store in the database
+      name,
+      price,
+      brand,
+      category,
+      ingredients,
+      quantity,
+      product_information,
+      use_information,
+      specifications: JSON.stringify(specifications),
+      sale_event_id: saleEvent ? saleEvent.id : null,
+      is_on_sale: saleEvent ? true : false,
+    });
+
+    return res.status(201).json({ message: 'Item added successfully', newItem });
+  } catch (error) {
+    console.error('Error adding item:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const editItem = async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+    const {
+      image_urls,
+      name,
+      price,
+      brand,
+      category,
+      ingredients,
+      quantity,
+      product_information,
+      use_information,
+      specifications,
+    } = req.body;
+
+    // Split image_urls into an array of links using comma and space as separators
+    const imageUrlsArray = image_urls.split(', ').map(link => link.trim());
+
+    // Update the item and include the SaleEvent
+    const [updatedRowCount, [updatedItem]] = await db.Item.update(
+      {
+        image_urls: imageUrlsArray.join('***'), // Rejoin the links to store in the database
+        name,
+        price,
+        brand,
+        category,
+        ingredients,
+        quantity,
+        product_information,
+        use_information,
+        specifications: JSON.stringify(specifications),
+      },
+      {
+        where: { id: itemId },
+        returning: true,
+        include: [
+          {
+            model: db.SaleEvent,
+            attributes: ["id", "brand", "category", "discount_percentage", "start_date", "end_date"],
+            where: {
+              is_active: true,
+            },
+            required: false,
+          },
+        ],
+      }
+    );
+
+    // Update is_on_sale status and associate the item with the sale event
+    if (updatedItem && updatedItem.SaleEvent) {
+      const isBrandMatch = !brand || updatedItem.brand === updatedItem.SaleEvent.brand;
+      const isCategoryMatch = !category || updatedItem.category === updatedItem.SaleEvent.category;
+
+      if (isBrandMatch || isCategoryMatch) {
+        await updatedItem.update({ sale_event_id: updatedItem.SaleEvent.id, is_on_sale: true });
+      }
+    }
+
+    return res.status(200).json({ message: 'Item updated successfully', updatedItem });
+  } catch (error) {
+    console.error('Error editing item:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const deleteItem = async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+
+    // Delete the item
+    await db.Item.destroy({ where: { id: itemId } });
+
+    return res.status(200).json({ message: 'Item deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting item:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+module.exports = { getAllUserAccounts, adminDeactivateUser, confirmOrder, rejectOrder, addItem, editItem, deleteItem };

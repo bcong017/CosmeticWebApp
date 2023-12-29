@@ -1,7 +1,7 @@
 // controllers/itemController.js
 const db = require("../models");
 
-const getCommentsForItem = async (itemId) => {
+const getCommentsForItem = async (itemId, req) => {
   try {
     const comments = await db.Comment.findAll({
       where: { item_id: itemId },
@@ -23,18 +23,34 @@ const getCommentsForItem = async (itemId) => {
         username: comment.User.username,
         name: comment.User.name,
       },
-      isCurrentUserComment: req.user && req.user.userId === comment.User.id,
+      isCurrentUserComment: req.user && req.user.id === comment.User.id,
     }));
 
     return formattedComments;
   } catch (error) {
     console.error("Error in getCommentsForItem:", error);
-    throw error; // Propagate the error to the caller
+    throw error;
   }
 };
 
 const getItemById = async (req, res) => {
   try {
+    const token = req.headers.authorization;
+    if (token) {
+      const tokenParts = token.split(" ");
+      try {
+        if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
+          throw new Error("Invalid token format");
+        }
+
+        const decoded = jwt.verify(tokenParts[1], "UserSecretKey");
+        req.user = decoded;
+      } catch (error) {
+        console.error("Error verifying token:", error);
+      }
+    }
+
+    console.log(req.user);
     const itemId = req.params.itemId;
 
     console.log("Item ID:", itemId);
@@ -54,7 +70,7 @@ const getItemById = async (req, res) => {
         },
         {
           model: db.SaleEvent,
-          attributes: ["event_name", "discount_percentage", "end_date"],
+          attributes: ["event_name", "discount_percentage", "start_date", "end_date"],
           where: {
             is_active: true,
           },
@@ -75,13 +91,10 @@ const getItemById = async (req, res) => {
       (url) => !url.includes("promotions")
     );
 
-    // Use the modified first image URL
-    const firstImageUrl =
-      filteredImageUrls.length > 0 ? filteredImageUrls[0] : null;
-
     // Calculate the final price based on sale event
-    let finalPrice;
-    var discountPercentage = 0;
+    let finalPrice = item.price;
+    let discountPercentage = 0;
+
     if (item.sale_event_id && item.SaleEvent) {
       const currentDate = new Date();
       const startDate = new Date(item.SaleEvent.start_date);
@@ -90,17 +103,10 @@ const getItemById = async (req, res) => {
       if (startDate <= currentDate && currentDate <= endDate) {
         // Calculate the discounted price
         discountPercentage = item.SaleEvent.discount_percentage;
-        const discountedPrice =
-          (item.price * discountPercentage) / 100;
+        const discountedPrice = (item.price * discountPercentage) / 100;
         finalPrice = Math.max(0, item.price - discountedPrice);
-      } else {
-        finalPrice = item.price;
       }
-    } else {
-      finalPrice = item.price;
     }
-
-    const priceAfterSale = finalPrice;
 
     const formattedItem = {
       id: item.id,
@@ -120,11 +126,12 @@ const getItemById = async (req, res) => {
       sale_event: item.SaleEvent
         ? {
             event_name: item.SaleEvent.event_name,
-            discount_percentage: `${item.SaleEvent.discount_percentage}%`,
+            discount_percentage: `${discountPercentage}%`,
+            start_date: item.SaleEvent.start_date.toLocaleDateString("en-GB"),
             end_date: item.SaleEvent.end_date.toLocaleDateString("en-GB"),
           }
         : null,
-      price_after_sale: priceAfterSale,
+        base_price: item.price,
     };
 
     console.log("Formatted Item:", formattedItem);
@@ -132,16 +139,7 @@ const getItemById = async (req, res) => {
     // Check if the item has comments
     if (item.Comments && item.Comments.length > 0) {
       // Format the comments data
-      const formattedComments = item.Comments.map((comment) => ({
-        id: comment.id,
-        comment_text: comment.comment_text,
-        comment_date: comment.comment_date.toLocaleDateString("en-GB"),
-        user: {
-          id: comment.User.id,
-          username: comment.User.username,
-          name: comment.User.name,
-        },
-      }));
+      const formattedComments = await getCommentsForItem(itemId, req);
 
       console.log("Formatted Comments:", formattedComments);
 
@@ -160,6 +158,5 @@ const getItemById = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 module.exports = { getCommentsForItem, getItemById };

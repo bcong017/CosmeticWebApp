@@ -6,7 +6,15 @@ const getTopItems = async (req, res) => {
     const topSoldItems = await db.Item.findAll({
       order: [["sold_count", "DESC"]],
       limit: 10,
-      attributes: ["id", "name", "price", "brand", "sold_count", "image_urls"],
+      attributes: [
+        "id",
+        "name",
+        "price",
+        "brand",
+        "sold_count",
+        "image_urls",
+        "sale_event_id",
+      ],
       include: [
         {
           model: db.SaleEvent,
@@ -22,7 +30,15 @@ const getTopItems = async (req, res) => {
     const topRatedItems = await db.Item.findAll({
       order: [["user_rating", "DESC"]],
       limit: 10,
-      attributes: ["id", "name", "price", "brand", "user_rating", "image_urls"],
+      attributes: [
+        "id",
+        "name",
+        "price",
+        "brand",
+        "sold_count",
+        "image_urls",
+        "sale_event_id",
+      ],
       include: [
         {
           model: db.SaleEvent,
@@ -38,29 +54,34 @@ const getTopItems = async (req, res) => {
     const formatItems = (items) => {
       return items.map((item) => {
         let finalPrice = item.price;
-    
-        const hasSaleEvent = item.SaleEvent && item.SaleEvent.discount_percentage > 0;
-    
-        if (hasSaleEvent) {
+
+        if (item.sale_event_id && item.SaleEvent) {
           const currentDate = new Date();
           const startDate = new Date(item.SaleEvent.start_date);
           const endDate = new Date(item.SaleEvent.end_date);
-    
+
           if (startDate <= currentDate && currentDate <= endDate) {
             // Calculate the discounted price
-            const discountedPrice = (item.price * item.SaleEvent.discount_percentage) / 100;
+            const discountedPrice =
+              (item.price * item.SaleEvent.discount_percentage) / 100;
             finalPrice = Math.max(0, item.price - discountedPrice);
+
+            finalPrice = finalPrice.toFixed(3);
           }
         }
-    
-        const imageUrlsArray = item.image_urls ? item.image_urls.split("***") : [];
+
+        const imageUrlsArray = item.image_urls
+          ? item.image_urls.split("***")
+          : [];
         let firstImageUrl = imageUrlsArray[0];
-    
+
         // Check if the first image link contains "promotions", use the second link if true
         if (firstImageUrl && firstImageUrl.includes("promotions")) {
           firstImageUrl = imageUrlsArray[1] || null;
         }
-    
+
+        //finalPrice = finalPrice.toFixed(3);
+
         const resultObject = {
           id: item.id,
           name: item.name,
@@ -69,18 +90,18 @@ const getTopItems = async (req, res) => {
           first_image_url: firstImageUrl,
           user_rating: item.user_rating,
         };
-    
+
         // Include additional information if there is a sale event
-        if (hasSaleEvent) {
+        if (item.sale_event_id && item.SaleEvent) {
           resultObject.base_price = item.price;
           resultObject.discount_percentage = item.SaleEvent.discount_percentage;
-          resultObject.end_date = item.SaleEvent.end_date.toLocaleDateString("en-GB");
+          resultObject.end_date =
+            item.SaleEvent.end_date.toLocaleDateString("en-GB");
         }
-    
+
         return resultObject;
       });
     };
-    
 
     const response = {
       topSoldItems: formatItems(topSoldItems),

@@ -81,7 +81,7 @@ const userRegister = async (req, res) => {
     });
 
     // Generate JWT token for newly registered user
-    const token = jwt.sign({ userId: newUser.id, username: newUser.username }, 'UserSecretKey', {
+    const token = jwt.sign({ userId: user.id, username: user.username, role: 'user' }, 'UserSecretKey', {
       expiresIn: '1h', // Set your preferred expiration time
     });
 
@@ -92,7 +92,6 @@ const userRegister = async (req, res) => {
   }
 };
 
-// controllers/userController.js
 const selfDeactivateUser = async (req, res) => {
   try {
     const userId = req.user.userId; // Assuming userId is the correct attribute for the user's ID
@@ -151,4 +150,61 @@ const createAdminAccount = async (req,res) =>{
   }
 }
 
-module.exports = { userLogin, userRegister, selfDeactivateUser, createAdminAccount };
+const getUserInfo = async (req, res) => {
+  try {
+    const userId = req.user.userId; // Assuming userId is the correct attribute for the user's ID
+
+    // Retrieve user information
+    const user = await db.User.findByPk(userId, {
+      attributes: ['name', 'phone_number', 'address'],
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error('Error getting user information:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const changePassword = async (req, res) => {
+  try {
+    const userId = req.user.userId; // Assuming userId is the correct attribute for the user's ID
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
+    // Retrieve user information
+    const user = await db.User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Check if the old password is valid
+    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isOldPasswordValid) {
+      return res.status(401).json({ message: 'Invalid old password.' });
+    }
+
+    // Check if the new password and confirm password match
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: 'New password and confirm password do not match.' });
+    }
+
+    // Hash the new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user password
+    await db.User.update({ password: hashedNewPassword }, { where: { id: userId } });
+
+    return res.status(200).json({ message: 'Password changed successfully.' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+module.exports = { userLogin, userRegister, selfDeactivateUser, createAdminAccount, getUserInfo, changePassword };

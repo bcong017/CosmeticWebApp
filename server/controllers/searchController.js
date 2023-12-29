@@ -4,17 +4,25 @@ const searchItems = async (req, res) => {
   try {
     const { searchTerm, order } = req.query;
 
-    const selectedAttributes = ['id','name', 'price', 'brand', 'image_urls', 'user_rating'];
+    const selectedAttributes = [
+      "id",
+      "name",
+      "price",
+      "brand",
+      "image_urls",
+      "user_rating",
+      "sale_event_id",
+    ];
 
     const page = req.query.page ? parseInt(req.query.page) : 1;
     const itemsPerPage = 10; // Adjust as needed
 
     const offset = (page - 1) * itemsPerPage;
 
-    let orderBy = [['price', 'ASC']]; // Default order: Low to High
+    let orderBy = [["price", "ASC"]]; // Default order: Low to High
 
-    if (order === 'HTL') {
-      orderBy = [['price', 'DESC']]; // High to Low
+    if (order === "HTL") {
+      orderBy = [["price", "DESC"]]; // High to Low
     }
 
     const totalItems = await db.Item.count({
@@ -23,27 +31,49 @@ const searchItems = async (req, res) => {
           [db.Sequelize.Op.like]: `%${searchTerm}%`, // Case-insensitive search
         },
       },
+      include: [
+        {
+          model: db.SaleEvent,
+          attributes: ["discount_percentage", "start_date", "end_date"],
+          where: {
+            is_active: true,
+          },
+          required: false,
+        },
+      ],
     });
 
     // Calculate totalPages
-    const totalPages = totalItems <= itemsPerPage ? 1 : Math.ceil(totalItems / itemsPerPage);
+    const totalPages =
+      totalItems <= itemsPerPage ? 1 : Math.ceil(totalItems / itemsPerPage);
 
     // Fetch the items for the current page with ordering
     const items = await db.Item.findAll({
       attributes: selectedAttributes,
       where: {
         name: {
-          [db.Sequelize.Op.like]: `%${searchTerm}%`, // Case-insensitive search
+          [db.Sequelize.Op.like]: `%${searchTerm}%`,
         },
       },
-      order: orderBy, // Apply ordering
+      include: [
+        {
+          model: db.SaleEvent,
+          attributes: ["discount_percentage", "start_date", "end_date"],
+          where: {
+            is_active: true,
+          },
+          required: false,
+        },
+      ],
+      order: orderBy,
       limit: itemsPerPage,
       offset: offset,
     });
 
     const resultedItems = items.map((item) => {
-      let finalPrice;
+      let finalPrice = item.price;
 
+      console.log(item.sale_event_id && item.SaleEvent);
       if (item.sale_event_id && item.SaleEvent) {
         const currentDate = new Date();
         const startDate = new Date(item.SaleEvent.start_date);
@@ -54,12 +84,10 @@ const searchItems = async (req, res) => {
           const discountedPrice =
             (item.price * item.SaleEvent.discount_percentage) / 100;
           finalPrice = Math.max(0, item.price - discountedPrice);
-        } else {
-          finalPrice = item.price;
         }
-      } else {
-        finalPrice = item.price;
       }
+
+      finalPrice = finalPrice.toFixed(3);
 
       const imageUrlsArray = item.image_urls
         ? item.image_urls.split("***")
@@ -79,6 +107,7 @@ const searchItems = async (req, res) => {
         first_image_url: firstImageUrl,
         user_rating: item.user_rating,
       };
+
       // Include additional information if there is a sale event
       if (item.sale_event_id && item.SaleEvent) {
         resultObject.base_price = item.price;
@@ -93,11 +122,11 @@ const searchItems = async (req, res) => {
       resultedItems,
       currentPage: page,
       totalPages: Math.max(1, totalPages),
-      totalItems
+      totalItems,
     });
   } catch (error) {
-    console.error('Error searching items: ', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error searching items: ", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

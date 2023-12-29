@@ -12,6 +12,8 @@ const createSaleEvent = async (req, res) => {
       start_date: startDate,
       end_date: endDate,
       is_active: true,
+      brand: brand || null, // Store the brand if provided, otherwise null
+      category: category || null, // Store the category if provided, otherwise null
     });
 
     // Find items based on brand or category (or both) and update sale_event_id
@@ -59,6 +61,8 @@ const updateSaleEvent = async (req, res) => {
       discount_percentage: discountPercentage || saleEventToUpdate.discount_percentage,
       start_date: startDate || saleEventToUpdate.start_date,
       end_date: endDate || saleEventToUpdate.end_date,
+      brand: brand || null, // Update the brand if provided, otherwise keep the current value
+      category: category || null, // Update the category if provided, otherwise keep the current value
     });
 
     // Find items based on brand or category (or both) and update sale_event_id
@@ -87,6 +91,7 @@ const updateSaleEvent = async (req, res) => {
     return res.status(500).json({ error });
   }
 };
+
 
 const deleteSaleEvent = async (req, res) => {
   try {
