@@ -53,7 +53,7 @@ const userLogin = async (req, res) => {
       console.error(error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-  };
+};
 
   const userRegister = async (req, res) => {
     try {
@@ -94,12 +94,37 @@ const userLogin = async (req, res) => {
       console.error(error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-  };
-  
+};
 
 const selfDeactivateUser = async (req, res) => {
   try {
-    const userId = req.user.userId; // Assuming userId is the correct attribute for the user's ID
+    const token = req.headers.authorization;
+
+    if (!token) {
+      // If there is no token, return unauthorized
+      return res
+        .status(401)
+        .json({ error: "Unauthorized. Please log in to comment." });
+    }
+
+    if (token) {
+      const tokenParts = token.split(" ", 2);
+
+      try {
+        if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
+          throw new Error("Invalid token format");
+        }
+
+        const decoded = jwt.verify(tokenParts[1], "UserSecretKey");
+        // Attach the decoded user information to the request object
+        req.user = decoded;
+      } catch (error) {
+        // Handle token verification errors
+        console.error("Token verification error:", error);
+      }
+    }
+
+    const userId = req.user.userId;
 
     // Check if the user is deactivated
     const user = await db.User.findByPk(userId);
@@ -157,7 +182,33 @@ const createAdminAccount = async (req,res) =>{
 
 const getUserInfo = async (req, res) => {
   try {
-    const userId = req.user.userId; // Assuming userId is the correct attribute for the user's ID
+    const token = req.headers.authorization;
+
+    if (!token) {
+      // If there is no token, return unauthorized
+      return res
+        .status(401)
+        .json({ error: "Unauthorized. Please log in to comment." });
+    }
+
+    if (token) {
+      const tokenParts = token.split(" ", 2);
+
+      try {
+        if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
+          throw new Error("Invalid token format");
+        }
+
+        const decoded = jwt.verify(tokenParts[1], "UserSecretKey");
+        // Attach the decoded user information to the request object
+        req.user = decoded;
+      } catch (error) {
+        // Handle token verification errors
+        console.error("Token verification error:", error);
+      }
+    }
+
+    const userId = req.user.userId;
 
     // Retrieve user information
     const user = await db.User.findByPk(userId, {
@@ -177,7 +228,34 @@ const getUserInfo = async (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
-    const userId = req.user.userId; // Assuming userId is the correct attribute for the user's ID
+    const token = req.headers.authorization;
+
+    if (!token) {
+      // If there is no token, return unauthorized
+      return res
+        .status(401)
+        .json({ error: "Unauthorized. Please log in to comment." });
+    }
+
+    if (token) {
+      const tokenParts = token.split(" ", 2);
+
+      try {
+        if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
+          throw new Error("Invalid token format");
+        }
+
+        const decoded = jwt.verify(tokenParts[1], "UserSecretKey");
+        // Attach the decoded user information to the request object
+        req.user = decoded;
+      } catch (error) {
+        // Handle token verification errors
+        console.error("Token verification error:", error);
+      }
+    }
+
+    const userId = req.user.userId;
+
     const { oldPassword, newPassword, confirmPassword } = req.body;
 
     // Retrieve user information

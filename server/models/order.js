@@ -18,6 +18,9 @@ module.exports = (sequelize) => {
     total_amount: {
       type: DataTypes.DECIMAL(10, 3),
     },
+    shipping_fee: {
+      type: DataTypes.DECIMAL(10, 3),
+    },
     is_confirm: {
       type: DataTypes.INTEGER,
       defaultValue: 0,

@@ -1,8 +1,35 @@
 // controllers/itemController.js
 const db = require("../models");
+const jwt = require('jsonwebtoken');
 
 const getCommentsForItem = async (itemId, req) => {
   try {
+    const token = req.headers.authorization;
+
+    if (!token) {
+      // If there is no token, return unauthorized
+      return res
+        .status(401)
+        .json({ error: "Unauthorized. Please log in to comment." });
+    }
+
+    if (token) {
+      const tokenParts = token.split(" ", 2);
+
+      try {
+        if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
+          throw new Error("Invalid token format");
+        }
+
+        const decoded = jwt.verify(tokenParts[1], "UserSecretKey");
+        // Attach the decoded user information to the request object
+        req.user = decoded;
+      } catch (error) {
+        // Handle token verification errors
+        console.error("Token verification error:", error);
+      }
+    }
+
     const comments = await db.Comment.findAll({
       where: { item_id: itemId },
       include: [
@@ -23,7 +50,7 @@ const getCommentsForItem = async (itemId, req) => {
         username: comment.User.username,
         name: comment.User.name,
       },
-      isCurrentUserComment: req.user && req.user.id === comment.User.id,
+      isCurrentUserComment: req.user && req.user.userId === comment.User.id,
     }));
 
     return formattedComments;
@@ -36,17 +63,21 @@ const getCommentsForItem = async (itemId, req) => {
 const getItemById = async (req, res) => {
   try {
     const token = req.headers.authorization;
+
     if (token) {
-      const tokenParts = token.split(" ");
+      const tokenParts = token.split(" ", 2);
+
       try {
         if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
           throw new Error("Invalid token format");
         }
 
         const decoded = jwt.verify(tokenParts[1], "UserSecretKey");
+        // Attach the decoded user information to the request object
         req.user = decoded;
       } catch (error) {
-        console.error("Error verifying token:", error);
+        // Handle token verification errors
+        console.error("Token verification error:", error);
       }
     }
 

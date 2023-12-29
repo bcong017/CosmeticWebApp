@@ -43,7 +43,7 @@ module.exports = (sequelize) => {
       foreignKey: 'user_id',
     });
     User.hasMany(models.Order, {
-      foreignKey: 'user_id',
+      foreignKey: 'id',
     });
   };
 

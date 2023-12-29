@@ -1,4 +1,5 @@
-const { Cart, Item } = require("../models");
+const jwt = require('jsonwebtoken');
+const db = require("../models"); // Include your models here
 
 const addItemToCart = async (req, res) => {
   try {
@@ -6,7 +7,7 @@ const addItemToCart = async (req, res) => {
     const { item_id, quantity } = req.body;
 
     // Check if the item exists
-    const item = await Item.findByPk(item_id);
+    const item = await db.Item.findByPk(item_id);
     if (!item) {
       return res.status(404).json({ error: "Item not found" });
     }
@@ -17,7 +18,7 @@ const addItemToCart = async (req, res) => {
     // Check if the user is authenticated
     const user_id = req.user ? userId : null;
 
-    const existingCartItem = await Cart.findOne({
+    const existingCartItem = await db.Cart.findOne({
       where: { user_id, item_id },
     });
 
@@ -41,7 +42,7 @@ const addItemToCart = async (req, res) => {
       }
 
       // Create a new cart item if it doesn't exist
-      await Cart.create({
+      await db.Cart.create({
         user_id,
         item_id,
         quantity,
@@ -65,7 +66,7 @@ const mergeCarts = async (req, res) => {
     }
 
     // Get items from the non-authenticated user's cart
-    const nonAuthCartItems = await Cart.findAll({
+    const nonAuthCartItems = await db.Cart.findAll({
       where: { user_id: null }, // Change this to the non-authenticated user's identifier
     });
 
@@ -86,13 +87,13 @@ const editCartItemQuantity = async (req, res) => {
     const { cartItemId, quantity } = req.body;
 
     // Check if the cart item exists
-    const cartItem = await Cart.findByPk(cartItemId);
+    const cartItem = await db.Cart.findByPk(cartItemId);
     if (!cartItem) {
       return res.status(404).json({ error: "Cart item not found" });
     }
 
     // Check if the new quantity exceeds the available stock of the item
-    const item = await Item.findByPk(cartItem.item_id);
+    const item = await db.Item.findByPk(cartItem.item_id);
     if (quantity > item.quantity) {
       return res
         .status(400)
@@ -117,7 +118,7 @@ const removeCartItem = async (req, res) => {
     const { cartItemId } = req.params;
 
     // Check if the cart item exists
-    const cartItem = await Cart.findByPk(cartItemId);
+    const cartItem = await db.Cart.findByPk(cartItemId);
     if (!cartItem) {
       return res.status(404).json({ error: "Cart item not found" });
     }
@@ -134,51 +135,104 @@ const removeCartItem = async (req, res) => {
 
 const getItemsInCart = async (req, res) => {
   try {
+    const token = req.headers.authorization;
 
-    const user = req.user;
-    const userId = user.userId;
+    if (token) {
+      const tokenParts = token.split(" ", 2);
 
-    // Check if the user is authenticated
-    const user_id = req.user ? userId : null;
+      try {
+        if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
+          throw new Error("Invalid token format");
+        }
 
-    if (!user_id) {
-      return res.status(401).json({ error: 'Unauthorized. Please log in.' });
+        const decoded = jwt.verify(tokenParts[1], "UserSecretKey");
+        // Attach the decoded user information to the request object
+        req.user = decoded;
+      } catch (error) {
+        // Handle token verification errors
+        console.error("Token verification error:", error);
+      }
     }
 
+    const user_id = req.user.userId;
+
     // Get items in the user's cart with additional details
-    const cartItems = await Cart.findAll({
+    const cartItems = await db.Cart.findAll({
       where: { user_id },
       include: [
         {
-          model: Item,
-          attributes: ['name', 'price', 'image_urls', 'quantity'], // Add other attributes as needed
+          model: db.Item,
+          attributes: ['id', 'name', 'price', 'image_urls', 'quantity', 'is_on_sale'],
+          include: [
+            {
+              model: db.SaleEvent,
+              attributes: ["discount_percentage", "start_date", "end_date"],
+              where: {
+                is_active: true,
+              },
+              required: false,
+            },
+          ],
         },
       ],
     });
+
+    // Calculate total amount and shipping fee
+    let totalAmount = 0;
 
     // Format the response
     const formattedCartItems = cartItems.map((cartItem) => {
       const item = cartItem.Item;
       const imageUrlsArray = item.image_urls ? item.image_urls.split('***') : [];
-      
+
       // Skip the first image if it contains "promotions"
       let firstImageUrl = imageUrlsArray[0];
-      if (firstImageUrl && firstImageUrl.includes("promotions")) {
+      if (firstImageUrl && firstImageUrl.includes('promotions')) {
         firstImageUrl = imageUrlsArray[1] || null;
       }
+
+      let finalPrice = item.price;
+
+      if (item.is_on_sale) {
+        const currentDate = new Date();
+        const startDate = new Date(item.SaleEvent.start_date);
+        const endDate = new Date(item.SaleEvent.end_date);
+
+        if (startDate <= currentDate && currentDate <= endDate) {
+          // Calculate the discounted price
+          const discountedPrice =
+            (item.price * item.SaleEvent.discount_percentage) / 100;
+          finalPrice = Math.max(0, item.price - discountedPrice);
+        }
+      }
+
+      finalPrice = finalPrice.toFixed(3);
+      totalAmount += finalPrice * cartItem.quantity;
 
       return {
         id: cartItem.id,
         item: {
+          id: item.id,
           name: item.name,
-          price: item.price,
+          price: finalPrice,
           image_url: firstImageUrl, // Show only one image_url
         },
         quantity: cartItem.quantity,
       };
     });
 
-    return res.status(200).json({ cartItems: formattedCartItems });
+    // Calculate shipping fee (10% of the total amount)
+    const shippingFee = 0.1 * totalAmount;
+
+    // Calculate the total amount including shipping fee
+    const totalAmountWithShipping = totalAmount + shippingFee;
+
+    return res.status(200).json({
+      cartItems: formattedCartItems,
+      totalAmount: totalAmount.toFixed(3),
+      shippingFee: shippingFee.toFixed(3),
+      totalAmountWithShipping: totalAmountWithShipping.toFixed(3),
+    });
   } catch (error) {
     console.error('Error getting items in cart: ', error);
     return res.status(500).json({ error: 'Internal Server Error' });
@@ -190,5 +244,5 @@ module.exports = {
   mergeCarts,
   editCartItemQuantity,
   removeCartItem,
-  getItemsInCart
+  getItemsInCart,
 };

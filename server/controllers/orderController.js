@@ -2,11 +2,30 @@ const db = require("../models");
 
 const createOrder = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const token = req.headers.authorization;
+
+    if (token) {
+      const tokenParts = token.split(" ", 2);
+
+      try {
+        if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
+          throw new Error("Invalid token format");
+        }
+
+        const decoded = jwt.verify(tokenParts[1], "UserSecretKey");
+        // Attach the decoded user information to the request object
+        req.user = decoded;
+      } catch (error) {
+        // Handle token verification errors
+        console.error("Token verification error:", error);
+      }
+    }
+
+    const user_id = req.user.userId;
     const selectedAttributes = ["id", "name", "price", "is_on_sale"];
 
     const cartItems = await db.Cart.findAll({
-      where: { user_id: userId },
+      where: { user_id },
       include: [
         {
           model: db.Item,
