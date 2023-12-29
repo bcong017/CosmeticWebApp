@@ -3,10 +3,6 @@ const db = require("../models");
 
 const getAllUserAccounts = async (req, res) => {
     try {
-      // Check if the user is an admin
-      if (!req.user || !req.user.isAdmin) {
-        return res.status(403).json({ error: 'Forbidden' });
-      }
   
       // Get all user accounts
       const users = await db.User.findAll({
@@ -31,12 +27,12 @@ const adminDeactivateUser = async (req, res) => {
     }
 
     // Check if the user is already deactivated
-    if (user.is_deactivate) {
+    if (user.is_active == false) {
       return res.status(400).json({ message: 'User is already deactivated.' });
     }
 
     // Deactivate the user
-    user.is_deactivate = true;
+    user.is_active = false;
     await user.save();
 
     return res.status(200).json({ message: 'User deactivated by admin successfully' });
@@ -281,4 +277,33 @@ const deleteItem = async (req, res) => {
   }
 };
 
-module.exports = { getAllUserAccounts, adminDeactivateUser, confirmOrder, rejectOrder, addItem, editItem, deleteItem };
+const getAllOrders = async (req, res) => {
+  try {
+    // Get all orders with associated user information and totalAmount
+    const orders = await db.Order.findAll({
+      attributes: ['id', 'user_id', 'is_confirm', 'total_amount'], 
+      include: [
+        {
+          model: db.User,
+          attributes: ['username', 'name', 'phone_number', 'address'],
+        },
+      ],
+      group: ['Order.id', 'User.id'], // Group by OrderId and UserId to avoid duplicates
+    });
+
+    // Map the result to the desired format
+    const formattedOrders = orders.map(order => ({
+      orderId: order.id,
+      userName: order.User.username, 
+      totalAmount: order.total_amount,
+      is_confirm: order.is_confirm
+    }));
+
+    return res.status(200).json({ orders: formattedOrders });
+  } catch (error) {
+    console.error('Error getting orders: ', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+module.exports = { getAllUserAccounts, adminDeactivateUser, confirmOrder, rejectOrder, addItem, editItem, deleteItem, getAllOrders };

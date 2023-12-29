@@ -55,42 +55,47 @@ const userLogin = async (req, res) => {
     }
   };
 
-const userRegister = async (req, res) => {
-  try {
-    const { username, password, name, phone_number, address } = req.body;
-
-    // Check if username is already taken
-    const existingUser = await db.User.findOne({
-      where: { username },
-    });
-
-    if (existingUser) {
-      return res.status(400).json({ message: 'Username is already taken' });
+  const userRegister = async (req, res) => {
+    try {
+      const { username, password, name, phone_number, address } = req.body;
+  
+      // Check if username is already taken
+      const existingUser = await db.User.findOne({
+        where: { username },
+      });
+  
+      if (existingUser) {
+        return res.status(400).json({ message: 'Username is already taken' });
+      }
+  
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+      // Create new user
+      const newUser = await db.User.create({
+        username,
+        password: hashedPassword,
+        name,
+        phone_number,
+        address,
+      });
+  
+      // Generate JWT token for newly registered user
+      const token = jwt.sign(
+        { userId: newUser.id, username: newUser.username, role: 'user' }, // Use newUser.id instead of user.id
+        'UserSecretKey',
+        {
+          expiresIn: '1h', // Set your preferred expiration time
+        }
+      );
+  
+      return res.status(201).json({ token });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create new user
-    const newUser = await db.User.create({
-      username,
-      password: hashedPassword,
-      name,
-      phone_number,
-      address,
-    });
-
-    // Generate JWT token for newly registered user
-    const token = jwt.sign({ userId: user.id, username: user.username, role: 'user' }, 'UserSecretKey', {
-      expiresIn: '1h', // Set your preferred expiration time
-    });
-
-    return res.status(201).json({ token });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
+  };
+  
 
 const selfDeactivateUser = async (req, res) => {
   try {
