@@ -4,6 +4,8 @@ import { Input } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import cart from '@/Api_Call/cart';
 import { useAuth } from '@/Global_reference/context/auth';
+import order from '@/Api_Call/order';
+import { useNavigate } from 'react-router-dom';
 // const itemList = {
 //   cartItems: [
 //     {
@@ -30,7 +32,7 @@ import { useAuth } from '@/Global_reference/context/auth';
 // };
 function CartPage() {
   const [itemList, setItemList] = useState([]);
-  const { token } = useAuth();
+  const nav = useNavigate();
 
   function getItem() {
     cart
@@ -55,8 +57,11 @@ function CartPage() {
       });
   };
 
+  const handleSubmitOrder = () => {
+    order.createOrder();
+    nav('/');
+  };
   useEffect(() => {
-    console.log(token);
     getItem();
   }, []);
 
@@ -71,7 +76,7 @@ function CartPage() {
               return (
                 <div
                   key={current.id}
-                  className='justify-evenly flex bg-pink-300 m-5 py-4 '
+                  className=' grid grid-cols-[10%,70%,15%,5%] bg-pink-300 m-5 p-2 '
                 >
                   <Image
                     className='variant-item-thumbnail'
@@ -145,6 +150,9 @@ function CartPage() {
               }
               className='bg-heavy-pink mx-2 mb-2'
               disableRipple='true'
+              onClick={() => {
+                handleSubmitOrder();
+              }}
             >
               Thanh toán
             </Button>
