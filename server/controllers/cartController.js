@@ -154,6 +154,8 @@ const getItemsInCart = async (req, res) => {
       }
     }
 
+    console.log(req.user);
+
     const user_id = req.user.userId;
 
     // Get items in the user's cart with additional details
@@ -191,6 +193,8 @@ const getItemsInCart = async (req, res) => {
         firstImageUrl = imageUrlsArray[1] || null;
       }
 
+      console.log(item.is_on_sale);
+
       let finalPrice = item.price;
 
       if (item.is_on_sale) {
@@ -203,10 +207,10 @@ const getItemsInCart = async (req, res) => {
           const discountedPrice =
             (item.price * item.SaleEvent.discount_percentage) / 100;
           finalPrice = Math.max(0, item.price - discountedPrice);
+          finalPrice = finalPrice.toFixed(3);
         }
       }
 
-      finalPrice = finalPrice.toFixed(3);
       totalAmount += finalPrice * cartItem.quantity;
 
       return {

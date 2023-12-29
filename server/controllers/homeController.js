@@ -65,7 +65,6 @@ const getTopItems = async (req, res) => {
             const discountedPrice =
               (item.price * item.SaleEvent.discount_percentage) / 100;
             finalPrice = Math.max(0, item.price - discountedPrice);
-
             finalPrice = finalPrice.toFixed(3);
           }
         }
@@ -79,8 +78,6 @@ const getTopItems = async (req, res) => {
         if (firstImageUrl && firstImageUrl.includes("promotions")) {
           firstImageUrl = imageUrlsArray[1] || null;
         }
-
-        //finalPrice = finalPrice.toFixed(3);
 
         const resultObject = {
           id: item.id,

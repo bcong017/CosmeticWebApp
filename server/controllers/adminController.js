@@ -275,7 +275,7 @@ const getAllOrders = async (req, res) => {
   try {
     // Get all orders with associated user information and totalAmount
     const orders = await db.Order.findAll({
-      attributes: ['id', 'user_id', 'is_confirm', 'total_amount'], 
+      attributes: ['id', 'user_id', 'is_confirm', 'total_amount', 'createdAt'], 
       include: [
         {
           model: db.User,
@@ -288,9 +288,10 @@ const getAllOrders = async (req, res) => {
     // Map the result to the desired format
     const formattedOrders = orders.map(order => ({
       orderId: order.id,
-      userName: order.User.username, 
+      name: order.User.name, 
       totalAmount: order.total_amount,
-      is_confirm: order.is_confirm
+      is_confirm: order.is_confirm,
+      date: order.createdAt
     }));
 
     return res.status(200).json({ orders: formattedOrders });
