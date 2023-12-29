@@ -3,7 +3,7 @@ import {
   Tab,
   Card,
   CardBody,
-  Input,
+  // Input,
   Button,
   Textarea,
   Dropdown,
@@ -19,11 +19,15 @@ import GetItem from '@/Api_Call/GetItem';
 import { VerticalDotsIcon } from '../AdminPage/TableItem/VerticalDotsIcon';
 import { useAuth } from '@/Global_reference/context/auth';
 import { APP_ROLE } from '@/Global_reference/variables';
+import comments from '@/Api_Call/comments';
+import cart from '@/Api_Call/cart';
 function ItemPage() {
   let [itemInfo, setItemInfo] = useState({});
   const { token, role } = useAuth();
   const imgRef = useRef();
   const location = useLocation();
+  const [comment, setComment] = useState('');
+  const [quantity, setQuantity] = useState(1);
 
   async function getItem() {
     const item = await GetItem(location.pathname);
@@ -51,6 +55,41 @@ function ItemPage() {
     return quantity;
   }
 
+  const handleSubmitComment = () => {
+    if (comment != '') {
+      comments
+        .addComment(itemInfo.item.id, { commentText: comment })
+        .then(() => {
+          getItem();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  };
+
+  const handleDelete = (id) => {
+    comments
+      .deleteComment(id)
+      .then(() => {
+        getItem();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  // {
+  //   "item_id": 1,
+  //   "quantity": 2
+  // }
+  const handleAddCartItem = () => {
+    cart
+      .addItem({ item_id: itemInfo.item.id, quantity: quantity })
+
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   return (
     <div className='block'>
       <div className='item-media-side-detail-block'>
@@ -59,6 +98,7 @@ function ItemPage() {
 
           <ul>
             {itemInfo?.item?.imageURLs.map((url, index) => {
+              console.log(url);
               return (
                 <li key={index}>
                   <img
@@ -86,7 +126,14 @@ function ItemPage() {
 
           <div className='amount-block'>
             <label htmlFor='item-amount'>Số lượng:</label>
-            <select name='item-amount' id='item-amount'>
+            <select
+              name='item-amount'
+              id='item-amount'
+              value={quantity}
+              onChange={(e) => {
+                setQuantity(e.target.value);
+              }}
+            >
               {createQuantity()}
             </select>
             {itemInfo?.item?.quantity <= 6 && (
@@ -101,6 +148,9 @@ function ItemPage() {
             }
             className='bg-heavy-pink'
             disableRipple='true'
+            onClick={() => {
+              handleAddCartItem();
+            }}
           >
             Thêm vào giỏ hàng
           </Button>
@@ -192,20 +242,31 @@ function ItemPage() {
                 ) : (
                   <div className='flex flex-col gap-3'>
                     <div>Phản hồi của bạn:</div>
-                    <div className='grid grid-rows-1 grid-cols-[90%,10%] gap-3'>
+                    {/* <div className='grid grid-rows-1 grid-cols-[90%,10%] gap-3'> */}
+                    <div>
                       <Textarea
                         label='Bình luận'
                         placeholder='Nhập bình luận của bạn...'
                         className='w-[100%]'
+                        value={comment}
+                        onChange={(e) => {
+                          setComment(e.target.value);
+                        }}
                       />
-                      <Input
+                      {/* <Input
                         key='comment'
                         type='number'
                         placeholder='Điểm đánh giá...'
                         className='font-semibold h-[100%]'
-                      />
+                      /> */}
                     </div>
-                    <Button className='font-semibold ' disableRipple='true'>
+                    <Button
+                      className='font-semibold '
+                      disableRipple='true'
+                      onClick={() => {
+                        handleSubmitComment();
+                      }}
+                    >
                       Đăng đánh giá.
                     </Button>
                   </div>
@@ -235,7 +296,13 @@ function ItemPage() {
                                 </Button>
                               </DropdownTrigger>
                               <DropdownMenu>
-                                <DropdownItem>Xóa</DropdownItem>
+                                <DropdownItem
+                                  onClick={() => {
+                                    handleDelete(comment.id);
+                                  }}
+                                >
+                                  Xóa
+                                </DropdownItem>
                               </DropdownMenu>
                             </Dropdown>
                           </div>

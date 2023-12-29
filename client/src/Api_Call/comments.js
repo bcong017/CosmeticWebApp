@@ -9,6 +9,6 @@ export default {
     return axios.put(`${API_HOST}/edit/${cid}`, payload);
   },
   deleteComment(cid) {
-    return axios.delete(`${API_HOST}/delete/${cid}`);
+    return axios.delete(`${API_HOST}/comment/delete/${cid}`);
   },
 };
