@@ -18,10 +18,15 @@ export default function UserItem() {
 
   const handleState = (state, id) => {
     if (state) {
-      admin.deactivateUser(id).catch(function (error) {
-        console.log(error);
-      });
-      getUserList();
+      admin
+        .deactivateUser(id)
+        .then(() => {
+          getUserList();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      // getUserList();
     }
     // else{
     //   admin.
