@@ -16,7 +16,7 @@ import {
 } from '@nextui-org/react';
 import { MailIcon } from './MailIcon.jsx';
 import { LockIcon } from './LockIcon.jsx';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/Global_reference/context/auth.jsx';
 import { useNavigate } from 'react-router-dom';
 import { APP_ROLE } from '@/Global_reference/variables.js';
@@ -102,7 +102,7 @@ export default function LoginModal() {
       });
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (role == APP_ROLE.ADMIN) {
       nav('/admin');
     } else {
