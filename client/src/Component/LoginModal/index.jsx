@@ -109,7 +109,9 @@ export default function LoginModal() {
       nav('/');
     }
   }, [role]);
-
+  useEffect(() => {
+    clearInput();
+  }, [isOpen]);
   return (
     <>
       <Tooltip content='Đăng nhập/ Đăng ký' closeDelay={0}>
