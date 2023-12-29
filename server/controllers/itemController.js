@@ -136,6 +136,7 @@ const getItemById = async (req, res) => {
         discountPercentage = item.SaleEvent.discount_percentage;
         const discountedPrice = (item.price * discountPercentage) / 100;
         finalPrice = Math.max(0, item.price - discountedPrice);
+        finalPrice = finalPrice.toFixed(3);
       }
     }
 

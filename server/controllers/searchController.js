@@ -73,8 +73,8 @@ const searchItems = async (req, res) => {
     const resultedItems = items.map((item) => {
       let finalPrice = item.price;
 
-      console.log(item.sale_event_id && item.SaleEvent);
-      if (item.sale_event_id && item.SaleEvent) {
+      console.log(item.is_on_sale);
+      if (item.is_on_sale) {
         const currentDate = new Date();
         const startDate = new Date(item.SaleEvent.start_date);
         const endDate = new Date(item.SaleEvent.end_date);
@@ -84,10 +84,9 @@ const searchItems = async (req, res) => {
           const discountedPrice =
             (item.price * item.SaleEvent.discount_percentage) / 100;
           finalPrice = Math.max(0, item.price - discountedPrice);
+          finalPrice = finalPrice.toFixed(3);
         }
       }
-
-      finalPrice = finalPrice.toFixed(3);
 
       const imageUrlsArray = item.image_urls
         ? item.image_urls.split("***")
@@ -109,10 +108,11 @@ const searchItems = async (req, res) => {
       };
 
       // Include additional information if there is a sale event
-      if (item.sale_event_id && item.SaleEvent) {
+      if (item.is_on_sale) {
         resultObject.base_price = item.price;
         resultObject.discount_percentage = item.SaleEvent.discount_percentage;
-        resultObject.end_date = item.SaleEvent.end_date.toLocaleDateString("en-GB");
+        resultObject.end_date =
+          item.SaleEvent.end_date.toLocaleDateString("en-GB");
       }
 
       return resultObject;
