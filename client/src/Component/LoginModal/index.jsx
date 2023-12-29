@@ -16,7 +16,7 @@ import {
 } from '@nextui-org/react';
 import { MailIcon } from './MailIcon.jsx';
 import { LockIcon } from './LockIcon.jsx';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { useAuth } from '@/Global_reference/context/auth.jsx';
 import { useNavigate } from 'react-router-dom';
 import { APP_ROLE } from '@/Global_reference/variables.js';
@@ -24,49 +24,47 @@ import { APP_ROLE } from '@/Global_reference/variables.js';
 export default function LoginModal() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [loginPassword, setLoginPassword] = useState('');
-  const [loginEmail, setLoginEmail] = useState('');
+  const [loginUserName, setLoginUserName] = useState('');
   const [name, setName] = useState('');
   const [phoneNum, setPhoneNum] = useState('');
   const [address, setAddress] = useState('');
   // const [gender, setGender] = useState('male');
   const [resPassword, setResPassword] = useState('');
-  const [resEmail, setResEmail] = useState('');
+  const [resUsername, setResUsername] = useState('');
   const [resRePassword, setResRePassword] = useState('');
   const { setToken, setRole, role } = useAuth();
   const nav = useNavigate();
 
   const clearInput = () => {
     setLoginPassword('');
-    setLoginEmail('');
+    setLoginUserName('');
     setName('');
     setPhoneNum('');
     setAddress('');
     // setGender('male');
     setResPassword('');
     setResRePassword('');
-    setResEmail('');
+    setResUsername('');
   };
 
-  const validateEmail = (email) =>
-    email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
+  // const validateEmail = (email) =>
+  //   email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
 
-  const isInvalidLogin = useMemo(() => {
-    if (loginEmail === '') return false;
+  // const isInvalidLogin = useMemo(() => {
+  //   if (loginUserName === '') return false;
+  // }, [loginUserName]);
 
-    return validateEmail(loginEmail) ? false : true;
-  }, [loginEmail]);
+  // const isInvalidReg = useMemo(() => {
+  //   if (resEmail === '') return false;
 
-  const isInvalidReg = useMemo(() => {
-    if (resEmail === '') return false;
-
-    return validateEmail(resEmail) ? false : true;
-  }, [resEmail]);
+  //   return validateEmail(resEmail) ? false : true;
+  // }, [resEmail]);
 
   const handleOnclickLogin = async () => {
-    if (isInvalidLogin) return;
+    if (!loginUserName) return;
     if (!loginPassword) return;
     await auth
-      .login({ username: loginEmail, password: loginPassword })
+      .login({ username: loginUserName, password: loginPassword })
       .then(function (response) {
         {
           setToken(response.data.token);
@@ -79,14 +77,14 @@ export default function LoginModal() {
       });
   };
 
-  const handleOnclickRegister = async () => {
-    if (!resEmail) return;
+  const handleOnclickRegister = () => {
+    if (!resUsername) return;
     if (!resPassword) return;
     if (!resRePassword) return;
     if (!(resPassword == resRePassword)) return;
-    await auth
+    auth
       .register({
-        username: resEmail,
+        username: resUsername,
         password: resPassword,
         name: name,
         phone_number: phoneNum,
@@ -97,7 +95,6 @@ export default function LoginModal() {
           setToken(response.data.token);
           setRole(APP_ROLE.USER);
           clearInput();
-          nav('/');
         }
       })
       .catch(function (error) {
@@ -105,7 +102,7 @@ export default function LoginModal() {
       });
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (role == APP_ROLE.ADMIN) {
       nav('/admin');
     } else {
@@ -144,17 +141,17 @@ export default function LoginModal() {
                         <MailIcon className='text-2xl text-default-400 pointer-events-none flex-shrink-0' />
                       }
                       autoFocus
-                      label='Email'
-                      placeholder='Nhập email của bạn'
+                      label='Tên đăng nhập'
+                      placeholder='Nhập tên đăng nhập của bạn'
                       variant='bordered'
-                      value={loginEmail}
-                      onChange={(e) => setLoginEmail(e.target.value)}
+                      value={loginUserName}
+                      onChange={(e) => setLoginUserName(e.target.value)}
                       isRequired
-                      isInvalid={isInvalidLogin}
-                      color={isInvalidLogin ? 'danger' : 'success'}
-                      errorMessage={
-                        isInvalidLogin && 'Vui lòng nhập email hợp lệ'
-                      }
+                      // isInvalid={isInvalidLogin}
+                      // color={isInvalidLogin ? 'danger' : 'success'}
+                      // errorMessage={
+                      //   isInvalidLogin && 'Vui lòng nhập email hợp lệ'
+                      // }
                     />
                     <Input
                       endContent={
@@ -248,23 +245,18 @@ export default function LoginModal() {
                       </RadioGroup>
                     </div> */}
                     <Input
-                      key='Email'
+                      key='username'
                       endContent={
                         <MailIcon className='text-2xl text-default-400 pointer-events-none flex-shrink-0' />
                       }
-                      label='Email'
-                      placeholder='Nhập email của bạn'
+                      label='Tên đăng nhập'
+                      placeholder='Nhập tên đăng nhập của bạn'
                       variant='bordered'
                       className=' font-semibold'
-                      value={resEmail}
+                      value={resUsername}
                       onChange={(e) => {
-                        setResEmail(e.target.value);
+                        setResUsername(e.target.value);
                       }}
-                      isInvalid={isInvalidReg}
-                      color={isInvalidReg ? 'danger' : 'success'}
-                      errorMessage={
-                        isInvalidReg && 'Vui lòng nhập email hợp lệ'
-                      }
                     />
                     <Input
                       key='Password'
