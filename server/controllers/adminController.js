@@ -65,21 +65,15 @@ const confirmOrder = async (req, res) => {
       return total + orderItem.Item.price * orderItem.quantity;
     }, 0);
 
-    // Calculate shipping fee (5% of total amount)
-    const shippingFee = 0.05 * totalAmountOfMoney;
+    // Calculate shipping fee (10% of total amount)
+    const shippingFee = 0.1 * totalAmountOfMoney;
 
-    // Calculate money needed to pay
-    const moneyNeedToPay = totalAmountOfMoney + shippingFee;
-
-    // Create a new Receipt
-    const receipt = await db.Receipt.create({
-      order_id: orderId,
-      payment_method: 'YourPaymentMethod', // Set the actual payment method
-      ship_fee: shippingFee,
+    // Update the Order with total amount and shipping fee (mark it as confirmed)
+    await order.update({
+      is_confirm: 1,
+      total_amount: totalAmountOfMoney,
+      shipping_fee: shippingFee,
     });
-
-    // Update the Order (mark it as confirmed)
-    await order.update({ is_confirm: 1 });
 
     // Create Profit Statistics for each item in the order
     await Promise.all(
