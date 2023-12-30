@@ -11,7 +11,7 @@ const searchItems = async (req, res) => {
       "brand",
       "image_urls",
       "user_rating",
-      "sale_event_id",
+      "is_on_sale",
     ];
 
     const page = req.query.page ? parseInt(req.query.page) : 1;
@@ -73,7 +73,6 @@ const searchItems = async (req, res) => {
     const resultedItems = items.map((item) => {
       let finalPrice = item.price;
 
-      console.log(item.is_on_sale);
       if (item.is_on_sale) {
         const currentDate = new Date();
         const startDate = new Date(item.SaleEvent.start_date);
