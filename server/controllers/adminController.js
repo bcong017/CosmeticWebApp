@@ -305,28 +305,42 @@ const getAllOrders = async (req, res) => {
       switch (order.is_confirm) {
         case 0:
           status = "Not updated";
-          date = order.createdAt;
-          break;
+          dateCreated = order.createdAt;
+          return {
+            orderId: order.id,
+            name: order.User.name,
+            totalAmount: order.total_amount,
+            status,
+            dateCreated: dateCreated ? dateCreated.toLocaleDateString("en-GB") : null,
+          };
         case 1:
           status = "Confirmed";
-          date = order.dateConfirmed;
-          break;
+          dateConfirmed = order.dateConfirmed;
+          dateCreated = order.createdAt;
+          return {
+            orderId: order.id,
+            name: order.User.name,
+            totalAmount: order.total_amount,
+            status,
+            dateConfirmed: dateConfirmed ? dateConfirmed.toLocaleDateString("en-GB") : null,
+            dateCreated: dateCreated ? dateCreated.toLocaleDateString("en-GB") : null,
+          };
         case 2:
           status = "Rejected";
-          date = order.dateRejected;
-          break;
+          dateRejected = order.dateRejected;
+          dateCreated = order.createdAt;
+          return {
+            orderId: order.id,
+            name: order.User.name,
+            totalAmount: order.total_amount,
+            status,
+            dateRejected: dateRejected ? dateRejected.toLocaleDateString("en-GB") : null,
+            dateCreated: dateCreated ? dateCreated.toLocaleDateString("en-GB") : null,
+          };
         default:
           status = "Invalid status";
           date = null;
       }
-
-      return {
-        orderId: order.id,
-        name: order.User.name,
-        totalAmount: order.total_amount,
-        status,
-        date: date ? date.toLocaleDateString("en-GB") : null,
-      };
     });
 
     return res.status(200).json({ orders: formattedOrders });
