@@ -1,10 +1,8 @@
-import auth from '@/Api_Call/auth.js';
+import auth from '@/Api_Call/user.js';
 
 import {
   Modal,
   ModalContent,
-  // RadioGroup,
-  // Radio,
   ModalBody,
   ModalFooter,
   Button,
@@ -160,9 +158,6 @@ export default function LoginModal() {
                   </ModalFooter>
                 </Tab>
                 <Tab key='sign-up' title='Đăng ký' className=''>
-                  {/* <ModalHeader className='flex flex-col gap-1'>
-                    Đăng nhập
-                  </ModalHeader> */}
                   <ModalBody>
                     <Input
                       autoFocus

@@ -3,33 +3,9 @@ import { Button } from '@nextui-org/react';
 import { Input } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import cart from '@/Api_Call/cart';
-import { useAuth } from '@/Global_reference/context/auth';
 import order from '@/Api_Call/order';
 import { useNavigate } from 'react-router-dom';
-// const itemList = {
-//   cartItems: [
-//     {
-//       id: 1,
-//       item: {
-//         name: "Nước Tẩy Trang L'Oreal Tươi Mát Cho Da Dầu, Hỗn Hợp 400ml",
-//         price: '159.000',
-//         image_url:
-//           'https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-205100137-1695896128_img_800x800_eb97c5_fit_center.png',
-//       },
-//       quantity: 4,
-//     },
-//     {
-//       id: 2,
-//       item: {
-//         name: "Nước Tẩy Trang L'Oreal Làm Sạch Sâu Trang Điểm 400ml",
-//         price: '155.000',
-//         image_url:
-//           'https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-205100146-1695896051_img_800x800_eb97c5_fit_center.png',
-//       },
-//       quantity: 2,
-//     },
-//   ],
-// };
+
 function CartPage() {
   const [itemList, setItemList] = useState([]);
   const nav = useNavigate();
@@ -38,7 +14,7 @@ function CartPage() {
     cart
       .getItems()
       .then(function (response) {
-        setItemList(response.data.cartItems);
+        setItemList(response.data);
       })
       .catch(function (error) {
         console.log(error);
@@ -61,6 +37,14 @@ function CartPage() {
     order.createOrder();
     nav('/');
   };
+
+  const handleEditQuantity = (id, quantity) => {
+    cart
+      .editItem({ cartItemId: id, quantity: quantity })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   useEffect(() => {
     getItem();
   }, []);
@@ -70,9 +54,8 @@ function CartPage() {
       <div className='text-center text-3xl font-bold'>Giỏ hàng của bạn</div>
       <div className='flex justify-around mt-8'>
         <div className='block'>
-          {/* <div className='text-2xl mb-3'> Số lượng sản phẩm: 12</div> */}
           <div className=' flex flex-col justify-around bg-section-pink min-w-[820px]'>
-            {itemList?.map((current) => {
+            {itemList?.cartItems?.map((current) => {
               return (
                 <div
                   key={current.id}
@@ -110,6 +93,9 @@ function CartPage() {
                           size='sm'
                           fullWidth='false'
                           className='w-[70px]'
+                          onChange={(e) => {
+                            handleEditQuantity(current?.id, e.target.value);
+                          }}
                         />
                       </div>
                     </div>
@@ -139,9 +125,13 @@ function CartPage() {
                 <div className='ml-5  mt-3 mr-5  mb-3'>Tổng tiền:</div>
               </div>
               <div className='text-right'>
-                <div className='ml-5 mr-5'>11000 VND</div>
-                <div className='ml-5 mt-3 mr-5'>11000 VND</div>
-                <div className='ml-5  mt-3 mr-5  mb-3'>100000 VND</div>
+                <div className='ml-5 mr-5'>{itemList?.totalAmount} VND</div>
+                <div className='ml-5 mt-3 mr-5'>
+                  {itemList?.shippingFee} VND
+                </div>
+                <div className='ml-5  mt-3 mr-5  mb-3'>
+                  {itemList?.totalAmountWithShipping} VND
+                </div>
               </div>
             </div>
             <Button
@@ -154,7 +144,7 @@ function CartPage() {
                 handleSubmitOrder();
               }}
             >
-              Thanh toán
+              Đặt hàng
             </Button>
           </div>
         </div>
