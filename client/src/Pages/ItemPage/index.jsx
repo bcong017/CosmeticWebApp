@@ -16,7 +16,7 @@ import { useLocation } from 'react-router-dom';
 import './style.css';
 
 import GetItem from '@/Api_Call/GetItem';
-import { VerticalDotsIcon } from '../AdminPage/TableItem/VerticalDotsIcon';
+import { VerticalDotsIcon } from '@/Global_reference/assets/VerticalDotsIcon';
 import { useAuth } from '@/Global_reference/context/auth';
 import { APP_ROLE } from '@/Global_reference/variables';
 import comments from '@/Api_Call/comments';
