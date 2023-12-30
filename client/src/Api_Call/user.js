@@ -14,4 +14,10 @@ export default {
   changePassword(payload) {
     return axios.post(`${API_HOST}/user/change-password`, payload);
   },
+  createOrder(payload) {
+    return axios.post(`${API_HOST}/order/create`, payload);
+  },
+  getOrder() {
+    return axios.get(`${API_HOST}/user/order`);
+  },
 };

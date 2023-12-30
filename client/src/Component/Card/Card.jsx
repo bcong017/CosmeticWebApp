@@ -21,6 +21,7 @@ function CardComponent({
             alt={itemName}
             className='w-full object-fit h-[200px]'
             src={imgURL}
+            fallbackSrc='https://via.placeholder.com/250x200'
           />
         </CardBody>
         <CardFooter className='gap-3 flex-col'>

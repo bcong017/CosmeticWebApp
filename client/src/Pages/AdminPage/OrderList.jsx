@@ -22,9 +22,6 @@ export default function OrderList() {
       });
       getOrderList();
     }
-    // else{
-    //   admin.
-    // }
   };
 
   useEffect(() => {

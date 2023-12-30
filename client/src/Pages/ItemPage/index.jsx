@@ -10,6 +10,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  Image,
 } from '@nextui-org/react';
 import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -78,10 +79,7 @@ function ItemPage() {
         console.log(error);
       });
   };
-  // {
-  //   "item_id": 1,
-  //   "quantity": 2
-  // }
+
   const handleAddCartItem = () => {
     cart
       .addItem({ item_id: itemInfo.item.id, quantity: quantity })
@@ -94,19 +92,21 @@ function ItemPage() {
     <div className='block'>
       <div className='item-media-side-detail-block'>
         <div className='media'>
+          {console.log(itemInfo?.item?.imageURLs[0])}
           <img src={itemInfo?.item?.imageURLs[0]} alt='' ref={imgRef} />
 
           <ul>
             {itemInfo?.item?.imageURLs.map((url, index) => {
-              console.log(url);
               return (
                 <li key={index}>
-                  <img
+                  <Image
+                    fallbackSrc={'https://via.placeholder.com/250x200'}
                     className='variant-item-thumbnail'
                     src={url}
                     alt=''
-                    onClick={(e) => {
-                      imgRef.current.src = e.target.src;
+                    onClick={() => {
+                      imgRef.current.src = url;
+                      console.log(imgRef.current.src);
                     }}
                   />
                 </li>
@@ -117,13 +117,42 @@ function ItemPage() {
         <div className='item-info'>
           <h1 className='font-bold font text-2xl'>{itemInfo?.item?.name}</h1>
 
-          <h3>Giá: {itemInfo?.item?.price} VND</h3>
           <h3>Hãng: {itemInfo?.item?.brand}. </h3>
+
           <h3>
             Điểm đánh giá: {itemInfo?.item?.user_rating}/5 từ{' '}
             {itemInfo?.item?.rate_count} người dùng.
           </h3>
 
+          {!itemInfo?.item?.is_on_sale && (
+            <h3>Giá: {itemInfo?.item?.price} VND</h3>
+          )}
+          {itemInfo?.item?.is_on_sale && (
+            <div className='border-2 rounded p-4 border-[rgb(255,0,0)] flex justify-center items-center flex-col font-bold text-[rgb(255,0,0)]'>
+              <h2>
+                Chương trình giảm giá: {itemInfo?.item?.sale_event.event_name}
+              </h2>
+              <h2 className='text-center'>
+                Mức giảm: {itemInfo?.item?.sale_event.discount_percentage}
+              </h2>
+
+              <h3>
+                Giá gốc:{' '}
+                <span className='line-through'>
+                  {itemInfo?.item?.base_price} VND{' '}
+                </span>
+              </h3>
+              <h3>Giá đã giảm: {itemInfo?.item?.price} VND</h3>
+              <h3>
+                Thời gian bắt đầu chương trình:{' '}
+                {itemInfo?.item?.sale_event?.start_date}
+              </h3>
+              <h3>
+                Thời gian kết thúc chương trình:{' '}
+                {itemInfo?.item?.sale_event?.end_date}
+              </h3>
+            </div>
+          )}
           <div className='amount-block'>
             <label htmlFor='item-amount'>Số lượng:</label>
             <select
