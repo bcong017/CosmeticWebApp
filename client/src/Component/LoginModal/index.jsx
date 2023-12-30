@@ -32,7 +32,7 @@ export default function LoginModal() {
   const [resPassword, setResPassword] = useState('');
   const [resUsername, setResUsername] = useState('');
   const [resRePassword, setResRePassword] = useState('');
-  const { setToken, setRole, role } = useAuth();
+  const { setToken, setRole } = useAuth();
   const nav = useNavigate();
 
   const clearInput = () => {
@@ -41,24 +41,11 @@ export default function LoginModal() {
     setName('');
     setPhoneNum('');
     setAddress('');
-    // setGender('male');
+
     setResPassword('');
     setResRePassword('');
     setResUsername('');
   };
-
-  // const validateEmail = (email) =>
-  //   email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
-
-  // const isInvalidLogin = useMemo(() => {
-  //   if (loginUserName === '') return false;
-  // }, [loginUserName]);
-
-  // const isInvalidReg = useMemo(() => {
-  //   if (resEmail === '') return false;
-
-  //   return validateEmail(resEmail) ? false : true;
-  // }, [resEmail]);
 
   const handleOnclickLogin = async () => {
     if (!loginUserName) return;
@@ -70,6 +57,7 @@ export default function LoginModal() {
           setToken(response.data.token);
           setRole(response.data.role);
           clearInput();
+          nav(response.data.role === APP_ROLE.ADMIN ? '/admin' : '/');
         }
       })
       .catch(function (error) {
@@ -103,15 +91,9 @@ export default function LoginModal() {
   };
 
   useEffect(() => {
-    if (role == APP_ROLE.ADMIN) {
-      nav('/admin');
-    } else {
-      nav('/');
-    }
-  }, [role]);
-  useEffect(() => {
     clearInput();
   }, [isOpen]);
+
   return (
     <>
       <Tooltip content='Đăng nhập/ Đăng ký' closeDelay={0}>
@@ -149,11 +131,6 @@ export default function LoginModal() {
                       value={loginUserName}
                       onChange={(e) => setLoginUserName(e.target.value)}
                       isRequired
-                      // isInvalid={isInvalidLogin}
-                      // color={isInvalidLogin ? 'danger' : 'success'}
-                      // errorMessage={
-                      //   isInvalidLogin && 'Vui lòng nhập email hợp lệ'
-                      // }
                     />
                     <Input
                       endContent={
@@ -224,28 +201,7 @@ export default function LoginModal() {
                         setAddress(e.target.value);
                       }}
                     />
-                    {/* <div className='flex '>
-                      <div className='mr-5 font-semibold'>Giới tính: </div>
-                      <RadioGroup
-                        color='secondary'
-                        label=''
-                        orientation='horizontal'
-                        value={gender}
-                        onChange={(e) => {
-                          setGender(e.target.value);
-                        }}
-                      >
-                        <Radio className='font-semibold' value='male'>
-                          Nam
-                        </Radio>
-                        <Radio className='font-semibold' value='female'>
-                          Nữ
-                        </Radio>
-                        <Radio className='font-semibold' value='other'>
-                          Khác
-                        </Radio>
-                      </RadioGroup>
-                    </div> */}
+
                     <Input
                       key='username'
                       endContent={

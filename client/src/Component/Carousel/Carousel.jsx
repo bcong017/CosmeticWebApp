@@ -2,7 +2,6 @@ import Carousel from 'react-multi-carousel';
 import Card from '../Card/Card.jsx';
 import './Carousel.css';
 import 'react-multi-carousel/lib/styles.css';
-import { useRef } from 'react';
 
 const responsive = {
   superLargeDesktop: {
@@ -34,8 +33,6 @@ function CarouselComponent({ title, listOfItem = [] }) {
           draggable={false}
           infinite={true}
           autoPlay={true}
-          // customRightArrow={<CustomRightArrow />}
-          // ref={r}
         >
           {listOfItem?.map((item, index) => (
             <Card
@@ -44,6 +41,9 @@ function CarouselComponent({ title, listOfItem = [] }) {
               price={item.price}
               key={index}
               id={item.id}
+              base_price={item.base_price}
+              discount_percentage={item.discount_percentage}
+              end_date={item.end_date}
               className='self-center'
             ></Card>
           ))}
