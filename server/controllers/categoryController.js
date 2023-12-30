@@ -194,7 +194,7 @@ const filterItemsByOptions = async (req, res) => {
       "image_urls",
       "user_rating",
       "specifications",
-      "sale_event_id",
+      "is_on_sale",
     ];
 
     const page = req.query.page ? parseInt(req.query.page) : 1;
@@ -286,7 +286,7 @@ const filterItemsByOptions = async (req, res) => {
     const resultedItems = items.map((item) => {
       let finalPrice = item.price; // Default to item price
 
-      if (item.sale_event_id && item.SaleEvent) {
+      if (item.is_on_sale) {
         const currentDate = new Date();
         const startDate = new Date(item.SaleEvent.start_date);
         const endDate = new Date(item.SaleEvent.end_date);
