@@ -21,7 +21,6 @@ module.exports = (sequelize) => {
     },
     is_active: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false,
     },
     brand: {
       type: DataTypes.STRING(100),

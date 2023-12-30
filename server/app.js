@@ -277,6 +277,12 @@ app.use("/comment", commentRoute);
 app.use("/event", eventRoute);
 
 app.use("/order", orderRoute);
+/**
+ *  http://localhost:3000/order/create
+ * POST
+ * 
+ * This is to create order
+ */
 
 app.use("/", userRoute);
 /**
