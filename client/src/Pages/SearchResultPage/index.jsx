@@ -10,7 +10,6 @@ function SearchResultPage() {
   let [itemsInfo, setItemsInfo] = useState({});
   let searchInput = useRef();
   const fetchItems = (option) => {
-    // console.log(`${location.pathname.substring(19)}${option}`);
     return common
       .search(option)
       .then((res) => {
@@ -23,7 +22,11 @@ function SearchResultPage() {
   };
 
   async function getItemList() {
-    const items = await fetchItems({ searchTerm: searchInput.current });
+    const items = await fetchItems({
+      searchTerm: searchInput.current,
+      order: priceOrder,
+      page: selectedPage,
+    });
     setItemsInfo(items);
   }
 
@@ -78,6 +81,9 @@ function SearchResultPage() {
                 price={item.price}
                 key={item.id}
                 id={item.id}
+                bp={item.base_price}
+                dp={item.discount_percentage}
+                ed={item.end_date}
                 className='self-center'
               ></Card>
             ))

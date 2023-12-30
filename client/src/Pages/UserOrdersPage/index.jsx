@@ -18,7 +18,7 @@ export default function UserOrderPage() {
         size='lg'
         color='primary'
       >
-        <Tab key='ongoing' title='Đơn hàng đang được giao'>
+        <Tab key='ongoing' title='Đơn hàng đang chờ chấp thuận'>
           <Table selectionMode='single'>
             <TableHeader>
               <TableColumn>STT</TableColumn>
@@ -37,7 +37,7 @@ export default function UserOrderPage() {
           </Table>
         </Tab>
 
-        <Tab key='delivered' title='Đơn hàng đã được giao'>
+        <Tab key='delivered' title='Đơn hàng đã được chấp thuận'>
           <Table
             selectionMode='single'
             defaultSelectedKeys={['2']}
@@ -48,7 +48,7 @@ export default function UserOrderPage() {
               <TableColumn>Mã đơn hàng</TableColumn>
               <TableColumn>Thành tiền</TableColumn>
               <TableColumn>Ngày đặt hàng</TableColumn>
-              <TableColumn>Ngày nhận hàng</TableColumn>
+              <TableColumn>Ngày chấp thuận</TableColumn>
             </TableHeader>
             <TableBody>
               <TableRow key='1'>
