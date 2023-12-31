@@ -282,12 +282,6 @@ function ItemPage() {
                           setComment(e.target.value);
                         }}
                       />
-                      {/* <Input
-                        key='comment'
-                        type='number'
-                        placeholder='Điểm đánh giá...'
-                        className='font-semibold h-[100%]'
-                      /> */}
                     </div>
                     <Button
                       className='font-semibold '
@@ -296,7 +290,7 @@ function ItemPage() {
                         handleSubmitComment();
                       }}
                     >
-                      Đăng đánh giá.
+                      Đăng phản hồi.
                     </Button>
                   </div>
                 )}

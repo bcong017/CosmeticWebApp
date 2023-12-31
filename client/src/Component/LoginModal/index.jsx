@@ -196,7 +196,15 @@ export default function LoginModal() {
                         setAddress(e.target.value);
                       }}
                     />
-
+                    <Input
+                      key='birthday'
+                      type='date'
+                      label='Ngày sinh:'
+                      labelPlacement='outside-left'
+                      placeholder=''
+                      variant='bordered'
+                      className=' font-semibold'
+                    />
                     <Input
                       key='username'
                       endContent={
