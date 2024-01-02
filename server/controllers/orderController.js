@@ -1,4 +1,5 @@
 const db = require("../models");
+const jwt = require('jsonwebtoken');
 
 const createOrder = async (req, res) => {
   try {
@@ -30,7 +31,7 @@ const createOrder = async (req, res) => {
         {
           model: db.Item,
           as: "Item",
-          attributes: selectedAttributes, // Add the attributes you need
+          attributes: selectedAttributes,
           include: [
             {
               model: db.SaleEvent,
@@ -42,11 +43,9 @@ const createOrder = async (req, res) => {
             },
           ],
         },
-        {
-          
-        }
       ],
     });
+    
 
     if (!cartItems || cartItems.length === 0) {
       return res.status(404).json({ error: "No items found in the user's cart" });
@@ -54,11 +53,13 @@ const createOrder = async (req, res) => {
 
     // Calculate total amount asynchronously
     const totalAmount = await calculateTotalAmount(cartItems);
+    const shippingFee = 0.1 * totalAmount;
 
     const order = await db.Order.create({
-      user_id: userId,
+      user_id: user_id,
       order_date: new Date(),
       total_amount: totalAmount,
+      shipping_fee: shippingFee,
     });
 
     await Promise.all(

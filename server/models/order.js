@@ -1,4 +1,3 @@
-// models/order/order.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
@@ -24,6 +23,12 @@ module.exports = (sequelize) => {
     is_confirm: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
+    },
+    dateConfirmed: {
+      type: DataTypes.DATE,
+    },
+    dateRejected: {
+      type: DataTypes.DATE,
     },
   });
 

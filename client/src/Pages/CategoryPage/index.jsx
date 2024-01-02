@@ -7,7 +7,7 @@ import {
 } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import Card from '@/Component/Card/Card';
+import CardComponent from '@/Component/Card/Card';
 import categories from '@/Api_Call/categories';
 import { CAT_TITLE } from '@/Global_reference/variables';
 
@@ -80,7 +80,6 @@ function CategoryPage() {
           `filter-items?order=${priceOrder}&page=${selectedPage}${appendedURL}`,
         ),
       );
-      setSelectedPage(selectedPage);
     })();
   }, [selectedPage]);
   return (
@@ -148,7 +147,7 @@ function CategoryPage() {
           </CheckboxGroup>
         </div>
       </div>
-      <div className='bg-section-blue w-[100%] max-h-[750px]  px-4 py-4'>
+      <div className='bg-section-blue w-[100%] max-h-[970px]  px-4 py-4'>
         <div className='text-xl font-bold'>
           {title}{' '}
           <span className='text-base font-extralight'>
@@ -158,14 +157,19 @@ function CategoryPage() {
         <div className='grid grid-cols-5 grid-rows-2 gap-3'>
           {ItemsInfo?.resultedItems?.length != 0 ? (
             ItemsInfo?.resultedItems?.map((item) => (
-              <Card
-                itemName={item.name}
-                imgURL={item.first_image_url}
-                price={item.price}
-                key={item.id}
-                id={item.id}
-                className='self-center'
-              ></Card>
+              <>
+                <CardComponent
+                  itemName={item.name}
+                  imgURL={item.first_image_url}
+                  price={item.price}
+                  key={item.id}
+                  id={item.id}
+                  base_price={item.base_price}
+                  discount_percentage={item.discount_percentage}
+                  end_date={item.end_date}
+                  className='self-center'
+                ></CardComponent>
+              </>
             ))
           ) : (
             <div className='m-[100px] flex justify-center items-center font-bold'>

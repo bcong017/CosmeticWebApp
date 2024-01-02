@@ -11,6 +11,7 @@
   max-width: 30%;
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 .media > img {
   margin-bottom: 10px;

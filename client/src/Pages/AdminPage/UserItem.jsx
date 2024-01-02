@@ -26,11 +26,7 @@ export default function UserItem() {
         .catch(function (error) {
           console.log(error);
         });
-      // getUserList();
     }
-    // else{
-    //   admin.
-    // }
   };
 
   useEffect(() => {

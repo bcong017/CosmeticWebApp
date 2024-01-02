@@ -55,52 +55,34 @@ const confirmOrder = async (req, res) => {
     const { orderId } = req.params;
 
     // Find the order
-    const order = await db.Order.findByPk(orderId, {
-      include: [
-        {
-          model: db.OrderItem,
-          include: [{ model: db.Item }],
-        },
-      ],
-    });
+    const order = await db.Order.findByPk(orderId);
 
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    // Calculate total amount of money
-    const totalAmountOfMoney = order.OrderItems.reduce((total, orderItem) => {
-      return total + orderItem.Item.price * orderItem.quantity;
-    }, 0);
-
-    // Calculate shipping fee (10% of total amount)
-    const shippingFee = 0.1 * totalAmountOfMoney;
-
-    // Update the Order with total amount and shipping fee (mark it as confirmed)
-    await order.update({
-      is_confirm: 1,
-      total_amount: totalAmountOfMoney,
-      shipping_fee: shippingFee,
-    });
-
-    // Create Profit Statistics for each item in the order
-    await Promise.all(
-      order.OrderItems.map(async (orderItem) => {
-        const item = orderItem.Item;
-        const costPrice = 0.2 * item.price; // 20% as the cost of item
-        const profit = item.price - costPrice;
-
-        await db.ProfitStatistics.create({
-          item_id: item.id,
-          sale_date: new Date(),
-          sale_price: item.price,
-          cost_price: costPrice,
-          profit: profit,
+    switch (order.is_confirm) {
+      case 0:
+        await order.update({
+          is_confirm: 1,
+          dateConfirmed: new Date(),
         });
-      })
-    );
-
-    return res.status(200).json({ message: "Order confirmed successfully" });
+        return res
+          .status(200)
+          .json({ message: "Order confirmed successfully" });
+      case 1:
+        return res
+          .status(400)
+          .json({ error: "Cannot confirm an already confirmed order" });
+      case 2:
+        return res
+          .status(400)
+          .json({ error: "Cannot confirm an already rejected order" });
+      default:
+        return res
+          .status(400)
+          .json({ error: "Invalid order state for confirmation" });
+    }
   } catch (error) {
     console.error("Error confirming order:", error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -110,41 +92,38 @@ const confirmOrder = async (req, res) => {
 const rejectOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
+
+    // Find the order
     const order = await db.Order.findByPk(orderId);
 
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    if (order.is_confirm) {
-      return res
-        .status(400)
-        .json({ error: "Cannot decline a confirmed order" });
-    }
-
-    // Return items to the cart
-    const orderItems = await db.OrderItem.findAll({
-      where: { order_id: orderId },
-    });
-    await Promise.all(
-      orderItems.map(async (orderItem) => {
-        await db.Cart.create({
-          user_id: order.user_id,
-          item_id: orderItem.item_id,
-          quantity: orderItem.quantity,
+    switch (order.is_confirm) {
+      case 0:
+        await order.update({
+          is_confirm: 2,
+          dateRejected: new Date(),
         });
-
-        // Remove order item after returning to the cart
-        await orderItem.destroy();
-      })
-    );
-
-    // Delete the declined order
-    await order.destroy();
-
-    return res.status(200).json({ message: "Order declined successfully" });
+        return res
+          .status(200)
+          .json({ message: "Order rejected successfully" });
+      case 1:
+        return res
+          .status(400)
+          .json({ error: "Cannot rejected an already confirmed order" });
+      case 2:
+        return res
+          .status(400)
+          .json({ error: "Cannot rejected an already rejected order" });
+      default:
+        return res
+          .status(400)
+          .json({ error: "Invalid order state for confirmation" });
+    }
   } catch (error) {
-    console.error("Error declining order:", error);
+    console.error("Error confirming order:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -309,7 +288,7 @@ const getAllOrders = async (req, res) => {
   try {
     // Get all orders with associated user information and totalAmount
     const orders = await db.Order.findAll({
-      attributes: ["id", "user_id", "is_confirm", "total_amount", "createdAt"],
+      attributes: ["id", "user_id", "is_confirm", "total_amount", "createdAt", "dateConfirmed", "dateRejected"],
       include: [
         {
           model: db.User,
@@ -320,13 +299,49 @@ const getAllOrders = async (req, res) => {
     });
 
     // Map the result to the desired format
-    const formattedOrders = orders.map((order) => ({
-      orderId: order.id,
-      name: order.User.name,
-      totalAmount: order.total_amount,
-      is_confirm: order.is_confirm,
-      date: order.createdAt,
-    }));
+    const formattedOrders = orders.map((order) => {
+      let status, date;
+
+      switch (order.is_confirm) {
+        case 0:
+          status = "Not updated";
+          dateCreated = order.createdAt;
+          return {
+            orderId: order.id,
+            name: order.User.name,
+            totalAmount: order.total_amount,
+            status,
+            dateCreated: dateCreated ? dateCreated.toLocaleDateString("en-GB") : null,
+          };
+        case 1:
+          status = "Confirmed";
+          dateConfirmed = order.dateConfirmed;
+          dateCreated = order.createdAt;
+          return {
+            orderId: order.id,
+            name: order.User.name,
+            totalAmount: order.total_amount,
+            status,
+            dateConfirmed: dateConfirmed ? dateConfirmed.toLocaleDateString("en-GB") : null,
+            dateCreated: dateCreated ? dateCreated.toLocaleDateString("en-GB") : null,
+          };
+        case 2:
+          status = "Rejected";
+          dateRejected = order.dateRejected;
+          dateCreated = order.createdAt;
+          return {
+            orderId: order.id,
+            name: order.User.name,
+            totalAmount: order.total_amount,
+            status,
+            dateRejected: dateRejected ? dateRejected.toLocaleDateString("en-GB") : null,
+            dateCreated: dateCreated ? dateCreated.toLocaleDateString("en-GB") : null,
+          };
+        default:
+          status = "Invalid status";
+          date = null;
+      }
+    });
 
     return res.status(200).json({ orders: formattedOrders });
   } catch (error) {
@@ -365,7 +380,13 @@ const adminActivateUser = async (req, res) => {
 
 const getItemsByCategory = async (req, res) => {
   try {
-    const selectedAttributes = ["id", "name", "price", "image_urls", "quantity"];
+    const selectedAttributes = [
+      "id",
+      "name",
+      "price",
+      "image_urls",
+      "quantity",
+    ];
 
     // Fetch the items for the current page
     const items = await db.Item.findAll({
@@ -443,5 +464,5 @@ module.exports = {
   getAllOrders,
   adminActivateUser,
   getItemsByCategory,
-  getAllSaleEvents
+  getAllSaleEvents,
 };

@@ -10,7 +10,6 @@ function SearchResultPage() {
   let [itemsInfo, setItemsInfo] = useState({});
   let searchInput = useRef();
   const fetchItems = (option) => {
-    // console.log(`${location.pathname.substring(19)}${option}`);
     return common
       .search(option)
       .then((res) => {
@@ -22,8 +21,12 @@ function SearchResultPage() {
       });
   };
 
-  async function getItemList() {
-    const items = await fetchItems({ searchTerm: searchInput.current });
+  function getItemList() {
+    const items = fetchItems({
+      searchTerm: searchInput.current,
+      order: priceOrder,
+      page: selectedPage,
+    });
     setItemsInfo(items);
   }
 
@@ -64,23 +67,29 @@ function SearchResultPage() {
       </div>
       <div className='bg-section-blue w-[100%] px-4 py-4'>
         <div className='text-xl font-bold'>
-          Kết quả tìm kiếm:{' ' + location.pathname.substring(19) + ' '}
+          Kết quả tìm kiếm:{' ' + `${searchInput.current}` + ' '}
           <span className='text-base font-extralight'>
-            &#40; Số lượng: {} &#41;
+            &#40; Số lượng: {itemsInfo?.totalItems} &#41;
           </span>
         </div>
         <div className='grid grid-cols-5 grid-rows-2 gap-3'>
           {itemsInfo?.resultedItems?.length != 0 ? (
-            itemsInfo?.resultedItems?.map((item) => (
-              <Card
-                itemName={item.name}
-                imgURL={item.first_image_url}
-                price={item.price}
-                key={item.id}
-                id={item.id}
-                className='self-center'
-              ></Card>
-            ))
+            itemsInfo?.resultedItems?.map((item) => {
+              console.log(item);
+              return (
+                <Card
+                  itemName={item.name}
+                  imgURL={item.first_image_url}
+                  price={item.price}
+                  key={item.id}
+                  id={item.id}
+                  bp={item.base_price}
+                  dp={item.discount_percentage}
+                  ed={item.end_date}
+                  className='self-center'
+                ></Card>
+              );
+            })
           ) : (
             <div className='m-[100px] flex justify-center items-center font-bold'>
               Không có sản phẩm phù hợp
