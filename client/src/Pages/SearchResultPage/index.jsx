@@ -31,17 +31,18 @@ function SearchResultPage() {
   };
 
   useEffect(() => {
-    searchInput.current = location.pathname.substring(19);
-    getItems();
-  }, [location]);
-
-  useEffect(() => {
     console.log(itemsInfo);
   }, [itemsInfo]);
 
   useEffect(() => {
+    try {
+      searchInput.current = decodeURI(location.pathname.substring(19));
+    } catch (e) {
+      console.error(e);
+    }
+
     getItems();
-  }, [selectedPage, priceOrder]);
+  }, [selectedPage, priceOrder, location]);
 
   return (
     <div className='flex flex-row my-5 mx-5'>
@@ -73,6 +74,7 @@ function SearchResultPage() {
         {itemsInfo?.resultedItems?.length != 0 ? (
           <div className='grid grid-cols-5 grid-rows-2 gap-3'>
             {itemsInfo?.resultedItems?.map((item) => {
+              item.discount_percentage && console.log(item);
               return (
                 <Card
                   itemName={item.name}
@@ -80,9 +82,9 @@ function SearchResultPage() {
                   price={item.price}
                   key={item.id}
                   id={item.id}
-                  bp={item.base_price}
-                  dp={item.discount_percentage}
-                  ed={item.end_date}
+                  base_price={item.base_price}
+                  discount_percentage={item.discount_percentage}
+                  end_date={item.end_date}
                   className='self-center'
                 ></Card>
               );
