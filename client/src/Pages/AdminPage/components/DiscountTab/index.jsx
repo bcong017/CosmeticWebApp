@@ -16,8 +16,8 @@ import { VerticalDotsIcon } from '@/Global_reference/assets/VerticalDotsIcon';
 import { ChevronDownIcon } from '@/Global_reference/assets/ChevronDownIcon';
 import { capitalize } from '@/Global_reference/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import ModalComponent from '@/Component/ModalComponent';
 import admin, { SALE_COLUMNS } from '@/Api_Call/admin';
+import AddItemModal from './ui/AddItemModal';
 
 const INITIAL_SALE_COLUMNS = [
   'id',
@@ -29,16 +29,6 @@ const INITIAL_SALE_COLUMNS = [
   'category',
   'actions',
 ];
-
-/** TODO: */
-const DEFAULT_ADD_VALUES = {
-  event_name: { title: 'Tên', value: '' },
-  discount_percentage: { title: 'Tỹ lệ giảm', value: '' },
-  start_date: { title: 'Ngày bắt đầu', value: '' },
-  end_date: { title: 'Ngày kết thúc', value: '' },
-  brand: { title: 'Thương hiệu', value: '' },
-  category: { title: 'Danh mục', value: '' },
-};
 
 function DiscountTab() {
   const [eventItems, setEventItems] = useState([]);
@@ -79,12 +69,6 @@ function DiscountTab() {
     });
   }, [sortDescriptor, items]);
 
-  const onOkAdd = () => {
-    admin.getEvents().then((response) => {
-      setEventItems(response.data ?? []);
-    });
-  };
-
   const renderCell = useCallback((event, columnKey) => {
     const cellValue = event[columnKey];
 
@@ -115,12 +99,22 @@ function DiscountTab() {
     setPage(1);
   }, []);
 
+  const onOkAddEvent = () => {
+    admin
+      .getEvents()
+      .then((response) => {
+        setEventItems(response.data.saleEvents ?? []);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   useEffect(() => {
     admin
       .getEvents()
       .then((response) => {
-        console.log(response.data);
-        setEventItems(response.data ?? []);
+        setEventItems(response.data.saleEvents ?? []);
       })
       .catch((e) => {
         console.log(e);
@@ -131,13 +125,7 @@ function DiscountTab() {
     return (
       <div className='flex flex-col gap-4'>
         <div className='flex justify-between '>
-          <ModalComponent
-            title={'Chương trình giảm giá'}
-            query={admin.getEvents}
-            values={DEFAULT_ADD_VALUES}
-            onOk={onOkAdd}
-          />
-
+          <AddItemModal onOk={onOkAddEvent} />
           <Dropdown>
             <DropdownTrigger className='hidden sm:flex'>
               <Button
@@ -183,27 +171,29 @@ function DiscountTab() {
     );
   }, [visibleColumns, onRowsPerPageChange, eventItems]);
 
-  const bottomContent = useMemo(() => {
+  const BottomContent = () => {
     return (
-      <div className='py-2 px-2 flex justify-center items-center'>
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-      </div>
+      pages > 0 && (
+        <div className='py-2 px-2 flex justify-center items-center'>
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            page={page}
+            total={pages}
+            onChange={setPage}
+          />
+        </div>
+      )
     );
-  });
+  };
 
   return (
     <div className='m-5'>
       <Table
         aria-label='Example table with custom cells, pagination and sorting'
         isHeaderSticky
-        bottomContent={bottomContent}
+        bottomContent={<BottomContent />}
         bottomContentPlacement='outside'
         classNames={{
           wrapper: 'max-h-[382px]',

@@ -8,12 +8,12 @@ import {
   ModalHeader,
   useDisclosure,
 } from '@nextui-org/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { PlusIcon } from '@/Global_reference/assets/PlusIcon';
 
 /**
- *
+ * @deprecated
  * @param {object} values - values for generating modal form
  */
 function ModalComponent({ title, query, values, onOk }) {
@@ -21,13 +21,17 @@ function ModalComponent({ title, query, values, onOk }) {
   const memoFormValues = useMemo(() => values, [values]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  /** TODO: */
   const onChangeValue = (key, e) => {
-    console.log(key, e);
+    setFormValues((prev) => {
+      return {
+        ...prev,
+        [key]: { ...prev[key], value: e.target.value },
+      };
+    });
   };
 
   const handleOk = (onClose) => {
-    query(memoFormValues).then((response) => {
+    query(formValues).then((response) => {
       // TODO:
       console.log('Thêm chương trình giảm giá thành công!', response.data);
       onClose();
@@ -36,8 +40,15 @@ function ModalComponent({ title, query, values, onOk }) {
   };
 
   useEffect(() => {
+    console.log(memoFormValues);
     setFormValues(memoFormValues);
   }, [memoFormValues]);
+
+  useLayoutEffect(() => {
+    if (!isOpen) {
+      setFormValues(values);
+    }
+  }, [isOpen]);
 
   return (
     <>
