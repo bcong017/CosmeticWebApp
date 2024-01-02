@@ -215,6 +215,7 @@ export default function LoginModal() {
                       variant='bordered'
                       className=' font-semibold'
                       value={resUsername}
+                      isRequired
                       onChange={(e) => {
                         setResUsername(e.target.value);
                       }}
@@ -229,6 +230,7 @@ export default function LoginModal() {
                       type='password'
                       className=' font-semibold'
                       variant='bordered'
+                      isRequired
                       value={resPassword}
                       onChange={(e) => {
                         setResPassword(e.target.value);
@@ -243,6 +245,7 @@ export default function LoginModal() {
                       placeholder='Nhập lại mật khẩu của bạn'
                       type='password'
                       className=' font-semibold'
+                      isRequired
                       variant='bordered'
                       value={resRePassword}
                       onChange={(e) => {
