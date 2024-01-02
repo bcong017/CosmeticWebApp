@@ -19,6 +19,14 @@ export const CAT_TITLE = {
   VungKin: 'Nước hoa vùng kín',
 };
 
+export const BRAND = {
+  MBL: 'Maybelline',
+  AST: 'australis',
+  SKG: 'Silkygirl',
+  BOM: 'B.O.M',
+  LOR: "L'Oreal",
+};
+
 export const STORAGE_KEY = {
   TOKEN: '_token',
   ROLE: '_role',
@@ -28,4 +36,4 @@ export const APP_ROLE = {
   GUEST: 'guest',
   USER: 'user',
   ADMIN: 'admin',
-}
+};
