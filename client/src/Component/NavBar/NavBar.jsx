@@ -72,14 +72,9 @@ function NavBar() {
     const input = searchRef.current.value;
     if (input != '') {
       let res = await common.search({ searchTerm: input });
-      if (res?.data.resultedItems.length == 0) {
-        navigate('/');
-      } else {
-        console.log(res?.data.resultedItems);
-        navigate(`/search/searchTerm/${input}`, {
-          state: res?.data.resultedItems,
-        });
-      }
+      navigate(`/search/searchTerm/${input}`, {
+        state: res?.data.resultedItems,
+      });
     }
   }
 

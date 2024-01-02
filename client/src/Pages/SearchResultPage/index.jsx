@@ -7,13 +7,12 @@ function SearchResultPage() {
   const location = useLocation();
   let [selectedPage, setSelectedPage] = useState(1);
   let [priceOrder, setPriceOrder] = useState('LTH');
-  let [itemsInfo, setItemsInfo] = useState({});
+  let [itemsInfo, setItemsInfo] = useState();
   let searchInput = useRef();
   const fetchItems = (option) => {
     return common
       .search(option)
       .then((res) => {
-        console.log(res.data);
         return res.data;
       })
       .catch((err) => {
@@ -21,31 +20,27 @@ function SearchResultPage() {
       });
   };
 
-  function getItemList() {
-    const items = fetchItems({
-      searchTerm: searchInput.current,
-      order: priceOrder,
-      page: selectedPage,
-    });
-    setItemsInfo(items);
-  }
+  const getItems = async function () {
+    setItemsInfo(
+      await fetchItems({
+        searchTerm: searchInput.current,
+        order: priceOrder,
+        page: selectedPage,
+      }),
+    );
+  };
 
   useEffect(() => {
     searchInput.current = location.pathname.substring(19);
-    console.log(searchInput.current);
-    getItemList();
+    getItems();
   }, [location]);
 
   useEffect(() => {
-    (async function () {
-      setItemsInfo(
-        await fetchItems({
-          searchTerm: searchInput.current,
-          order: priceOrder,
-          page: selectedPage,
-        }),
-      );
-    })();
+    console.log(itemsInfo);
+  }, [itemsInfo]);
+
+  useEffect(() => {
+    getItems();
   }, [selectedPage, priceOrder]);
 
   return (
@@ -68,14 +63,16 @@ function SearchResultPage() {
       <div className='bg-section-blue w-[100%] px-4 py-4'>
         <div className='text-xl font-bold'>
           Kết quả tìm kiếm:{' ' + `${searchInput.current}` + ' '}
-          <span className='text-base font-extralight'>
-            &#40; Số lượng: {itemsInfo?.totalItems} &#41;
-          </span>
+          {itemsInfo?.resultedItems?.length != 0 && (
+            <span className='text-base font-extralight'>
+              &#40; Số lượng: {itemsInfo?.totalItems} &#41;
+            </span>
+          )}
         </div>
-        <div className='grid grid-cols-5 grid-rows-2 gap-3'>
-          {itemsInfo?.resultedItems?.length != 0 ? (
-            itemsInfo?.resultedItems?.map((item) => {
-              console.log(item);
+
+        {itemsInfo?.resultedItems?.length != 0 ? (
+          <div className='grid grid-cols-5 grid-rows-2 gap-3'>
+            {itemsInfo?.resultedItems?.map((item) => {
               return (
                 <Card
                   itemName={item.name}
@@ -89,13 +86,14 @@ function SearchResultPage() {
                   className='self-center'
                 ></Card>
               );
-            })
-          ) : (
-            <div className='m-[100px] flex justify-center items-center font-bold'>
-              Không có sản phẩm phù hợp
-            </div>
-          )}
-        </div>
+            })}
+          </div>
+        ) : (
+          <div className='m-[100px] flex justify-center items-center font-bold text-4xl'>
+            Không có sản phẩm phù hợp
+          </div>
+        )}
+
         {itemsInfo?.resultedItems?.length != 0 && (
           <div className='flex flex-col gap-5'>
             <Pagination
