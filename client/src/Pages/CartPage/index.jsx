@@ -3,7 +3,7 @@ import { Button } from '@nextui-org/react';
 import { Input } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import cart from '@/Api_Call/cart';
-import order from '@/Api_Call/order';
+import user from '@/Api_Call/user';
 import { useNavigate } from 'react-router-dom';
 
 function CartPage() {
@@ -34,7 +34,7 @@ function CartPage() {
   };
 
   const handleSubmitOrder = () => {
-    order.createOrder();
+    user.createOrder();
     nav('/');
   };
 

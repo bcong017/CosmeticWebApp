@@ -7,13 +7,12 @@ function SearchResultPage() {
   const location = useLocation();
   let [selectedPage, setSelectedPage] = useState(1);
   let [priceOrder, setPriceOrder] = useState('LTH');
-  let [itemsInfo, setItemsInfo] = useState({});
+  let [itemsInfo, setItemsInfo] = useState();
   let searchInput = useRef();
   const fetchItems = (option) => {
     return common
       .search(option)
       .then((res) => {
-        console.log(res.data);
         return res.data;
       })
       .catch((err) => {
@@ -21,32 +20,29 @@ function SearchResultPage() {
       });
   };
 
-  async function getItemList() {
-    const items = await fetchItems({
-      searchTerm: searchInput.current,
-      order: priceOrder,
-      page: selectedPage,
-    });
-    setItemsInfo(items);
-  }
+  const getItems = async function () {
+    setItemsInfo(
+      await fetchItems({
+        searchTerm: searchInput.current,
+        order: priceOrder,
+        page: selectedPage,
+      }),
+    );
+  };
 
   useEffect(() => {
-    searchInput.current = location.pathname.substring(19);
-    console.log(searchInput.current);
-    getItemList();
-  }, [location]);
+    console.log(itemsInfo);
+  }, [itemsInfo]);
 
   useEffect(() => {
-    (async function () {
-      setItemsInfo(
-        await fetchItems({
-          searchTerm: searchInput.current,
-          order: priceOrder,
-          page: selectedPage,
-        }),
-      );
-    })();
-  }, [selectedPage, priceOrder]);
+    try {
+      searchInput.current = decodeURI(location.pathname.substring(19));
+    } catch (e) {
+      console.error(e);
+    }
+
+    getItems();
+  }, [selectedPage, priceOrder, location]);
 
   return (
     <div className='flex flex-row my-5 mx-5'>
@@ -67,32 +63,39 @@ function SearchResultPage() {
       </div>
       <div className='bg-section-blue w-[100%] px-4 py-4'>
         <div className='text-xl font-bold'>
-          Kết quả tìm kiếm:{' ' + location.pathname.substring(19) + ' '}
-          <span className='text-base font-extralight'>
-            &#40; Số lượng: {} &#41;
-          </span>
-        </div>
-        <div className='grid grid-cols-5 grid-rows-2 gap-3'>
-          {itemsInfo?.resultedItems?.length != 0 ? (
-            itemsInfo?.resultedItems?.map((item) => (
-              <Card
-                itemName={item.name}
-                imgURL={item.first_image_url}
-                price={item.price}
-                key={item.id}
-                id={item.id}
-                bp={item.base_price}
-                dp={item.discount_percentage}
-                ed={item.end_date}
-                className='self-center'
-              ></Card>
-            ))
-          ) : (
-            <div className='m-[100px] flex justify-center items-center font-bold'>
-              Không có sản phẩm phù hợp
-            </div>
+          Kết quả tìm kiếm:{' ' + `${searchInput.current}` + ' '}
+          {itemsInfo?.resultedItems?.length != 0 && (
+            <span className='text-base font-extralight'>
+              &#40; Số lượng: {itemsInfo?.totalItems} &#41;
+            </span>
           )}
         </div>
+
+        {itemsInfo?.resultedItems?.length != 0 ? (
+          <div className='grid grid-cols-5 grid-rows-2 gap-3'>
+            {itemsInfo?.resultedItems?.map((item) => {
+              item.discount_percentage && console.log(item);
+              return (
+                <Card
+                  itemName={item.name}
+                  imgURL={item.first_image_url}
+                  price={item.price}
+                  key={item.id}
+                  id={item.id}
+                  base_price={item.base_price}
+                  discount_percentage={item.discount_percentage}
+                  end_date={item.end_date}
+                  className='self-center'
+                ></Card>
+              );
+            })}
+          </div>
+        ) : (
+          <div className='m-[100px] flex justify-center items-center font-bold text-4xl'>
+            Không có sản phẩm phù hợp
+          </div>
+        )}
+
         {itemsInfo?.resultedItems?.length != 0 && (
           <div className='flex flex-col gap-5'>
             <Pagination

@@ -196,7 +196,15 @@ export default function LoginModal() {
                         setAddress(e.target.value);
                       }}
                     />
-
+                    <Input
+                      key='birthday'
+                      type='date'
+                      label='Ngày sinh:'
+                      labelPlacement='outside-left'
+                      placeholder=''
+                      variant='bordered'
+                      className=' font-semibold'
+                    />
                     <Input
                       key='username'
                       endContent={
@@ -207,6 +215,7 @@ export default function LoginModal() {
                       variant='bordered'
                       className=' font-semibold'
                       value={resUsername}
+                      isRequired
                       onChange={(e) => {
                         setResUsername(e.target.value);
                       }}
@@ -221,6 +230,7 @@ export default function LoginModal() {
                       type='password'
                       className=' font-semibold'
                       variant='bordered'
+                      isRequired
                       value={resPassword}
                       onChange={(e) => {
                         setResPassword(e.target.value);
@@ -235,6 +245,7 @@ export default function LoginModal() {
                       placeholder='Nhập lại mật khẩu của bạn'
                       type='password'
                       className=' font-semibold'
+                      isRequired
                       variant='bordered'
                       value={resRePassword}
                       onChange={(e) => {

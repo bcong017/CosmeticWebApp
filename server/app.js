@@ -314,7 +314,7 @@ app.use("/order", orderRoute);
 /**
  *  http://localhost:3000/order/create
  * POST
- * 
+ *
  * This is to create order
  */
 
@@ -356,7 +356,7 @@ app.use("/", userRoute);
 
 const start = async () => {
   await db.sequelize.sync();
-  //await db.sequelize.authenticate();
+  await db.sequelize.authenticate();
   console.log("Kết nối xong");
   app.listen(3000, () => {
     console.log("Đang nghe ở port 3000");
