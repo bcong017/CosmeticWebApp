@@ -29,6 +29,10 @@ module.exports = (sequelize) => {
     address: {
       type: DataTypes.STRING(255),
     },
+    date_of_birth: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
     is_active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
@@ -43,7 +47,7 @@ module.exports = (sequelize) => {
       foreignKey: 'user_id',
     });
     User.hasMany(models.Order, {
-      foreignKey: 'id',
+      foreignKey: 'use_id',
     });
   };
 

@@ -8,12 +8,12 @@ const { authenticateAdmin } = require('../middleware/auth');
 route.post('/deactivate/:userId', authenticateAdmin, adminDeactivateUser);
 route.post('/confirm/:orderId', authenticateAdmin, confirmOrder);
 route.post('/reject/:orderId', authenticateAdmin, rejectOrder);
-route.post('/add', authenticateAdmin, addItem);
-route.put('edit/:itemId', authenticateAdmin, editItem);
-route.delete('delete/:itemId', authenticateAdmin, deleteItem);
 route.get('/order', authenticateAdmin, getAllOrders);
 route.get('/user', authenticateAdmin, getAllUserAccounts);
 route.get('/item/:categoryName', authenticateAdmin, getItemsByCategory);
 route.get('/event', authenticateAdmin, getAllSaleEvents);
+route.post('/item/create', authenticateAdmin, addItem);
+route.put('/item/edit/:itemId', authenticateAdmin, editItem);
+route.delete('/item/delete/:itemId', authenticateAdmin, deleteItem);
 
 module.exports = route;

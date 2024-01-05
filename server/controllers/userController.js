@@ -225,7 +225,7 @@ const getUserInfo = async (req, res) => {
 
     // Retrieve user information
     const user = await db.User.findByPk(userId, {
-      attributes: ["name", "phone_number", "address"],
+      attributes: ["name", "phone_number", "address", "date_of_birth"],
     });
 
     if (!user) {
@@ -385,6 +385,62 @@ const getUserOrders = async (req, res) => {
   }
 };
 
+const updateUserInfo = async (req, res) => {
+  try {
+    const token = req.headers.authorization;
+
+    if (!token) {
+      // If there is no token, return unauthorized
+      return res
+        .status(401)
+        .json({ error: "Unauthorized. Please log in to update user information." });
+    }
+
+    const tokenParts = token.split(" ", 2);
+
+    try {
+      if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
+        throw new Error("Invalid token format");
+      }
+
+      const decoded = jwt.verify(tokenParts[1], "UserSecretKey");
+      // Attach the decoded user information to the request object
+      req.user = decoded;
+    } catch (error) {
+      // Handle token verification errors
+      console.error("Token verification error:", error);
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    const userId = req.user.userId;
+
+    // Retrieve user information
+    const user = await db.User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Update user information
+    const { name, date_of_birth, phone_number, address } = req.body;
+
+    const updatedUserInfo = await db.User.update(
+      {
+        name: name || user.name,
+        date_of_birth: date_of_birth || user.date_of_birth,
+        phone_number: phone_number || user.phone_number,
+        address: address || user.address,
+      },
+      { where: { id: userId }, returning: true }
+    );
+
+    return res.status(200).json({ message: "User information updated successfully", user: updatedUserInfo[1][0] });
+  } catch (error) {
+    console.error("Error updating user information:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   userLogin,
   userRegister,
@@ -393,4 +449,5 @@ module.exports = {
   getUserInfo,
   changePassword,
   getUserOrders,
+  updateUserInfo
 };

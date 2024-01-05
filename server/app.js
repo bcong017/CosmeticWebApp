@@ -19,6 +19,7 @@ const searchRoute = require("./routes/searchRoute");
 const cartRoute = require("./routes/cartRoute");
 const eventRoute = require("./routes/saleEventRoute");
 const orderRoute = require("./routes/orderRoute");
+const multiRoute = require("./routes/multiRoute");
 
 const app = express();
 
@@ -38,6 +39,39 @@ const db = require("./models");
 schedule.scheduleJob("0 0 * * *", async () => {
   await updateIsOnSaleStatus();
 });
+
+app.use("/multi", multiRoute);
+/**
+ * This is for multi route:
+ * 1. Get all brands
+ * GET
+ *  http://localhost:3000/multi/all-brands
+ *  you will receive data like this
+ {
+    "brands": [
+        "L'Oreal",
+        "Bioderma",
+        "La Roche-Posay",
+        "Garnier",
+        "Simple",
+        "Senka",
+    ]
+}
+ *
+ * 2. Get all categories
+ * GET
+ *  http://localhost:3000/multi/all-categories
+ * you will receive data like this
+ {
+    "TayTrang": "Tẩy Trắng",
+    "KemLot": "Kem lót",
+    "KemNen": "Kem nền",
+    "ToanThan": "Nước hoa xịt toàn thân",
+    "VungKin": "Nước hoa vùng kín",
+    "DauXa": "Dầu xả",
+    "PhanNuoc": "Phấn nước Cushion"
+}
+ */
 
 app.use("/", userRoute);
 /**
@@ -106,7 +140,7 @@ app.use("/admin", adminRoute);
  *
  * 2. Get all order information
  * GET
- * http://localhost:3000/admin
+ * http://localhost:3000/admin/order
  *
  * This will get all the order information so it can be confirm or reject
  *

@@ -3,14 +3,14 @@ const db = require("../models");
 
 const createSaleEvent = async (req, res) => {
   try {
-    const { eventName, discountPercentage, startDate, endDate, brand, category } = req.body;
+    const { event_name, discount_percentage, start_date, end_date, brand, category } = req.body;
 
     // Create the sale event
     const createdEvent = await db.SaleEvent.create({
-      event_name: eventName,
-      discount_percentage: discountPercentage,
-      start_date: startDate,
-      end_date: endDate,
+      event_name: event_name,
+      discount_percentage: discount_percentage,
+      start_date: start_date,
+      end_date: end_date,
       is_active: true,
       brand: brand || null, // Store the brand if provided, otherwise null
       category: category || null, // Store the category if provided, otherwise null
@@ -55,43 +55,52 @@ const updateSaleEvent = async (req, res) => {
       return res.status(404).json({ message: 'Sale event not found' });
     }
 
-    // Update sale event details
-    await saleEventToUpdate.update({
-      event_name: eventName || saleEventToUpdate.event_name,
-      discount_percentage: discountPercentage || saleEventToUpdate.discount_percentage,
-      start_date: startDate || saleEventToUpdate.start_date,
-      end_date: endDate || saleEventToUpdate.end_date,
-      brand: brand || null, // Update the brand if provided, otherwise keep the current value
-      category: category || null, // Update the category if provided, otherwise keep the current value
-    });
+    // Store the old brand and category for later use
+    const oldBrand = saleEventToUpdate.brand;
+    const oldCategory = saleEventToUpdate.category;
 
-    // Find items based on brand or category (or both) and update sale_event_id
-    const whereClause = {};
-    if (brand) {
-      whereClause.brand = {
-        [db.Sequelize.Op.like]: `%${brand}%`,
-      };
+    // Update sale event information
+    saleEventToUpdate.event_name = eventName;
+    saleEventToUpdate.discount_percentage = discountPercentage;
+    saleEventToUpdate.start_date = startDate;
+    saleEventToUpdate.end_date = endDate;
+    saleEventToUpdate.brand = brand || null;
+    saleEventToUpdate.category = category || null;
+
+    // Save the updated sale event
+    await saleEventToUpdate.save();
+
+    // Reload the instance to fetch the latest data
+    await saleEventToUpdate.reload();
+
+    // Update items related to the old sale event
+    await db.Item.update(
+      { sale_event_id: null, is_on_sale: false },
+      { where: { sale_event_id: eventId } }
+    );
+
+    // Update items related to the new sale event
+    if (brand || category) {
+      const whereClause = {};
+      if (brand) {
+        whereClause.brand = { [db.Sequelize.Op.like]: `%${brand}%` };
+      }
+      if (category) {
+        whereClause.category = category;
+      }
+
+      await db.Item.update(
+        { sale_event_id: eventId, is_on_sale: true },
+        { where: whereClause }
+      );
     }
-    if (category) {
-      whereClause.category = category;
-    }
-
-    const itemsToUpdate = await db.Item.findAll({
-      where: whereClause,
-    });
-
-    // Update sale_event_id for all matching items
-    await Promise.all(itemsToUpdate.map(item => item.update({ sale_event_id: saleEventToUpdate.id })));
-
-    // Update is_on_sale status for associated items
-    await updateIsOnSaleStatus();
 
     return res.status(200).json({ message: 'Sale event updated successfully' });
   } catch (error) {
-    return res.status(500).json({ error });
+    console.error('Error updating sale event:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 
 const deleteSaleEvent = async (req, res) => {
   try {
@@ -110,7 +119,7 @@ const deleteSaleEvent = async (req, res) => {
     });
 
     // Update sale_event_id to null for all matching items
-    await Promise.all(itemsToUpdate.map(item => item.update({ sale_event_id: null })));
+    await Promise.all(itemsToUpdate.map(item => item.update({ is_on_sale: 0, sale_event_id: null })));
 
     // Delete the sale event
     await saleEventToDelete.destroy();

@@ -66,6 +66,7 @@ const getItemsByCategory = async (req, res) => {
 
     const resultedItems = items.map((item) => {
       let finalPrice = item.price; // Default to item price
+      
       if (item.is_on_sale) {
         const currentDate = new Date();
         const startDate = new Date(item.SaleEvent.start_date);
@@ -290,11 +291,10 @@ const filterItemsByOptions = async (req, res) => {
         const currentDate = new Date();
         const startDate = new Date(item.SaleEvent.start_date);
         const endDate = new Date(item.SaleEvent.end_date);
-
+    
         if (startDate <= currentDate && currentDate <= endDate) {
           // Calculate the discounted price
-          const discountedPrice =
-            (item.price * item.SaleEvent.discount_percentage) / 100;
+          const discountedPrice = (item.price * item.SaleEvent.discount_percentage) / 100;
           finalPrice = Math.max(0, item.price - discountedPrice);
           finalPrice = finalPrice.toFixed(3);
         }

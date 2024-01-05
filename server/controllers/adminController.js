@@ -131,8 +131,8 @@ const rejectOrder = async (req, res) => {
 const addItem = async (req, res) => {
   try {
     const {
-      image_urls,
       name,
+      image_urls,
       price,
       brand,
       category,
@@ -140,62 +140,58 @@ const addItem = async (req, res) => {
       quantity,
       product_information,
       use_information,
-      specifications,
+      Barcode,
+      Country,
+      ProductionPlaces,
+      Skin,
+      Sex,
+      Type,
     } = req.body;
 
-    // Split image_urls into an array of links using comma and space as separators
-    const imageUrlsArray = image_urls.split(", ").map((link) => link.trim());
+    const specifications = {
+      Barcode,
+      Brand: brand,
+      Country,
+      ProductionPlaces,
+      Skin,
+      Sex,
+      Type,
+    };
 
-    // Check if there is a sale event for the given category or brand
-    const saleEvent = await db.SaleEvent.findOne({
-      attributes: [
-        "id",
-        "brand",
-        "category",
-        "discount_percentage",
-        "start_date",
-        "end_date",
-      ],
-      where: {
-        is_active: true,
-        [db.Sequelize.Op.or]: [
-          { brand: brand || null },
-          { category: category || null },
-        ],
-      },
-    });
+    const imageUrlsArray = image_urls.split(', ');
 
-    // Create a new item
-    const newItem = await db.Item.create({
-      image_urls: imageUrlsArray.join("***"), // Rejoin the links to store in the database
+    // Convert specifications to a JSON string
+    const specificationsString = JSON.stringify(specifications);
+
+    // Create the item
+    const createdItem = await db.Item.create({
       name,
       price,
+      image_urls: imageUrlsArray.join('***'),
       brand,
       category,
       ingredients,
       quantity,
       product_information,
       use_information,
-      specifications: JSON.stringify(specifications),
-      sale_event_id: saleEvent ? saleEvent.id : null,
-      is_on_sale: saleEvent ? true : false,
+      specifications: specificationsString,
     });
 
-    return res
-      .status(201)
-      .json({ message: "Item added successfully", newItem });
+    await updateItemWithExistingSaleEvent(createdItem);
+
+    return res.status(201).json({ message: 'Item created successfully', item: createdItem });
   } catch (error) {
-    console.error("Error adding item:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    console.error('Error creating item:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
 const editItem = async (req, res) => {
   try {
-    const itemId = req.params.itemId;
+    const { itemId } = req.params;
     const {
-      image_urls,
       name,
+      image_urls,
       price,
       brand,
       category,
@@ -203,84 +199,105 @@ const editItem = async (req, res) => {
       quantity,
       product_information,
       use_information,
-      specifications,
+      Barcode,
+      Country,
+      ProductionPlaces,
+      Skin,
+      Sex,
+      Type,
     } = req.body;
 
-    // Split image_urls into an array of links using comma and space as separators
-    const imageUrlsArray = image_urls.split(", ").map((link) => link.trim());
+    // Find the item to edit
+    const itemToEdit = await db.Item.findByPk(itemId);
 
-    // Update the item and include the SaleEvent
-    const [updatedRowCount, [updatedItem]] = await db.Item.update(
-      {
-        image_urls: imageUrlsArray.join("***"), // Rejoin the links to store in the database
+    if (!itemToEdit) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
+
+    const imageUrlsArray = image_urls.split(', ');
+
+    // Check if brand or category is changed
+    const isBrandChanged = brand && brand !== itemToEdit.brand;
+    const isCategoryChanged = category && category !== itemToEdit.category;
+
+    // If brand or category is changed, check for existing sale event and override if needed
+    if (isBrandChanged || isCategoryChanged) {
+      const existingEvent = await db.SaleEvent.findOne({
+        where: {
+          [db.Sequelize.Op.or]: [
+            { brand: brand, is_active: true },
+            { category: category, is_active: true },
+          ],
+          end_date: {
+            [db.Sequelize.Op.gt]: new Date(), // Check if end date is in the future
+          },
+        },
+      });
+
+      // If there's an existing event, override the old sale event
+      if (existingEvent) {
+        await itemToEdit.update({
+          brand,
+          category,
+          sale_event_id: existingEvent.id,
+          is_on_sale: true,
+        });
+      } else {
+        // If no existing event, update the item without sale event
+        await itemToEdit.update({
+          brand,
+          category,
+          sale_event_id: null,
+          is_on_sale: false,
+        });
+      }
+    } else {
+      // If brand or category is not changed, update the item without affecting sale event
+      await itemToEdit.update({
         name,
+        image_urls: imageUrlsArray.join('***'),
         price,
-        brand,
-        category,
         ingredients,
         quantity,
         product_information,
         use_information,
-        specifications: JSON.stringify(specifications),
-      },
-      {
-        where: { id: itemId },
-        returning: true,
-        include: [
-          {
-            model: db.SaleEvent,
-            attributes: [
-              "id",
-              "brand",
-              "category",
-              "discount_percentage",
-              "start_date",
-              "end_date",
-            ],
-            where: {
-              is_active: true,
-            },
-            required: false,
-          },
-        ],
-      }
-    );
-
-    // Update is_on_sale status and associate the item with the sale event
-    if (updatedItem && updatedItem.SaleEvent) {
-      const isBrandMatch =
-        !brand || updatedItem.brand === updatedItem.SaleEvent.brand;
-      const isCategoryMatch =
-        !category || updatedItem.category === updatedItem.SaleEvent.category;
-
-      if (isBrandMatch || isCategoryMatch) {
-        await updatedItem.update({
-          sale_event_id: updatedItem.SaleEvent.id,
-          is_on_sale: true,
-        });
-      }
+        Barcode,
+        Country,
+        ProductionPlaces,
+        Skin,
+        Sex,
+        Type,
+      });
     }
 
-    return res
-      .status(200)
-      .json({ message: "Item updated successfully", updatedItem });
+    return res.status(200).json({ message: 'Item updated successfully', item: itemToEdit });
   } catch (error) {
-    console.error("Error editing item:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    console.error('Error editing item:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
 const deleteItem = async (req, res) => {
   try {
-    const itemId = req.params.itemId;
+    const { itemId } = req.params;
+
+    // Find the item to delete
+    const itemToDelete = await db.Item.findByPk(itemId);
+
+    if (!itemToDelete) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
+
+    // Remove the item's association with the sale event, but do not delete the sale event
+    await itemToDelete.update({ sale_event_id: null, is_on_sale: false });
 
     // Delete the item
-    await db.Item.destroy({ where: { id: itemId } });
+    await itemToDelete.destroy();
 
-    return res.status(200).json({ message: "Item deleted successfully" });
+    return res.status(200).json({ message: 'Item deleted successfully' });
   } catch (error) {
-    console.error("Error deleting item:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    console.error('Error deleting item:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
@@ -450,6 +467,35 @@ const getAllSaleEvents = async (req, res) => {
   } catch (error) {
     console.error("Error in getAllSaleEvents:", error);
     return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const updateItemWithExistingSaleEvent = async (createdItem) => {
+  try {
+    const { brand, category } = createdItem;
+
+    const existingEvent = await db.SaleEvent.findOne({
+      where: {
+        [db.Sequelize.Op.or]: [
+          { brand: brand, is_active: true },
+          { category: category, is_active: true },
+        ],
+        end_date: {
+          [db.Sequelize.Op.gt]: new Date(),
+        },
+      },
+    });
+
+    if (existingEvent) {
+      await createdItem.update({
+        sale_event_id: existingEvent.id,
+        is_on_sale: true,
+      });
+
+      await updateIsOnSaleStatus();
+    }
+  } catch (error) {
+    console.error('Error updating item with existing sale event:', error);
   }
 };
 
