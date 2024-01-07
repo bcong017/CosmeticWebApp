@@ -75,4 +75,96 @@ const getDistinctCategories = async (req, res) => {
   }
 };
 
-module.exports = { getAllBrands, getDistinctCategories };
+const getItemsByCategory = async (req, res) => {
+  try {
+    const selectedAttributes = [
+      "id",
+      "name",
+      "price",
+      "brand",
+      "image_urls",
+      "user_rating",
+      "is_on_sale",
+    ];
+
+    const { order } = req.query;
+
+    // Default to 'LTH' if order is not specified
+    const sortOrder = order === "HTL" ? "DESC" : "ASC";
+
+    // Fetch the items for the current page
+    const items = await db.Item.findAll({
+      attributes: selectedAttributes,
+      where: {
+        category: req.params.categoryName,
+      },
+      include: [
+        {
+          model: db.SaleEvent,
+          attributes: ["discount_percentage", "start_date", "end_date"],
+          where: {
+            is_active: true,
+          },
+          required: false,
+        },
+      ],
+      order: [["price", sortOrder]], // Order by original price
+    });
+
+    const resultedItems = items.map((item) => {
+      let finalPrice = item.price; // Default to item price
+      
+      if (item.is_on_sale) {
+        const currentDate = new Date();
+        const startDate = new Date(item.SaleEvent.start_date);
+        const endDate = new Date(item.SaleEvent.end_date);
+
+        if (startDate <= currentDate && currentDate <= endDate) {
+          // Calculate the discounted price
+          const discountedPrice =
+            (item.price * item.SaleEvent.discount_percentage) / 100;
+          finalPrice = Math.max(0, item.price - discountedPrice);
+          finalPrice = finalPrice.toFixed(3);
+        }
+      }
+
+      const imageUrlsArray = item.image_urls
+        ? item.image_urls.split("***")
+        : [];
+      let firstImageUrl = imageUrlsArray[0];
+
+      if (firstImageUrl && firstImageUrl.includes("promotions")) {
+        firstImageUrl = imageUrlsArray[1] || null;
+      }
+
+      // Construct the result object based on the presence of a sale event
+      const resultObject = {
+        id: item.id,
+        name: item.name,
+        price: finalPrice, // Use the final price
+        brand: item.brand,
+        first_image_url: firstImageUrl,
+        user_rating: item.user_rating,
+      };
+
+      // Include additional information if there is a sale event
+      if (item.is_on_sale) {
+        resultObject.base_price = item.price;
+        resultObject.discount_percentage = item.SaleEvent.discount_percentage;
+        resultObject.end_date =
+          item.SaleEvent.end_date.toLocaleDateString("en-GB");
+      }
+
+      return resultObject;
+    });
+
+    return res.status(202).json({
+      resultedItems,
+    });
+  } catch (error) {
+    console.error("Error in getItemsByCategory:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = { getAllBrands, getDistinctCategories, getItemsByCategory };
