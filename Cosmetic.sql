@@ -81,16 +81,6 @@ CREATE TABLE Admin (
     password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE ProfitStatistics (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    item_id INT,
-    sale_date DATE,
-    sale_price DECIMAL(10, 3),
-    cost_price DECIMAL(10, 3),
-    profit DECIMAL(10, 3),
-    FOREIGN KEY (item_id) REFERENCES Item(id)
-);
-
 CREATE TABLE Comment (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -107,7 +97,14 @@ CREATE TABLE Comment (
 INSERT INTO `admins` VALUES (1,'admin','$2b$10$SEnzHomRTLnTZ973PcX7oe8o5p0OxQw4Nyz4nYi.ZNxZ/x506maBi','2023-12-29 02:34:51','2023-12-29 02:34:51');
 
 -- Insert into User
-INSERT INTO `users` VALUES (1,'1','1','Nguyễn Văn An','123456789','Hanoi',1,'2023-12-28 22:11:31','2023-12-28 22:11:31'),(2,'2','2','Trần Thị Bình','987654321','Ho Chi Minh City',0,'2023-12-28 22:11:31','2023-12-29 02:58:32'),(3,'3','3','Lê Minh Cẩn','555555555','Da Nang',1,'2023-12-28 22:11:31','2023-12-28 22:11:31'),(4,'test1','$2b$10$1YUb7C7k8zPl2ywm3rz6T.mgGRtuXZyG.Lm5ntKgXIeiB2AdTU3v.','Test1','12345',NULL,1,'2023-12-29 02:46:03','2023-12-29 02:46:03'),(6,'test2','$2b$10$PK8FiRSukmCRNbJzeW70zuTdfrvv0zvTFZPqNQr3cbu5WkLph16Qu','Test2','1111111',NULL,1,'2023-12-29 02:49:01','2023-12-29 02:49:01');
+INSERT INTO `users` 
+  (id, username, password, name, phone_number, address, is_active, createdAt, updatedAt)
+  VALUES 
+(1,'1','1','Nguyễn Văn An','123456789','Hanoi',1,'2023-12-28 22:11:31','2023-12-28 22:11:31'),
+(2,'2','2','Trần Thị Bình','987654321','Ho Chi Minh City',0,'2023-12-28 22:11:31','2023-12-29 02:58:32'),
+(3,'3','3','Lê Minh Cẩn','555555555','Da Nang',1,'2023-12-28 22:11:31','2023-12-28 22:11:31'),
+(4,'test1','$2b$10$1YUb7C7k8zPl2ywm3rz6T.mgGRtuXZyG.Lm5ntKgXIeiB2AdTU3v.','Test1','12345',NULL,1,'2023-12-29 02:46:03','2023-12-29 02:46:03'),
+(6,'test2','$2b$10$PK8FiRSukmCRNbJzeW70zuTdfrvv0zvTFZPqNQr3cbu5WkLph16Qu','Test2','1111111',NULL,1,'2023-12-29 02:49:01','2023-12-29 02:49:01');
 
 -- Insert Sale event
 INSERT INTO `saleevents` VALUES (1,'Summer Sale','2023-06-01 00:00:00','2025-06-30 00:00:00',100,1,NULL,'TayTrang','2023-12-29 16:05:57','2023-12-29 16:05:57'),(2,'Summer Sale','2023-06-01 00:00:00','2025-06-30 00:00:00',50,1,NULL,'ToanThan','2023-12-29 16:06:04','2023-12-29 16:06:04');
