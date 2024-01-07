@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Button,
@@ -59,7 +59,7 @@ function NavBar() {
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const navigate = useNavigate();
   const { token, role } = useAuth();
-
+  const [searchInput, setSearchInput] = useState('');
   function getCurrentCAT() {
     let res = valuesOfCAT[currentIndex];
     currentIndex++;
@@ -69,15 +69,17 @@ function NavBar() {
     setIsOpenCategory(value);
   };
   async function handleSearch() {
-    const input = searchRef.current.value;
-    if (input != '') {
-      let res = await common.search({ searchTerm: input });
-      navigate(`/search/searchTerm/${input}`, {
+    if (searchInput != '') {
+      let res = await common.search({ searchTerm: searchInput });
+      navigate(`/search/searchTerm/${searchInput}`, {
         state: res?.data.resultedItems,
       });
     }
   }
-
+  useEffect(() => {
+    searchRef.current = '';
+    setSearchInput('');
+  }, [location.pathname]);
   return (
     <>
       <Navbar
@@ -153,6 +155,10 @@ function NavBar() {
               size='sm'
               labelPlacement='inside'
               placeholder='Tìm kiếm'
+              value={searchInput}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+              }}
               startContent={
                 <div className='fa-solid fa-magnifying-glass text-heavy-pink' />
               }
@@ -168,7 +174,6 @@ function NavBar() {
                   Tìm kiếm
                 </Button>
               }
-              ref={searchRef}
             />
           </NavbarItem>
 

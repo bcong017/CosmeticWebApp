@@ -63,7 +63,7 @@ export default function TableItem({ cat }) {
         .deleteItem(id)
         .then(() => {
           alert('Đã xóa sản phẩm thành công!');
-          nav(0);
+          // nav(0);
         })
         .catch((err) => console.log(err));
     }

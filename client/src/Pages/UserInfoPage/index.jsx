@@ -65,7 +65,9 @@ function UserInfoPage() {
     SetName(userInfo?.name);
     SetPhoneNumber(userInfo?.phone_number);
     SetAddress(userInfo?.address);
-    setBirthday(userInfo?.date_of_birth);
+    setBirthday(
+      userInfo?.date_of_birth.split('T')[0].split('-').reverse().join('-'),
+    );
   }, [userInfo]);
   useEffect(() => {
     console.log(birthday);
