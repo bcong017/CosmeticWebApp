@@ -85,6 +85,7 @@ const getItemsByCategory = async (req, res) => {
       "image_urls",
       "user_rating",
       "is_on_sale",
+      "quantity"
     ];
 
     const { order } = req.query;
@@ -145,6 +146,7 @@ const getItemsByCategory = async (req, res) => {
         brand: item.brand,
         first_image_url: firstImageUrl,
         user_rating: item.user_rating,
+        quantity: item.quantity
       };
 
       // Include additional information if there is a sale event
