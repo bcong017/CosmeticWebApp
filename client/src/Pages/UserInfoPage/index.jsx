@@ -3,6 +3,7 @@ import './style.css';
 import user from '@/Api_Call/user';
 import { Input, Button, Avatar } from '@nextui-org/react';
 import { LockIcon } from '@/Component/LoginModal/LockIcon';
+
 function UserInfoPage() {
   const [userInfo, setUserInfo] = useState();
   const [name, SetName] = useState('');
@@ -11,15 +12,23 @@ function UserInfoPage() {
   const [oldPassword, SetOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [reNewPassword, SetReNewPassword] = useState('');
-
-  const handleSubmitInfo = () => {};
+  const [resetPasswordSuccessful, setResetPasswordSuccessful] = useState(false);
+  const [birthday, setBirthday] = useState('');
+  const handleSubmitInfo = () => {
+    const payload = {
+      name: name,
+      date_of_birth: birthday,
+      phone_number: phoneNumber,
+      address: address,
+    };
+    user.editUserInfo(payload).then(alert('Thay đổi thông tin thành công'));
+  };
 
   const getUserInfo = () => {
     user
       .getInfo()
       .then((res) => {
         setUserInfo(res.data);
-        console.log(res.data);
       })
 
       .catch((err) => {
@@ -38,6 +47,10 @@ function UserInfoPage() {
         setNewPassword('');
         SetOldPassword('');
         SetReNewPassword('');
+        setResetPasswordSuccessful(true);
+        setTimeout(() => {
+          setResetPasswordSuccessful(false);
+        }, 1500);
       })
       .catch((err) => {
         console.log(err);
@@ -52,8 +65,11 @@ function UserInfoPage() {
     SetName(userInfo?.name);
     SetPhoneNumber(userInfo?.phone_number);
     SetAddress(userInfo?.address);
+    setBirthday(userInfo?.date_of_birth);
   }, [userInfo]);
-
+  useEffect(() => {
+    console.log(birthday);
+  }, [birthday]);
   return (
     <div className='flex justify-around'>
       <div className='bg-heavy-pink my-10 mx-10'>
@@ -82,6 +98,10 @@ function UserInfoPage() {
                 label='Ngày sinh:'
                 labelPlacement='outside-left'
                 placeholder=''
+                onChange={(e) => {
+                  setBirthday(e.target.value);
+                }}
+                // value={}
                 className='mt-10 font-semibold'
               />
               <Input
@@ -171,10 +191,13 @@ function UserInfoPage() {
             }}
           />
         </div>
+        {resetPasswordSuccessful && (
+          <div className='text-center mt-4'>Thay đổi mật khẩu thành công</div>
+        )}
         <Button
           endContent={<i className='fa-solid fa-check'></i>}
           disableRipple='true'
-          className='my-10 font-semibold'
+          className='my-5 font-semibold'
           onClick={() => {
             handleChangePassword();
           }}

@@ -71,16 +71,17 @@ function ItemPage() {
   };
 
   const handleDelete = (id) => {
-    comments
-      .deleteComment(id)
-      .then(() => {
-        getItem();
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    if (confirm('Bạn có muốn xóa bình luận?')) {
+      comments
+        .deleteComment(id)
+        .then(() => {
+          getItem();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
   };
-
   const handleAddCartItem = () => {
     cart
       .addItem({ item_id: itemInfo.item.id, quantity: quantity })
@@ -97,7 +98,6 @@ function ItemPage() {
         <div className='block'>
           <div className='item-media-side-detail-block'>
             <div className='media'>
-              {console.log(itemInfo?.item?.imageURLs[0])}
               <img src={itemInfo?.item?.imageURLs[0]} alt='' ref={imgRef} />
 
               <ul>
@@ -111,7 +111,6 @@ function ItemPage() {
                         alt=''
                         onClick={() => {
                           imgRef.current.src = url;
-                          console.log(imgRef.current.src);
                         }}
                       />
                     </li>
@@ -322,7 +321,7 @@ function ItemPage() {
                           <div key={index} className='border-2 rounded p-2'>
                             <div className='grid grid-cols-[95%,5%] '>
                               <div>
-                                {comment.user.name === undefined ? (
+                                {comment.user.name !== undefined ? (
                                   <div className='font-bold'>
                                     {comment.user.name}
                                   </div>
@@ -334,28 +333,30 @@ function ItemPage() {
 
                                 <div>{comment.comment_text}</div>
                               </div>
-                              <div className='flex items-center '>
-                                <Dropdown>
-                                  <DropdownTrigger>
-                                    <Button
-                                      isIconOnly
-                                      size='sm'
-                                      variant='light'
-                                    >
-                                      <VerticalDotsIcon className='text-default-300' />
-                                    </Button>
-                                  </DropdownTrigger>
-                                  <DropdownMenu>
-                                    <DropdownItem
-                                      onClick={() => {
-                                        handleDelete(comment.id);
-                                      }}
-                                    >
-                                      Xóa
-                                    </DropdownItem>
-                                  </DropdownMenu>
-                                </Dropdown>
-                              </div>
+                              {comment.isCurrentUserComment && (
+                                <div className='flex items-center '>
+                                  <Dropdown>
+                                    <DropdownTrigger>
+                                      <Button
+                                        isIconOnly
+                                        size='sm'
+                                        variant='light'
+                                      >
+                                        <VerticalDotsIcon className='text-default-300' />
+                                      </Button>
+                                    </DropdownTrigger>
+                                    <DropdownMenu>
+                                      <DropdownItem
+                                        onClick={() => {
+                                          handleDelete(comment.id);
+                                        }}
+                                      >
+                                        Xóa
+                                      </DropdownItem>
+                                    </DropdownMenu>
+                                  </Dropdown>
+                                </div>
+                              )}
                             </div>
                           </div>
                         ))}

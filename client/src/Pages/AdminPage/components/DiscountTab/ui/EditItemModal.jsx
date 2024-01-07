@@ -7,34 +7,58 @@ import {
   Button,
   useDisclosure,
   Input,
-  Tabs,
-  Tab,
   RadioGroup,
   Radio,
 } from '@nextui-org/react';
-import { PlusIcon } from '@/Global_reference/assets/PlusIcon.jsx';
+
 import { useEffect, useState } from 'react';
 import { CAT_TITLE } from '@/Global_reference/variables';
 import saleevents from '@/Api_Call/saleevents';
+import { FaEye } from 'react-icons/fa';
 import common from '@/Api_Call/common';
+import admin from '@/Api_Call/admin';
 const TAB_KEY = {
-  TH: 'th',
-  DM: 'dm',
+  TH: 'brand',
+  DM: 'category',
 };
 
-export default function AddItemModal({ onOk }) {
-  const [tabKey, setTabKey] = useState(TAB_KEY.TH);
+export default function EditItemModal({ onOk, id }) {
+  const [tabKey, setTabKey] = useState('');
   const [name, setName] = useState('');
   const [discount, setDiscount] = useState('0');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [option, setOption] = useState('');
   const [brands, setBrands] = useState([]);
+  const [currentEvent, setCurrentEvent] = useState([]);
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   useEffect(() => {
     common.getBrand().then((res) => setBrands(res.data.brands ?? []));
   }, []);
-  useEffect(() => {}, [brands]);
+  useEffect(() => {
+    admin
+      .getEvents()
+      .then((res) => {
+        setCurrentEvent(
+          res.data.saleEvents.filter((current) => current.id == id)[0],
+        );
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+  useEffect(() => {
+    setName(currentEvent.event_name);
+    setDiscount(parseInt(currentEvent.discount_percentage, 10));
+    setStartDate(currentEvent?.start_date?.split('T')[0]);
+    setEndDate(currentEvent?.end_date?.split('T')[0]);
+    console.log(currentEvent?.brand);
+    setTabKey(currentEvent?.brand ? 'brand' : 'category');
+    console.log(tabKey);
+    setOption(currentEvent.brand ? currentEvent.brand : currentEvent.category);
+    console.log(option);
+  }, [currentEvent]);
   // TODO:
   const onOkForm = async (onClose) => {
     const payload = {
@@ -44,25 +68,26 @@ export default function AddItemModal({ onOk }) {
       end_date: endDate,
       [tabKey === TAB_KEY.TH ? 'brand' : 'category']:
         tabKey === TAB_KEY.TH ? option : CAT_TITLE[option],
+      [tabKey === TAB_KEY.TH ? 'category' : 'brand']: null,
     };
-
-    saleevents
-      .addEvent(payload)
-      .then(() => {
-        window.alert('Thêm chương trình thành công');
-        onOk();
-        onClose();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    console.log(payload);
+    // saleevents
+    //   .editEvent(id, payload)
+    //   .then(() => {
+    //     alert('Sửa chương trình thành công', payload);
+    //     onOk();
+    //     onClose();
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //   });
   };
 
   return (
     <>
-      <Button onPress={onOpen} color='primary' endContent={<PlusIcon />}>
-        Thêm chương trình
-      </Button>
+      <div onClick={onOpen}>
+        <FaEye />
+      </div>
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
@@ -84,6 +109,7 @@ export default function AddItemModal({ onOk }) {
                   variant='bordered'
                   size='sm'
                   isRequired
+                  value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
                 <Input
@@ -92,6 +118,7 @@ export default function AddItemModal({ onOk }) {
                   variant='bordered'
                   size='sm'
                   isRequired
+                  value={discount}
                   onChange={(e) => setDiscount(e.target.value)}
                 />
                 <Input
@@ -102,6 +129,7 @@ export default function AddItemModal({ onOk }) {
                   labelPlacement='outside-left'
                   placeholder=''
                   isRequired
+                  value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                 />
                 <Input
@@ -111,23 +139,18 @@ export default function AddItemModal({ onOk }) {
                   size='sm'
                   labelPlacement='outside-left'
                   placeholder=''
+                  value={endDate}
                   isRequired
                   onChange={(e) => setEndDate(e.target.value)}
                 />
 
-                <Tabs
-                  className='inline'
-                  aria-label='Options'
-                  variant='light'
-                  size='lg'
-                  color='primary'
-                  selectedKey={tabKey}
-                  onSelectionChange={setTabKey}
-                >
-                  <Tab key={TAB_KEY.TH} title='Thương hiệu'>
+                {currentEvent?.brand && (
+                  <>
+                    <div className='my-4'>Thương hiệu </div>
                     <RadioGroup
                       size='sm'
                       onChange={(e) => setOption(e.target.value)}
+                      value={option}
                     >
                       {brands.map((key) => (
                         <Radio key={key} value={key}>
@@ -135,10 +158,15 @@ export default function AddItemModal({ onOk }) {
                         </Radio>
                       ))}
                     </RadioGroup>
-                  </Tab>
-                  <Tab key={TAB_KEY.DM} title='Danh mục'>
+                  </>
+                )}
+                {currentEvent?.category && (
+                  <>
+                    <div className='my-4'>Thương hiệu </div>
+
                     <RadioGroup
                       size='sm'
+                      value={option}
                       onChange={(e) => setOption(e.target.value)}
                     >
                       {Object.keys(CAT_TITLE).map((key) => (
@@ -147,8 +175,8 @@ export default function AddItemModal({ onOk }) {
                         </Radio>
                       ))}
                     </RadioGroup>
-                  </Tab>
-                </Tabs>
+                  </>
+                )}
               </ModalBody>
 
               <ModalFooter>
@@ -156,7 +184,7 @@ export default function AddItemModal({ onOk }) {
                   Đóng
                 </Button>
                 <Button color='primary' onPress={() => onOkForm(onClose)}>
-                  Thêm
+                  Sửa
                 </Button>
               </ModalFooter>
             </>

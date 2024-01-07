@@ -11,13 +11,18 @@ import {
   DropdownMenu,
   DropdownItem,
   Pagination,
+  Tooltip,
 } from '@nextui-org/react';
-import { VerticalDotsIcon } from '@/Global_reference/assets/VerticalDotsIcon';
+
 import { ChevronDownIcon } from '@/Global_reference/assets/ChevronDownIcon';
 import { capitalize } from '@/Global_reference/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import admin, { SALE_COLUMNS } from '@/Api_Call/admin';
 import AddItemModal from './ui/AddItemModal';
+import saleevents from '@/Api_Call/saleevents';
+import { DeleteIcon } from '@/Global_reference/assets/DeleteIcon';
+import { useNavigate } from 'react-router-dom';
+import EditItemModal from './ui/EditItemModal';
 
 const INITIAL_SALE_COLUMNS = [
   'id',
@@ -31,6 +36,7 @@ const INITIAL_SALE_COLUMNS = [
 ];
 
 function DiscountTab() {
+  const nav = useNavigate();
   const [eventItems, setEventItems] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(
     new Set(INITIAL_SALE_COLUMNS),
@@ -68,27 +74,58 @@ function DiscountTab() {
       return sortDescriptor.direction === 'descending' ? -cmp : cmp;
     });
   }, [sortDescriptor, items]);
+  const handleDate = (date) => {
+    const res = date?.split('T');
 
-  const renderCell = useCallback((event, columnKey) => {
+    return res ? res[0].split('-').reverse().join('-') : null;
+  };
+  const handleDelete = (id) => {
+    if (confirm('Bạn có muốn xóa sự kiện này?')) {
+      saleevents
+        .removeEvent(id)
+        .then(
+          admin
+            .getEvents()
+            .then((response) => {
+              setEventItems(response.data.saleEvents ?? []);
+              nav(0);
+            })
+            .catch((e) => {
+              console.log(e);
+            }),
+        )
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  };
+  const renderCell = useCallback((event, columnKey, id) => {
     const cellValue = event[columnKey];
 
     switch (columnKey) {
       case 'actions':
         return (
-          <div className='relative flex justify-end items-center gap-2'>
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size='sm' variant='light'>
-                  <VerticalDotsIcon className='text-default-300' />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                {/* <DropdownItem>Xem chi tiết</DropdownItem> */}
-                <DropdownItem>Xóa</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+          <div className='relative flex items-center gap-2'>
+            <Tooltip content='Xem/Sửa sản phẩm' color='success'>
+              <span className='text-lg text-default-400 cursor-pointer active:opacity-50'>
+                <EditItemModal onOk={onOkAddEvent} id={id} />
+              </span>
+            </Tooltip>
+            <Tooltip color='danger' content='Xóa sản phẩm'>
+              <span
+                className='text-lg text-danger cursor-pointer active:opacity-50'
+                onClick={() => {
+                  handleDelete(id);
+                }}
+              >
+                <DeleteIcon />
+              </span>
+            </Tooltip>
           </div>
         );
+      case 'start_date':
+      case 'end_date':
+        return <div>{handleDate(cellValue)} </div>;
       default:
         return cellValue;
     }
@@ -218,11 +255,11 @@ function DiscountTab() {
           {(item) => (
             <TableRow key={item?.id}>
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell>{renderCell(item, columnKey, item?.id)}</TableCell>
               )}
             </TableRow>
           )}
-        </TableBody>
+        </TableBody>{' '}
       </Table>
     </div>
   );

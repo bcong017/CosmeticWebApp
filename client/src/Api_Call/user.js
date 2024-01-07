@@ -20,4 +20,7 @@ export default {
   getOrder() {
     return axios.get(`${API_HOST}/user/order`);
   },
+  editUserInfo(payload) {
+    return axios.post(`${API_HOST}/user/update`, payload);
+  },
 };

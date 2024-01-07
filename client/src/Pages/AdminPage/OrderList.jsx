@@ -20,7 +20,6 @@ export default function OrderList() {
       .getOrders()
       .then((res) => {
         setOrderList(res.data.orders);
-        console.log(res.data);
       })
       .catch(function (error) {
         console.log(error);
@@ -51,9 +50,7 @@ export default function OrderList() {
     getOrderList();
   }, []);
 
-  useEffect(() => {
-    console.log(orderList);
-  }, [orderList]);
+  useEffect(() => {}, [orderList]);
   return (
     <>
       <Tabs
@@ -181,37 +178,6 @@ export default function OrderList() {
           </Table>
         </Tab>
       </Tabs>
-      {/* {orderList?.orders?.map((current, index) => {
-        return (
-          <div
-            key={index}
-            className='justify-evenly flex bg-pink-300 m-5 py-4 '
-          >
-            <div className='self-center w-[250px]'>
-              <div className='ml-5 '>Họ và tên: {current.name}</div>
-              <div className='ml-5 '>
-                Tổng đơn hàng: {current.totalAmount} VND
-              </div>
-            </div>
-            {current.status == 'Not updated' ? (
-              <>
-                <Button
-                  className='self-center w-[100px]'
-                  onClick={() => {
-                    handleState(current.is_active, current.id);
-                  }}
-                  color='primary'
-                  disableRipple='true'
-                >
-                  Chấp thuận.
-                </Button>
-              </>
-            ) : (
-              <div className='self-center font-bold'>Đã chấp thuận</div>
-            )}
-          </div>
-        );
-      })} */}
     </>
   );
 }

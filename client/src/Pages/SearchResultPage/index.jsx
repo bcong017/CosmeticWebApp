@@ -31,10 +31,6 @@ function SearchResultPage() {
   };
 
   useEffect(() => {
-    console.log(itemsInfo);
-  }, [itemsInfo]);
-
-  useEffect(() => {
     try {
       searchInput.current = decodeURI(location.pathname.substring(19));
     } catch (e) {

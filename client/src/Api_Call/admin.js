@@ -4,7 +4,7 @@ import axios from 'axios';
 export const SALE_COLUMNS = [
   { name: '№', uid: 'id', sortable: true },
   { name: 'Tên', uid: 'event_name', sortable: true },
-  { name: 'Tỹ lệ giảm', uid: 'discount_percentage', sortable: true },
+  { name: 'Tỷ lệ giảm', uid: 'discount_percentage', sortable: true },
   { name: 'Ngày bắt đầu', uid: 'start_date', sortable: true },
   { name: 'Ngày kết thúc', uid: 'end_date', sortable: true },
   { name: 'Thương hiệu', uid: 'brand', sortable: true },
@@ -29,13 +29,13 @@ export default {
     return axios.post(`${API_HOST}/admin/reject/${oid}`);
   },
   addItem(payload) {
-    return axios.post(`${API_HOST}/admin/add`, payload);
+    return axios.post(`${API_HOST}/admin/item/create`, payload);
   },
   editItem(id, payload) {
-    return axios.put(`${API_HOST}/admin/edit/${id}`, payload);
+    return axios.put(`${API_HOST}/admin/item/edit/${id}`, payload);
   },
   deleteItem(id) {
-    return axios.delete(`${API_HOST}/admin/delete/${id}`);
+    return axios.delete(`${API_HOST}/admin/item/delete/${id}`);
   },
   getEvents() {
     return axios.get(`${API_HOST}/admin/event`);
