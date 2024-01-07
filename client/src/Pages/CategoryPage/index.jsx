@@ -23,7 +23,6 @@ function CategoryPage() {
   let [quantity, setQuantity] = useState(0);
 
   const fetchItems = (option) => {
-    console.log(option);
     return categories
       .getItems(`${location.pathname}/${option}`)
       .then((res) => {

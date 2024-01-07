@@ -1,5 +1,6 @@
 import { Tabs, Tab } from '@nextui-org/react';
-import ItemInList from './ItemInList';
+
+import TableItem from './TableItem';
 
 function CategoryTabs() {
   return (
@@ -20,7 +21,7 @@ function CategoryTabs() {
             color='primary'
           >
             <Tab key='11' title='Tẩy trang mặt'>
-              <ItemInList />
+              <TableItem cat='TayTrang' />
             </Tab>
           </Tabs>
         </div>
@@ -35,7 +36,7 @@ function CategoryTabs() {
             color='primary'
           >
             <Tab key='21' title='Dầu xả'>
-              <ItemInList />
+              <TableItem cat='DauXa' />
             </Tab>
           </Tabs>
         </div>
@@ -50,10 +51,10 @@ function CategoryTabs() {
             color='primary'
           >
             <Tab key='31' title='Xịt thơm toàn thân'>
-              <ItemInList />
+              <TableItem cat='ToanThan' />
             </Tab>
             <Tab key='32' title='Nước hoa vùng kín'>
-              <ItemInList />
+              <TableItem cat='VungKin' />
             </Tab>
           </Tabs>
         </div>
@@ -67,14 +68,15 @@ function CategoryTabs() {
             size='lg'
             color='primary'
           >
+            {' '}
             <Tab key='41' title='Kem lót'>
-              <ItemInList />
+              <TableItem cat='KemLot' />
             </Tab>
             <Tab key='42' title='Kem nền'>
-              <ItemInList />
+              <TableItem cat='KemNen' />
             </Tab>
             <Tab key='43' title='Phấn nước Cushion'>
-              <ItemInList />
+              <TableItem cat='PhanNuoc' />
             </Tab>
           </Tabs>
         </div>

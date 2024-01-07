@@ -1,10 +1,15 @@
 import Carousel from '@/Component/Carousel/Carousel';
 import './style.css';
 import { useEffect, useState } from 'react';
+import { APP_ROLE } from '@/Global_reference/variables.js';
+import { useAuth } from '@/Global_reference/context/auth.jsx';
 
 import common from '@/Api_Call/common';
+import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
+  const nav = useNavigate();
+  const { role } = useAuth();
   let [ItemList, setItemList] = useState({});
   async function getItemList() {
     const items = await common
@@ -19,8 +24,12 @@ function HomePage() {
     setItemList(items);
   }
   useEffect(() => {
-    getItemList();
-  }, []);
+    if (role == APP_ROLE.ADMIN) {
+      nav('/admin');
+    } else {
+      getItemList();
+    }
+  }, [location]);
 
   return (
     <div className='flex flex-col gap-8 mt-2'>

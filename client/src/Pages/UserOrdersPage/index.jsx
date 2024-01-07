@@ -20,7 +20,6 @@ export default function UserOrderPage() {
       .getOrder()
       .then((res) => {
         SetOrders(res.data.userOrders);
-        console.log(res.data.userOrders);
       })
       .catch(function (error) {
         console.log(error);

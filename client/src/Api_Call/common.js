@@ -11,4 +11,7 @@ export default {
   importData() {
     return axios.post(`${API_HOST}/data/import`);
   },
+  getBrand() {
+    return axios.get(`${API_HOST}/multi/all-brands`);
+  },
 };

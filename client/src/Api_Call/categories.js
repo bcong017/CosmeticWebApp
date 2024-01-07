@@ -5,4 +5,7 @@ export default {
   getItems(category) {
     return axios.get(`${API_HOST}${category}`);
   },
+  getAllItems(category) {
+    return axios.get(`${API_HOST}/multi/categoryAll/${category}`);
+  },
 };

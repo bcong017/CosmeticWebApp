@@ -26,11 +26,12 @@ export default function LoginModal() {
   const [name, setName] = useState('');
   const [phoneNum, setPhoneNum] = useState('');
   const [address, setAddress] = useState('');
-  // const [gender, setGender] = useState('male');
+  const [loginSuccessful, setLoginSuccessful] = useState(false);
   const [resPassword, setResPassword] = useState('');
   const [resUsername, setResUsername] = useState('');
   const [resRePassword, setResRePassword] = useState('');
   const { setToken, setRole } = useAuth();
+  const [registerSuccessful, setRegisterSuccessful] = useState(false);
   const nav = useNavigate();
 
   const clearInput = () => {
@@ -45,17 +46,18 @@ export default function LoginModal() {
     setResUsername('');
   };
 
-  const handleOnclickLogin = async () => {
-    if (!loginUserName) return;
-    if (!loginPassword) return;
-    await auth
+  const handleOnclickLogin = () => {
+    auth
       .login({ username: loginUserName, password: loginPassword })
-      .then(function (response) {
+      .then((response) => {
         {
-          setToken(response.data.token);
-          setRole(response.data.role);
-          clearInput();
-          nav(response.data.role === APP_ROLE.ADMIN ? '/admin' : '/');
+          setLoginSuccessful(true);
+          setTimeout(() => {
+            setToken(response.data.token);
+            setRole(response.data.role);
+            clearInput();
+            nav(response.data.role === APP_ROLE.ADMIN ? '/admin' : '/');
+          }, 2000);
         }
       })
       .catch(function (error) {
@@ -63,11 +65,29 @@ export default function LoginModal() {
       });
   };
 
-  const handleOnclickRegister = () => {
-    if (!resUsername) return;
-    if (!resPassword) return;
+  const handleOnclickRegister = (e) => {
     if (!resRePassword) return;
-    if (!(resPassword == resRePassword)) return;
+
+    if (!resUsername) {
+      alert('Hãy nhập tên đăng nhập của bạn.');
+      return;
+    }
+    if (!resPassword) {
+      alert('Hãy mật khẩu của bạn.');
+      return;
+    }
+    if (!(resPassword == resRePassword)) {
+      alert('Mật khẩu nhập lại và mật khẩu không khớp!');
+      return;
+    }
+    if (!name) {
+      alert('Hãy nhập tên của bạn.');
+      return;
+    }
+    if (!phoneNum) {
+      alert('Hãy nhập số điện thoại của bạn.');
+      return;
+    }
     auth
       .register({
         username: resUsername,
@@ -78,9 +98,14 @@ export default function LoginModal() {
       })
       .then(function (response) {
         if (response.data) {
-          setToken(response.data.token);
-          setRole(APP_ROLE.USER);
+          setRegisterSuccessful(true);
           clearInput();
+          setTimeout(() => {
+            setToken(response.data.token);
+            setRole(APP_ROLE.USER);
+            clearInput();
+            nav(response.data.role === APP_ROLE.ADMIN ? '/admin' : '/');
+          }, 2000);
         }
       })
       .catch(function (error) {
@@ -142,6 +167,11 @@ export default function LoginModal() {
                       isRequired
                       onChange={(e) => setLoginPassword(e.target.value)}
                     />
+                    {loginSuccessful && (
+                      <div className='text-center text-red-500'>
+                        Đăng nhập thành công!
+                      </div>
+                    )}
                   </ModalBody>
                   <ModalFooter>
                     <Button color='danger' variant='flat' onPress={onClose}>
@@ -252,6 +282,11 @@ export default function LoginModal() {
                         setResRePassword(e.target.value);
                       }}
                     />
+                    {registerSuccessful && (
+                      <div className='text-center text-red-500'>
+                        Đăng ký thành công!
+                      </div>
+                    )}
                   </ModalBody>
                   <ModalFooter>
                     <Button color='danger' variant='flat' onPress={onClose}>
@@ -259,8 +294,8 @@ export default function LoginModal() {
                     </Button>
                     <Button
                       className='bg-heavy-pink'
-                      onClick={() => {
-                        handleOnclickRegister();
+                      onClick={(e) => {
+                        handleOnclickRegister(e);
                       }}
                     >
                       Đăng ký

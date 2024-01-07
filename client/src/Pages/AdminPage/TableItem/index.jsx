@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableHeader,
@@ -12,14 +12,17 @@ import {
   DropdownMenu,
   DropdownItem,
   Pagination,
+  Tooltip,
 } from '@nextui-org/react';
-
-import { VerticalDotsIcon } from '@/Global_reference/assets/VerticalDotsIcon';
-
+import EditItemModal from './EditItemModal';
+import { DeleteIcon } from '@/Global_reference/assets/DeleteIcon';
 import { ChevronDownIcon } from '@/Global_reference/assets/ChevronDownIcon';
-import { columns, users } from './data';
+import { columns } from './data';
 import { capitalize } from '../../../Global_reference/utils';
 import AddItemModal from './AddItemModal';
+import categories from '@/Api_Call/categories';
+import admin from '@/Api_Call/admin';
+import { useNavigate } from 'react-router-dom';
 
 const INITIAL_VISIBLE_COLUMNS = [
   'id',
@@ -30,14 +33,44 @@ const INITIAL_VISIBLE_COLUMNS = [
   'actions',
 ];
 
-export default function TableItem() {
+export default function TableItem({ cat }) {
+  const [itemList, setItemList] = useState([]);
+  const nav = useNavigate();
   const [visibleColumns, setVisibleColumns] = React.useState(
     new Set(INITIAL_VISIBLE_COLUMNS),
   );
 
+  useEffect(() => {
+    categories.getAllItems(`${cat}`).then((res) => {
+      const newList = [];
+      Array.prototype.forEach.call(res?.data.resultedItems, (c, index) => {
+        newList.push({
+          id: index + 1,
+          iid: c.id,
+          name: c.name,
+          price: `${c.price} VND`,
+          amount: c.quantity,
+        });
+      });
+
+      setItemList(newList);
+    });
+  }, []);
+
+  const handleDelete = (id) => {
+    if (confirm('Xóa sản phẩm này?')) {
+      admin
+        .deleteItem(id)
+        .then(() => {
+          alert('Đã xóa sản phẩm thành công!');
+          nav(0);
+        })
+        .catch((err) => console.log(err));
+    }
+  };
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: 'amount',
+    column: 'id',
     direction: 'ascending',
   });
   const [page, setPage] = React.useState(1);
@@ -50,14 +83,14 @@ export default function TableItem() {
     );
   }, [visibleColumns]);
 
-  const pages = Math.ceil([...users].length / rowsPerPage);
+  const pages = Math.ceil([...itemList].length / rowsPerPage);
 
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return [...users].slice(start, end);
-  }, [page, rowsPerPage]);
+    return [...itemList].slice(start, end);
+  }, [page, rowsPerPage, itemList]);
 
   const sortedItems = React.useMemo(() => {
     return [...items].sort((a, b) => {
@@ -69,24 +102,34 @@ export default function TableItem() {
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
+  const renderCell = React.useCallback((item, columnKey, id) => {
+    const cellValue = item[columnKey];
 
     switch (columnKey) {
+      case 'price':
+        return item.base_price ? (
+          <div>{item.base_price}</div>
+        ) : (
+          <div>{item.price}</div>
+        );
       case 'actions':
         return (
-          <div className='relative flex justify-end items-center gap-2'>
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size='sm' variant='light'>
-                  <VerticalDotsIcon className='text-default-300' />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                {/* <DropdownItem>Xem chi tiết</DropdownItem> */}
-                <DropdownItem>Xóa</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+          <div className='relative flex items-center gap-2'>
+            <Tooltip content='Xem/Sửa sản phẩm' color='success'>
+              <span className='text-lg text-default-400 cursor-pointer active:opacity-50'>
+                <EditItemModal id={id} cat={cat} />
+              </span>
+            </Tooltip>
+            <Tooltip color='danger' content='Xóa sản phẩm'>
+              <span
+                className='text-lg text-danger cursor-pointer active:opacity-50'
+                onClick={() => {
+                  handleDelete(id);
+                }}
+              >
+                <DeleteIcon />
+              </span>
+            </Tooltip>
           </div>
         );
       default:
@@ -103,7 +146,7 @@ export default function TableItem() {
     return (
       <div className='flex flex-col gap-4'>
         <div className='flex justify-between '>
-          <AddItemModal />
+          <AddItemModal cat={cat} />
           <Dropdown>
             <DropdownTrigger className='hidden sm:flex'>
               <Button
@@ -130,8 +173,12 @@ export default function TableItem() {
           </Dropdown>
         </div>
         <div className='flex justify-between items-center'>
+          {/* {itemList?.length != 0 && (
+       
+          )} */}
+
           <span className='text-default-400 text-small'>
-            Tổng {users.length} sản phẩm
+            Tổng {itemList?.length} sản phẩm
           </span>
           <label className='flex items-center text-default-400 text-small'>
             Số hàng mỗi trang
@@ -147,21 +194,22 @@ export default function TableItem() {
         </div>
       </div>
     );
-    // }, [visibleColumns, onRowsPerPageChange, users.length]);
   }, [visibleColumns, onRowsPerPageChange]);
 
   const bottomContent = React.useMemo(() => {
     return (
-      <div className='py-2 px-2 flex justify-center items-center'>
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-      </div>
+      pages > 0 && (
+        <div className='py-2 px-2 flex justify-center items-center'>
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            page={page}
+            total={pages}
+            onChange={setPage}
+          />
+        </div>
+      )
     );
   });
 
@@ -194,7 +242,7 @@ export default function TableItem() {
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
+              <TableCell>{renderCell(item, columnKey, item.iid)}</TableCell>
             )}
           </TableRow>
         )}
