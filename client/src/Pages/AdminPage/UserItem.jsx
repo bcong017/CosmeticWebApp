@@ -26,6 +26,15 @@ export default function UserItem() {
         .catch(function (error) {
           console.log(error);
         });
+    } else {
+      admin
+        .activateUser(id)
+        .then(() => {
+          getUserList();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
   };
 

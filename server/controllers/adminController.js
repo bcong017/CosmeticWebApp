@@ -106,9 +106,7 @@ const rejectOrder = async (req, res) => {
           is_confirm: 2,
           dateRejected: new Date(),
         });
-        return res
-          .status(200)
-          .json({ message: "Order rejected successfully" });
+        return res.status(200).json({ message: "Order rejected successfully" });
       case 1:
         return res
           .status(400)
@@ -158,7 +156,7 @@ const addItem = async (req, res) => {
       Type,
     };
 
-    const imageUrlsArray = image_urls.split(', ');
+    const imageUrlsArray = image_urls.split(", ");
 
     // Convert specifications to a JSON string
     const specificationsString = JSON.stringify(specifications);
@@ -167,7 +165,7 @@ const addItem = async (req, res) => {
     const createdItem = await db.Item.create({
       name,
       price,
-      image_urls: imageUrlsArray.join('***'),
+      image_urls: imageUrlsArray.join("***"),
       brand,
       category,
       ingredients,
@@ -179,10 +177,12 @@ const addItem = async (req, res) => {
 
     await updateItemWithExistingSaleEvent(createdItem);
 
-    return res.status(201).json({ message: 'Item created successfully', item: createdItem });
+    return res
+      .status(201)
+      .json({ message: "Item created successfully", item: createdItem });
   } catch (error) {
-    console.error('Error creating item:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error creating item:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -211,10 +211,10 @@ const editItem = async (req, res) => {
     const itemToEdit = await db.Item.findByPk(itemId);
 
     if (!itemToEdit) {
-      return res.status(404).json({ message: 'Item not found' });
+      return res.status(404).json({ message: "Item not found" });
     }
 
-    const imageUrlsArray = image_urls.split(', ');
+    const imageUrlsArray = image_urls.split(", ");
 
     // Check if brand or category is changed
     const isBrandChanged = brand && brand !== itemToEdit.brand;
@@ -255,7 +255,7 @@ const editItem = async (req, res) => {
       // If brand or category is not changed, update the item without affecting sale event
       await itemToEdit.update({
         name,
-        image_urls: imageUrlsArray.join('***'),
+        image_urls: imageUrlsArray.join("***"),
         price,
         ingredients,
         quantity,
@@ -270,10 +270,12 @@ const editItem = async (req, res) => {
       });
     }
 
-    return res.status(200).json({ message: 'Item updated successfully', item: itemToEdit });
+    return res
+      .status(200)
+      .json({ message: "Item updated successfully", item: itemToEdit });
   } catch (error) {
-    console.error('Error editing item:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error editing item:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -285,7 +287,7 @@ const deleteItem = async (req, res) => {
     const itemToDelete = await db.Item.findByPk(itemId);
 
     if (!itemToDelete) {
-      return res.status(404).json({ message: 'Item not found' });
+      return res.status(404).json({ message: "Item not found" });
     }
 
     // Remove the item's association with the sale event, but do not delete the sale event
@@ -294,10 +296,10 @@ const deleteItem = async (req, res) => {
     // Delete the item
     await itemToDelete.destroy();
 
-    return res.status(200).json({ message: 'Item deleted successfully' });
+    return res.status(200).json({ message: "Item deleted successfully" });
   } catch (error) {
-    console.error('Error deleting item:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error deleting item:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -305,7 +307,15 @@ const getAllOrders = async (req, res) => {
   try {
     // Get all orders with associated user information and totalAmount
     const orders = await db.Order.findAll({
-      attributes: ["id", "user_id", "is_confirm", "total_amount", "createdAt", "dateConfirmed", "dateRejected"],
+      attributes: [
+        "id",
+        "user_id",
+        "is_confirm",
+        "total_amount",
+        "createdAt",
+        "dateConfirmed",
+        "dateRejected",
+      ],
       include: [
         {
           model: db.User,
@@ -328,7 +338,9 @@ const getAllOrders = async (req, res) => {
             name: order.User.name,
             totalAmount: order.total_amount,
             status,
-            dateCreated: dateCreated ? dateCreated.toLocaleDateString("en-GB") : null,
+            dateCreated: dateCreated
+              ? dateCreated.toLocaleDateString("en-GB")
+              : null,
           };
         case 1:
           status = "Confirmed";
@@ -339,8 +351,12 @@ const getAllOrders = async (req, res) => {
             name: order.User.name,
             totalAmount: order.total_amount,
             status,
-            dateConfirmed: dateConfirmed ? dateConfirmed.toLocaleDateString("en-GB") : null,
-            dateCreated: dateCreated ? dateCreated.toLocaleDateString("en-GB") : null,
+            dateConfirmed: dateConfirmed
+              ? dateConfirmed.toLocaleDateString("en-GB")
+              : null,
+            dateCreated: dateCreated
+              ? dateCreated.toLocaleDateString("en-GB")
+              : null,
           };
         case 2:
           status = "Rejected";
@@ -351,8 +367,12 @@ const getAllOrders = async (req, res) => {
             name: order.User.name,
             totalAmount: order.total_amount,
             status,
-            dateRejected: dateRejected ? dateRejected.toLocaleDateString("en-GB") : null,
-            dateCreated: dateCreated ? dateCreated.toLocaleDateString("en-GB") : null,
+            dateRejected: dateRejected
+              ? dateRejected.toLocaleDateString("en-GB")
+              : null,
+            dateCreated: dateCreated
+              ? dateCreated.toLocaleDateString("en-GB")
+              : null,
           };
         default:
           status = "Invalid status";
@@ -390,7 +410,7 @@ const adminActivateUser = async (req, res) => {
       .status(200)
       .json({ message: "User activated by admin successfully" });
   } catch (error) {
-    console.error("Error deactivating user by admin:", error);
+    console.error("Error activating user by admin:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -495,7 +515,7 @@ const updateItemWithExistingSaleEvent = async (createdItem) => {
       await updateIsOnSaleStatus();
     }
   } catch (error) {
-    console.error('Error updating item with existing sale event:', error);
+    console.error("Error updating item with existing sale event:", error);
   }
 };
 

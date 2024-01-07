@@ -19,6 +19,9 @@ export default {
   deactivateUser(uid) {
     return axios.post(`${API_HOST}/admin/deactivate/${uid}`);
   },
+  activateUser(uid) {
+    return axios.post(`${API_HOST}/admin/activate/${uid}`);
+  },
   getOrders() {
     return axios.get(`${API_HOST}/admin/order`);
   },
