@@ -1,7 +1,7 @@
 // routes/adminRoutes.js
 const express = require('express');
 const route = express.Router();
-const { adminDeactivateUser, confirmOrder, rejectOrder, addItem, editItem, deleteItem, getAllOrders, getAllUserAccounts, getItemsByCategory, getAllSaleEvents } = require('../controllers/adminController');
+const { adminDeactivateUser, confirmOrder, rejectOrder, addItem, editItem, deleteItem, getAllOrders, getAllUserAccounts, getItemsByCategory, getAllSaleEvents, adminActivateUser } = require('../controllers/adminController');
 const { authenticateAdmin } = require('../middleware/auth');
 
 // Apply the authenticateAdmin middleware to the admin deactivation route
@@ -15,5 +15,6 @@ route.get('/event', authenticateAdmin, getAllSaleEvents);
 route.post('/item/create', authenticateAdmin, addItem);
 route.put('/item/edit/:itemId', authenticateAdmin, editItem);
 route.delete('/item/delete/:itemId', authenticateAdmin, deleteItem);
+route.post('/activate/:userId', authenticateAdmin, adminActivateUser);
 
 module.exports = route;
