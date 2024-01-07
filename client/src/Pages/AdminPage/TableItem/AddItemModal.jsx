@@ -6,13 +6,11 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-  Checkbox,
   Input,
-  Link,
 } from '@nextui-org/react';
 // import { MailIcon } from './MailIcon.jsx';
 // import { LockIcon } from './LockIcon.jsx';
-import { PlusIcon } from './PlusIcon.jsx';
+import { PlusIcon } from '@/Global_reference/assets/PlusIcon.jsx';
 export default function AddItemModal() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 

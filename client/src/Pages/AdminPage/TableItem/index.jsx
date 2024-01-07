@@ -14,11 +14,11 @@ import {
   Pagination,
 } from '@nextui-org/react';
 
-import { VerticalDotsIcon } from './VerticalDotsIcon';
+import { VerticalDotsIcon } from '@/Global_reference/assets/VerticalDotsIcon';
 
-import { ChevronDownIcon } from './ChevronDownIcon';
+import { ChevronDownIcon } from '@/Global_reference/assets/ChevronDownIcon';
 import { columns, users } from './data';
-import { capitalize } from './utils';
+import { capitalize } from '../../../Global_reference/utils';
 import AddItemModal from './AddItemModal';
 
 const INITIAL_VISIBLE_COLUMNS = [

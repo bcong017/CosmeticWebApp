@@ -1,6 +1,17 @@
 import { API_HOST } from '@/Global_reference/variables';
 import axios from 'axios';
 
+export const SALE_COLUMNS = [
+  { name: '№', uid: 'id', sortable: true },
+  { name: 'Tên', uid: 'event_name', sortable: true },
+  { name: 'Tỹ lệ giảm', uid: 'discount_percentage', sortable: true },
+  { name: 'Ngày bắt đầu', uid: 'start_date', sortable: true },
+  { name: 'Ngày kết thúc', uid: 'end_date', sortable: true },
+  { name: 'Thương hiệu', uid: 'brand', sortable: true },
+  { name: 'Danh mục', uid: 'category', sortable: true },
+  { name: 'Thao tác', uid: 'actions', maxWidth: 1 },
+];
+
 export default {
   getUsers() {
     return axios.get(`${API_HOST}/admin/user`);
@@ -25,5 +36,8 @@ export default {
   },
   deleteItem(id) {
     return axios.delete(`${API_HOST}/admin/delete/${id}`);
+  },
+  getEvents() {
+    return axios.get(`${API_HOST}/admin/event`);
   },
 };
