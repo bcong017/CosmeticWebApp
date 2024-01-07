@@ -377,18 +377,18 @@ const adminActivateUser = async (req, res) => {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Check if the user is already deactivated
-    if (user.is_active == false) {
-      return res.status(400).json({ message: "User is already deactivated." });
+    // Check if the user is  deactivated
+    if (user.is_active == true) {
+      return res.status(400).json({ message: "User is not deactivated." });
     }
 
-    // Deactivate the user
-    user.is_active = false;
+    // Activate the user
+    user.is_active = true;
     await user.save();
 
     return res
       .status(200)
-      .json({ message: "User deactivated by admin successfully" });
+      .json({ message: "User activated by admin successfully" });
   } catch (error) {
     console.error("Error deactivating user by admin:", error);
     return res.status(500).json({ error: "Internal Server Error" });
