@@ -17,7 +17,10 @@ import { PlusIcon } from '@/Global_reference/assets/PlusIcon.jsx';
 import { useEffect, useState } from 'react';
 import common from '@/Api_Call/common';
 import admin from '@/Api_Call/admin';
+import { useNavigate } from 'react-router-dom';
 export default function AddItemModal({ cat }) {
+  const nav = useNavigate();
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [name, setName] = useState('Tên sản phẩm');
   const [price, setPrice] = useState('29.99');
@@ -50,7 +53,7 @@ export default function AddItemModal({ cat }) {
       image_urls: image_urls,
       price: price,
       brand: brand,
-      category: category,
+      category: cat,
       ingredients: ingredients,
       quantity: quantity,
       product_information: product_information,
@@ -66,6 +69,7 @@ export default function AddItemModal({ cat }) {
       .addItem(payload)
       .then(() => {
         window.alert('Thêm sản phẩm thành công!');
+        nav(0);
       })
       .catch((err) => {
         window.alert(err);

@@ -61,7 +61,16 @@ export default function LoginModal() {
         }
       })
       .catch(function (error) {
-        console.log(error);
+        if (
+          error.response.data.message == 'User is deactivated. Cannot log in.'
+        ) {
+          alert(
+            'Tài khoản của bạn đã bị vô hiệu hóa, vui lòng liên hệ với chủ cửa hàng.',
+          );
+          clearInput();
+        } else {
+          alert(error.response.data.message);
+        }
       });
   };
 
@@ -109,6 +118,7 @@ export default function LoginModal() {
         }
       })
       .catch(function (error) {
+        window.alert('Đăng ký thất bại, mời bạn kiểm tra lại thông tin');
         console.log(error);
       });
   };

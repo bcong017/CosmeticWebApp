@@ -34,8 +34,10 @@ function CartPage() {
   };
 
   const handleSubmitOrder = () => {
-    user.createOrder();
-    nav('/');
+    user.createOrder().then(() => {
+      alert('Đặt hàng thành công!');
+      nav(0);
+    });
   };
 
   const handleEditQuantity = (id, quantity) => {

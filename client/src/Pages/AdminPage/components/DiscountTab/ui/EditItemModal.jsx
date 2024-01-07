@@ -70,17 +70,17 @@ export default function EditItemModal({ onOk, id }) {
         tabKey === TAB_KEY.TH ? option : CAT_TITLE[option],
       [tabKey === TAB_KEY.TH ? 'category' : 'brand']: null,
     };
-    console.log(payload);
-    // saleevents
-    //   .editEvent(id, payload)
-    //   .then(() => {
-    //     alert('Sửa chương trình thành công', payload);
-    //     onOk();
-    //     onClose();
-    //   })
-    //   .catch((e) => {
-    //     console.log(e);
-    //   });
+    // console.log(payload);
+    saleevents
+      .editEvent(id, payload)
+      .then(() => {
+        alert('Sửa chương trình thành công', payload);
+        onOk();
+        onClose();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   return (
