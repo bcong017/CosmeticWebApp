@@ -63,7 +63,7 @@ export default function TableItem({ cat }) {
         .deleteItem(id)
         .then(() => {
           alert('Đã xóa sản phẩm thành công!');
-          // nav(0);
+          nav(0);
         })
         .catch((err) => console.log(err));
     }
@@ -173,10 +173,6 @@ export default function TableItem({ cat }) {
           </Dropdown>
         </div>
         <div className='flex justify-between items-center'>
-          {/* {itemList?.length != 0 && (
-       
-          )} */}
-
           <span className='text-default-400 text-small'>
             Tổng {itemList?.length} sản phẩm
           </span>
@@ -194,7 +190,7 @@ export default function TableItem({ cat }) {
         </div>
       </div>
     );
-  }, [visibleColumns, onRowsPerPageChange]);
+  }, [visibleColumns, onRowsPerPageChange, itemList?.length]);
 
   const bottomContent = React.useMemo(() => {
     return (

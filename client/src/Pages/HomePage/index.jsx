@@ -42,8 +42,6 @@ function HomePage() {
         title='Được người dùng ưa thích'
         listOfItem={ItemList?.topRatedItems}
       ></Carousel>
-
-      {/* <Carousel title='Dành riêng cho bạn'></Carousel> */}
     </div>
   );
 }

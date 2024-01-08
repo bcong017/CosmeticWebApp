@@ -53,11 +53,8 @@ export default function EditItemModal({ onOk, id }) {
     setDiscount(parseInt(currentEvent.discount_percentage, 10));
     setStartDate(currentEvent?.start_date?.split('T')[0]);
     setEndDate(currentEvent?.end_date?.split('T')[0]);
-    console.log(currentEvent?.brand);
     setTabKey(currentEvent?.brand ? 'brand' : 'category');
-    console.log(tabKey);
     setOption(currentEvent.brand ? currentEvent.brand : currentEvent.category);
-    console.log(option);
   }, [currentEvent]);
   // TODO:
   const onOkForm = async (onClose) => {
@@ -69,7 +66,6 @@ export default function EditItemModal({ onOk, id }) {
       [tabKey === TAB_KEY.TH ? 'brand' : 'category']: option,
       [tabKey === TAB_KEY.TH ? 'category' : 'brand']: null,
     };
-    // console.log(payload);
     saleevents
       .editEvent(id, payload)
       .then(() => {
