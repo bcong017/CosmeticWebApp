@@ -66,8 +66,7 @@ export default function EditItemModal({ onOk, id }) {
       discount_percentage: Number(discount),
       start_date: startDate,
       end_date: endDate,
-      [tabKey === TAB_KEY.TH ? 'brand' : 'category']:
-        tabKey === TAB_KEY.TH ? option : CAT_TITLE[option],
+      [tabKey === TAB_KEY.TH ? 'brand' : 'category']: option,
       [tabKey === TAB_KEY.TH ? 'category' : 'brand']: null,
     };
     // console.log(payload);
