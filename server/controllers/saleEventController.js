@@ -46,7 +46,7 @@ const createSaleEvent = async (req, res) => {
 const updateSaleEvent = async (req, res) => {
   try {
     const { eventId } = req.params;
-    const { eventName, discountPercentage, startDate, endDate, brand, category } = req.body;
+    const { event_name, discount_percentage, start_date, end_date, brand, category } = req.body;
 
     // Find the sale event to update
     const saleEventToUpdate = await db.SaleEvent.findByPk(eventId);
@@ -60,10 +60,10 @@ const updateSaleEvent = async (req, res) => {
     const oldCategory = saleEventToUpdate.category;
 
     // Update sale event information
-    saleEventToUpdate.event_name = eventName;
-    saleEventToUpdate.discount_percentage = discountPercentage;
-    saleEventToUpdate.start_date = startDate;
-    saleEventToUpdate.end_date = endDate;
+    saleEventToUpdate.event_name = event_name;
+    saleEventToUpdate.discount_percentage = discount_percentage;
+    saleEventToUpdate.start_date = start_date;
+    saleEventToUpdate.end_date = end_date;
     saleEventToUpdate.brand = brand || null;
     saleEventToUpdate.category = category || null;
 
