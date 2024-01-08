@@ -42,8 +42,7 @@ export default function AddItemModal({ onOk }) {
       discount_percentage: Number(discount),
       start_date: startDate,
       end_date: endDate,
-      [tabKey === TAB_KEY.TH ? 'brand' : 'category']:
-        tabKey === TAB_KEY.TH ? option : CAT_TITLE[option],
+      [tabKey === TAB_KEY.TH ? 'brand' : 'category']: option,
     };
 
     saleevents
