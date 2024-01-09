@@ -3,8 +3,6 @@ import FunctionTabs from './FunctionTabs';
 import { useAuth } from '@/Global_reference/context/auth';
 import { useNavigate } from 'react-router-dom';
 
-// import { Routes, Route } from 'react-router-dom';
-// import CategoryTabs from './CategoryTabs';
 function AdminPage() {
   const { setToken, setRole } = useAuth();
   const nav = useNavigate();

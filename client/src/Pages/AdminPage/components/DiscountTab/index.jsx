@@ -23,6 +23,7 @@ import saleevents from '@/Api_Call/saleevents';
 import { DeleteIcon } from '@/Global_reference/assets/DeleteIcon';
 import { useNavigate } from 'react-router-dom';
 import EditItemModal from './ui/EditItemModal';
+import { CAT_TITLE } from '@/Global_reference/variables';
 
 const INITIAL_SALE_COLUMNS = [
   'id',
@@ -126,6 +127,8 @@ function DiscountTab() {
       case 'start_date':
       case 'end_date':
         return <div>{handleDate(cellValue)} </div>;
+      case 'category':
+        return <div>{CAT_TITLE[cellValue]}</div>;
       default:
         return cellValue;
     }
