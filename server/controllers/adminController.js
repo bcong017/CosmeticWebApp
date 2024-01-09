@@ -284,11 +284,25 @@ const deleteItem = async (req, res) => {
     const { itemId } = req.params;
 
     // Find the item to delete
-    const itemToDelete = await db.Item.findByPk(itemId);
+    const itemToDelete = await db.Item.findByPk(itemId, {
+      include: [{
+        model: db.Comment,
+        attributes: ["id", "comment_text", "comment_date"],
+        include: [
+          {
+            model: db.User,
+            attributes: ["id", "username", "name"],
+          },
+        ],
+      },],
+      
+    });
 
     if (!itemToDelete) {
       return res.status(404).json({ message: "Item not found" });
     }
+
+    await db.Comment.destroy({where: {item_id: itemId}});
 
     // Remove the item's association with the sale event, but do not delete the sale event
     await itemToDelete.update({ sale_event_id: null, is_on_sale: false });
